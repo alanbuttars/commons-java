@@ -1,2 +1,6 @@
-# commons-java
-Commons: A set of core libraries in Java
+Common: Core Libraries for Java
+=======================
+
+Common is a set of core libraries.
+
+Requires JDK 1.7 or higher. 

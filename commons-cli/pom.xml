@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.alanbuttars.commons</groupId>
+		<artifactId>commons-parent</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>commons-cli</artifactId>
+	<name>commons-cli</name>
+	<url>https://github.com/alanbuttars/commons-java/commons-cli</url>
+	<description>Commons CLI is an API for simplifying the deployment and evaluation of command line processes.</description>
+</project>
