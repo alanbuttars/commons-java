@@ -18,86 +18,33 @@ package com.alanbuttars.commons.cli.response;
 /**
  * Models a command line {@link Process} result. This object may be evaluated in
  * the following manner: <br/>
- * 
+ *
  * <pre>
  * CommandLineResponse response = getResponse();
  * if (response.succeeded()) {
  * 	logger.info(response.getInfoStream());
- * }
- * else if (response.getExitCode() == CommandLineResponse.EXCEPTION_THROWN_EXIT_CODE) {
+ * } else if (response.getExitCode() == CommandLineResponse.EXCEPTION_THROWN_EXIT_CODE) {
  * 	throw response.getException();
- * }
- * else {
+ * } else {
  * 	logger.error(response.getErrorStream());
  * }
  * </pre>
- * 
+ *
  * @author Alan Buttars
  *
  */
 public class CommandLineResponse {
 
 	public static final int EXCEPTION_THROWN_EXIT_CODE = Integer.MIN_VALUE;
+	public static final int INTERRUPTED_BEFORE_COMPLETION_EXIT_CODE = Integer.MAX_VALUE;
 	private int exitCode;
 	private String infoStream;
 	private String errorStream;
 	private boolean success;
 	private Exception exception;
 
-	private CommandLineResponse() {
-	}
-
-	/**
-	 * Creates a response for which {@link #succeeded()} evaluates to
-	 * <code>true</code>.
-	 * 
-	 * @param exitCode
-	 * @param infoStream
-	 * @param errorStream
-	 * @return the response
-	 */
-	public static CommandLineResponse success(int exitCode, String infoStream, String errorStream) {
-		CommandLineResponse response = new CommandLineResponse();
-		response.exitCode = exitCode;
-		response.infoStream = infoStream;
-		response.errorStream = errorStream;
-		response.success = true;
-		return response;
-	}
-
-	/**
-	 * Creates a response for which {@link #succeeded()} evaluates to
-	 * <code>false</code>.
-	 * 
-	 * @param exitCode
-	 * @param infoStream
-	 * @param errorStream
-	 * @return the response
-	 */
-	public static CommandLineResponse failure(int exitCode, String infoStream, String errorStream) {
-		CommandLineResponse response = new CommandLineResponse();
-		response.exitCode = exitCode;
-		response.infoStream = infoStream;
-		response.errorStream = errorStream;
-		response.success = false;
-		return response;
-	}
-
-	/**
-	 * Creates a response for which {@link #succeeded()} evaluates to
-	 * <code>false</code>. This constructor is appropriate for when a
-	 * {@link Process} throws an <code>Exception</code> either during its
-	 * execution or evaluation.
-	 * 
-	 * @param e the thrown exception
-	 * @return the response
-	 */
-	public static CommandLineResponse failure(Exception e) {
-		CommandLineResponse response = new CommandLineResponse();
-		response.exitCode = EXCEPTION_THROWN_EXIT_CODE;
-		response.success = false;
-		response.exception = e;
-		return response;
+	public void setExitCode(int exitCode) {
+		this.exitCode = exitCode;
 	}
 
 	/**
@@ -107,11 +54,19 @@ public class CommandLineResponse {
 		return exitCode;
 	}
 
+	public void setInfoStream(String infoStream) {
+		this.infoStream = infoStream;
+	}
+
 	/**
 	 * @return the process's info stream
 	 */
 	public String getInfoStream() {
 		return infoStream;
+	}
+
+	public void setErrorStream(String errorStream) {
+		this.errorStream = errorStream;
 	}
 
 	/**
@@ -121,6 +76,10 @@ public class CommandLineResponse {
 		return errorStream;
 	}
 
+	public void setSuccess(boolean success) {
+		this.success = success;
+	}
+
 	/**
 	 * @return whether the command line process succeeded
 	 */
@@ -128,11 +87,23 @@ public class CommandLineResponse {
 		return success;
 	}
 
+	public void setException(Exception exception) {
+		this.exception = exception;
+	}
+
 	/**
 	 * @return <code>null</code> if the process executed cleanly
 	 */
 	public Exception getException() {
 		return exception;
+	}
+
+	public boolean exceptionThrown() {
+		return exitCode == EXCEPTION_THROWN_EXIT_CODE;
+	}
+
+	public boolean interrupted() {
+		return exitCode == INTERRUPTED_BEFORE_COMPLETION_EXIT_CODE;
 	}
 
 }

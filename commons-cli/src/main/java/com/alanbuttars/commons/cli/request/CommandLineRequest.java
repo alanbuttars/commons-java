@@ -28,6 +28,7 @@ import com.alanbuttars.commons.cli.util.Argument;
  * <li>Any additional behavior dictating how the {@link Process} is deployed</li>
  * </ul>
  * 
+ *
  * @author Alan Buttars
  *
  */
@@ -36,6 +37,7 @@ public class CommandLineRequest {
 	private List<Argument> arguments;
 	private CommandLineEvaluator evaluator;
 	private boolean interruptOnFailure;
+	private long interruptAfter;
 
 	CommandLineRequest() {
 	}
@@ -63,8 +65,7 @@ public class CommandLineRequest {
 	}
 
 	/**
-	 * @return <code>true</code> if the command line process should be halted as
-	 *         soon as a failure is detected
+	 * @return <code>true</code> if the command line process should be halted as soon as a failure is detected
 	 */
 	public boolean interruptOnFailure() {
 		return interruptOnFailure;
@@ -72,6 +73,17 @@ public class CommandLineRequest {
 
 	void setInterruptOnFailure(boolean interruptOnFailure) {
 		this.interruptOnFailure = interruptOnFailure;
+	}
+
+	/**
+	 * @return number of milliseconds to wait until interrupting the {@link Process}
+	 */
+	public long interruptAfter() {
+		return interruptAfter;
+	}
+
+	void setInterruptAfter(long interruptAfter) {
+		this.interruptAfter = interruptAfter;
 	}
 
 }

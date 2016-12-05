@@ -17,10 +17,48 @@ package com.alanbuttars.commons.cli.evaluator;
 
 import com.alanbuttars.commons.cli.response.CommandLineResponse;
 
+/**
+ * A high-level interface modeling an evaluation function which maps a running {@link Process} to a
+ * {@link CommandLineResponse}.
+ *
+ * @author Alan Buttars
+ *
+ */
 public interface CommandLineEvaluator {
 
-	public CommandLineResponse evaluate(int exitCode, String infoStream, String errorStream);
+	/**
+	 * Evaluates the exit code of a completed {@link Process}.
+	 *
+	 * @param exitCode
+	 * @return <code>false</code> if the <code>exitCode</code> indicates a failure
+	 */
+	public boolean evaluateExitCode(int exitCode);
 
-	public CommandLineResponse evaluate(Exception e);
+	/**
+	 * Evaluates a single line from a running {@link Process}'s info stream.
+	 *
+	 * @param infoStreamLine
+	 *            Non-null but potentially empty line from the input stream
+	 * @return <code>false</code> if the <code>infoStreamLine</code> indicates a failure
+	 */
+	public boolean evaluateInfoStream(String infoStreamLine);
+
+	/**
+	 * Evaluates a single line from a running {@link Process}'s error stream.
+	 *
+	 * @param errorStreamLine
+	 *            Non-null but potentially empty line from the error stream
+	 * @return <code>false</code> if the <code>errorStreamLine</code> indicates a failure
+	 */
+	public boolean evaluateErrorStream(String errorStreamLine);
+
+	/**
+	 * Evaluates an exception thrown during the deployment or runtime of a {@link Process}.
+	 *
+	 * @param e
+	 *            Non-null exception
+	 * @return final response object
+	 */
+	public CommandLineResponse evaluateException(Exception e);
 
 }

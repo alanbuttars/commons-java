@@ -17,10 +17,37 @@ package com.alanbuttars.commons.cli.evaluator;
 
 import com.alanbuttars.commons.cli.response.CommandLineResponse;
 
+/**
+ * Default abstract implementation of {@link CommandLineEvaluator}.
+ *
+ * @author Alan Buttars
+ *
+ */
 public abstract class CommandLineEvaluatorAbstractImpl implements CommandLineEvaluator {
 
-	public CommandLineResponse evaluate(Exception e) {
-		return CommandLineResponse.failure(e);
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean evaluateExitCode(int exitCode) {
+		return exitCode == 0;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public CommandLineResponse evaluateException(Exception e) {
+		CommandLineResponse response = new CommandLineResponse();
+		response.setSuccess(false);
+		if (e instanceof InterruptedException) {
+			response.setExitCode(CommandLineResponse.INTERRUPTED_BEFORE_COMPLETION_EXIT_CODE);
+		}
+		else {
+			response.setExitCode(CommandLineResponse.EXCEPTION_THROWN_EXIT_CODE);
+		}
+		response.setException(e);
+		return response;
 	}
 
 }

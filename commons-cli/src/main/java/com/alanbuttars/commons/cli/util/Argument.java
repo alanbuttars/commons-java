@@ -18,6 +18,7 @@ package com.alanbuttars.commons.cli.util;
 /**
  * Models a command line argument.
  * 
+ *
  * @author Alan Buttars
  *
  */
@@ -27,20 +28,31 @@ public class Argument {
 	private final Character wrapper;
 
 	/**
-	 * Creates an argument whose value will not be wrapped when deployed to the
-	 * command line.
-	 * 
+	 * Creates an argument whose value will not be wrapped when deployed to the command line.
+	 *
 	 * @param value
+	 *            Nullable value
 	 */
 	public Argument(String value) {
 		this(value, null);
 	}
 
+	/**
+	 * Creates an argument whose value will be wrapped by a given character if the value contains a space.
+	 *
+	 * @param value
+	 *            Nullable value
+	 * @param wrapper
+	 *            Nullable wrapper character
+	 */
 	public Argument(String value, Character wrapper) {
 		this.value = value;
 		this.wrapper = wrapper;
 	}
 
+	/**
+	 * Returns the argument value, which may be wrapped.
+	 */
 	public String getValue() {
 		if (value != null) {
 			if (wrapper != null) {
