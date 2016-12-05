@@ -30,6 +30,7 @@ import com.alanbuttars.commons.cli.util.Argument;
 /**
  * Test class for {@link CommandLineRequestBuilder}.
  * 
+ *
  * @author Alan Buttars
  *
  */
@@ -40,6 +41,7 @@ public class CommandLineRequestBuilderTest {
 		CommandLineRequest request = new CommandLineRequestBuilder()//
 				.build("bash");
 		assertFalse(request.interruptOnFailure());
+		assertEquals(0, request.interruptAfter());
 		assertEquals(CommandLineEvaluatorExitStatusImpl.class, request.getEvaluator().getClass());
 	}
 
@@ -67,10 +69,10 @@ public class CommandLineRequestBuilderTest {
 	@Test
 	public void testBuildArguments() {
 		List<Argument> inputArguments = Arrays.asList(//
-				new Argument("exe"),//
-				new Argument("--key1"),//
-				new Argument("value with spaces", '"'),//
-				new Argument("--key2"),//
+				new Argument("exe"), //
+				new Argument("--key1"), //
+				new Argument("value with spaces", '"'), //
+				new Argument("--key2"), //
 				new Argument("value_without_spaces", '"'));
 		CommandLineRequest request = new CommandLineRequestBuilder()//
 				.build(inputArguments);

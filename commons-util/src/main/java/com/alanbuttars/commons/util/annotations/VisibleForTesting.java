@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alanbuttars.commons.cli.evaluator;
+package com.alanbuttars.commons.util.annotations;
 
 /**
- * Test class for {@link CommandLineEvaluatorExitStatusImpl}.
+ * A purely notational annotation, used to inform why a class, field, or method has a less restricted access modifier.
  * 
- *
  * @author Alan Buttars
  *
  */
-public class CommandLineEvaluatorExitStatusImplTest {
+public @interface VisibleForTesting {
 
 }

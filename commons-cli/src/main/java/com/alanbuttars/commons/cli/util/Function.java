@@ -13,15 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alanbuttars.commons.cli.evaluator;
+package com.alanbuttars.commons.cli.util;
 
 /**
- * Test class for {@link CommandLineEvaluatorExitStatusImpl}.
+ * A general interface intended as a lambda wrapper for Java 1.7 and below.
  * 
- *
  * @author Alan Buttars
  *
+ * @param <A>
+ *            Input type
+ * @param <B>
+ *            Output type
  */
-public class CommandLineEvaluatorExitStatusImplTest {
+public abstract class Function<A, B> {
 
+	/**
+	 * Applies the function.
+	 * 
+	 * @param input
+	 *            Nullable input
+	 */
+	public abstract B apply(A input);
 }

@@ -12,4 +12,12 @@
 	<name>commons-cli</name>
 	<url>https://github.com/alanbuttars/commons-java/commons-cli</url>
 	<description>Commons CLI is an API for simplifying the deployment and evaluation of command line processes.</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.alanbuttars.commons</groupId>
+			<artifactId>commons-util</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
 </project>

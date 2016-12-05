@@ -15,10 +15,8 @@
  */
 package com.alanbuttars.commons.cli.response;
 
-import static org.junit.Assert.assertEquals;
+import com.alanbuttars.commons.cli.response.CommandLineResponse;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -26,39 +24,25 @@ import org.junit.Test;
 /**
  * Test class for {@link CommandLineResponse}.
  * 
+ *
  * @author Alan Buttars
  *
  */
 public class CommandLineResponseTest {
 
 	@Test
-	public void testConstructorSuccess() {
-		CommandLineResponse response = CommandLineResponse.success(1, "info", "error");
-		assertEquals(1, response.getExitCode());
-		assertEquals("info", response.getInfoStream());
-		assertEquals("error", response.getErrorStream());
-		assertTrue(response.succeeded());
-		assertNull(response.getException());
+	public void testExceptionThrown() {
+		CommandLineResponse response = new CommandLineResponse();
+		response.setExitCode(CommandLineResponse.EXCEPTION_THROWN_EXIT_CODE);
+		assertTrue(response.exceptionThrown());
+		assertFalse(response.interrupted());
 	}
 
 	@Test
-	public void testConstructorFailure() {
-		CommandLineResponse response = CommandLineResponse.failure(1, "info", "error");
-		assertEquals(1, response.getExitCode());
-		assertEquals("info", response.getInfoStream());
-		assertEquals("error", response.getErrorStream());
-		assertFalse(response.succeeded());
-		assertNull(response.getException());
+	public void testInterrupted() {
+		CommandLineResponse response = new CommandLineResponse();
+		response.setExitCode(CommandLineResponse.INTERRUPTED_BEFORE_COMPLETION_EXIT_CODE);
+		assertTrue(response.interrupted());
+		assertFalse(response.exceptionThrown());
 	}
-
-	@Test
-	public void testConstructorFailureWithException() {
-		CommandLineResponse response = CommandLineResponse.failure(new RuntimeException("exception"));
-		assertEquals(CommandLineResponse.EXCEPTION_THROWN_EXIT_CODE, response.getExitCode());
-		assertNull(response.getInfoStream());
-		assertNull(response.getErrorStream());
-		assertFalse(response.succeeded());
-		assertNotNull(response.getException());
-	}
-
 }
