@@ -3,6 +3,7 @@ Common: Core Libraries for Java
 
 
 [![Build Status](https://travis-ci.org/alanbuttars/commons-java.svg?branch=master)](https://travis-ci.org/alanbuttars/commons-java)
+[![codecov](https://codecov.io/gh/alanbuttars/commons-java/branch/master/graph/badge.svg)](https://codecov.io/gh/alanbuttars/commons-java)
 
 Common is a set of core libraries.
 
