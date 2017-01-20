@@ -20,13 +20,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.doReturn;
+import static org.powermock.api.mockito.PowerMockito.spy;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -42,7 +41,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.alanbuttars.commons.cli.evaluator.evaluation.ConclusiveEvaluation;
 import com.alanbuttars.commons.cli.evaluator.evaluation.Evaluation;
-import com.alanbuttars.commons.cli.util.Function;
+import com.alanbuttars.commons.util.functions.Function;
 
 /**
  * Test class for {@link ProcessStreamListener}.
@@ -52,7 +51,7 @@ import com.alanbuttars.commons.cli.util.Function;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ProcessStreamReader.class, ProcessStreamListener.class })
-public class ProcessStreamListenerTest extends ProcessAbstractTest {
+public class ProcessStreamListenerTest {
 
 	private Process process;
 	private ProcessStreamReader reader;
@@ -62,8 +61,8 @@ public class ProcessStreamListenerTest extends ProcessAbstractTest {
 		process = mock(Process.class);
 		try (InputStream infoStream = new ByteArrayInputStream("info 1".getBytes());
 				InputStream errorStream = new ByteArrayInputStream("info 1".getBytes())) {
-			when(process.getInputStream()).thenReturn(infoStream);
-			when(process.getErrorStream()).thenReturn(errorStream);
+			doReturn(infoStream).when(process).getInputStream();
+			doReturn(errorStream).when(process).getErrorStream();
 
 			reader = spy(new ProcessStreamReader(process.getInputStream(), evaluationFunction, interruptOnFailure, interruptOnSuccess));
 			listener = spy(new ProcessStreamListener(process, reader, interruptOnFailure, interruptOnSuccess, interruptAfter));
@@ -99,7 +98,7 @@ public class ProcessStreamListenerTest extends ProcessAbstractTest {
 		assertTrue(reader.getResult().succeeded());
 		assertNull(reader.getResult().getException());
 	}
-	
+
 	@Test
 	public void testSuccessByEvaluationAndInterruption() throws IOException {
 		setup(new Function<String, Evaluation>() {
@@ -117,7 +116,7 @@ public class ProcessStreamListenerTest extends ProcessAbstractTest {
 		assertTrue(reader.getResult().succeeded());
 		assertNull(reader.getResult().getException());
 	}
-	
+
 	@Test
 	public void testFailureByEvaluation() throws IOException {
 		setup(new Function<String, Evaluation>() {
@@ -175,19 +174,46 @@ public class ProcessStreamListenerTest extends ProcessAbstractTest {
 
 		verify(process, never()).destroy();
 		verify(reader, never()).interrupt();
-		assertFalse(reader.getResult().succeeded());
+		assertTrue(reader.getResult().failed());
 		assertNotNull(reader.getResult().getException());
 		assertEquals(IOException.class, reader.getResult().getException().getClass());
 		assertEquals("mock", reader.getResult().getException().getMessage());
 	}
 
 	@Test
-	public void testFailureByInterruption() throws IOException {
+	public void testFailureByInterruptedException() throws Exception {
 		setup(new Function<String, Evaluation>() {
 
 			@Override
 			public Evaluation apply(String input) {
 				return ConclusiveEvaluation.SUCCESS;
+			}
+
+		}, false, false, 24);
+
+		doThrow(new InterruptedException("mock")).when(reader).join(24);
+		run();
+
+		verify(process, never()).destroy();
+		verify(reader, never()).interrupt();
+		assertTrue(reader.getResult().failed());
+		assertNotNull(reader.getResult().getException());
+		assertEquals(InterruptedException.class, reader.getResult().getException().getClass());
+		assertEquals("mock", reader.getResult().getException().getMessage());
+	}
+
+	@Test
+	public void testFailureByInterruptionAfter() throws IOException {
+		setup(new Function<String, Evaluation>() {
+
+			@Override
+			public Evaluation apply(String input) {
+				try {
+					Thread.sleep(1000);
+				}
+				catch (InterruptedException e) {
+				}
+				return Evaluation.NON_CONCLUSIVE;
 			}
 
 		}, false, false, 1);
@@ -200,7 +226,7 @@ public class ProcessStreamListenerTest extends ProcessAbstractTest {
 		assertEquals(InterruptedException.class, reader.getResult().getException().getClass());
 		assertEquals("Process interrupted after 1 millis", reader.getResult().getException().getMessage());
 	}
-	
+
 	@Test
 	public void testNonConclusiveByEvaluation() throws IOException {
 		setup(new Function<String, Evaluation>() {
@@ -218,7 +244,7 @@ public class ProcessStreamListenerTest extends ProcessAbstractTest {
 		assertTrue(reader.getResult().succeeded());
 		assertNull(reader.getResult().getException());
 	}
-	
+
 	@Test
 	public void testNonConclusiveByEvaluationAndInterruption() throws IOException {
 		setup(new Function<String, Evaluation>() {
@@ -236,6 +262,5 @@ public class ProcessStreamListenerTest extends ProcessAbstractTest {
 		assertTrue(reader.getResult().succeeded());
 		assertNull(reader.getResult().getException());
 	}
-
 
 }

@@ -63,5 +63,15 @@ public class EvaluationResultTest {
 		assertFalse(result.failed());
 		assertTrue(result.nonConclusive());
 	}
+	
+	@Test
+	public void testNull() {
+		EvaluationResult result = new EvaluationResult() {
+		};
+		
+		assertFalse(result.succeeded());
+		assertFalse(result.failed());
+		assertTrue(result.nonConclusive());
+	}
 
 }

@@ -25,8 +25,8 @@ import com.alanbuttars.commons.cli.evaluator.evaluation.Evaluation;
 import com.alanbuttars.commons.cli.request.CommandLineRequest;
 import com.alanbuttars.commons.cli.response.CommandLineResponse;
 import com.alanbuttars.commons.cli.util.Argument;
-import com.alanbuttars.commons.cli.util.Function;
 import com.alanbuttars.commons.util.annotations.VisibleForTesting;
+import com.alanbuttars.commons.util.functions.Function;
 
 /**
  * Utility function class for {@link Process}es.
@@ -105,7 +105,8 @@ public class Processes {
 	/**
 	 * Creates the thread which will read and process the {@lnk Process}'s error stream.
 	 */
-	private static ProcessStreamReader createErrorStreamReader(Process process, final CommandLineRequest request) {
+	@VisibleForTesting
+	protected static ProcessStreamReader createErrorStreamReader(Process process, final CommandLineRequest request) {
 		return new ProcessStreamReader(process.getErrorStream(), new Function<String, Evaluation>() {
 
 			@Override
@@ -119,7 +120,8 @@ public class Processes {
 	/**
 	 * Creates a thread which will listen to a {@link ProcessStreamReaderTest} and react appropriately to its results.
 	 */
-	private static ProcessStreamListener createStreamListener(Process process, CommandLineRequest request, ProcessStreamReader streamReader) {
+	@VisibleForTesting
+	protected static ProcessStreamListener createStreamListener(Process process, CommandLineRequest request, ProcessStreamReader streamReader) {
 		return new ProcessStreamListener(process, streamReader, request.interruptOnFailure(), request.interruptOnSuccess(), request.interruptAfter());
 	}
 

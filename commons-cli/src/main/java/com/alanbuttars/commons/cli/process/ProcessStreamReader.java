@@ -22,8 +22,8 @@ import java.io.InputStreamReader;
 
 import com.alanbuttars.commons.cli.evaluator.evaluation.ConclusiveEvaluation;
 import com.alanbuttars.commons.cli.evaluator.evaluation.Evaluation;
-import com.alanbuttars.commons.cli.util.Function;
 import com.alanbuttars.commons.util.annotations.VisibleForTesting;
+import com.alanbuttars.commons.util.functions.Function;
 
 /**
  * A thread which parses a {@link Process}'s stream. This thread is responsible for determining the success or failure

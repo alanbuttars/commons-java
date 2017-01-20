@@ -19,17 +19,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.powermock.api.mockito.PowerMockito.doReturn;
+import static org.powermock.api.mockito.PowerMockito.doThrow;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.spy;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
-import java.util.Arrays;
+import java.io.IOException;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.alanbuttars.commons.cli.evaluator.CommandLineEvaluatorAbstractImpl;
-import com.alanbuttars.commons.cli.evaluator.evaluation.ConclusiveEvaluation;
-import com.alanbuttars.commons.cli.evaluator.evaluation.Evaluation;
 import com.alanbuttars.commons.cli.request.CommandLineRequest;
 import com.alanbuttars.commons.cli.request.CommandLineRequestBuilder;
 import com.alanbuttars.commons.cli.response.CommandLineResponse;
@@ -42,166 +45,91 @@ import com.alanbuttars.commons.cli.response.CommandLineResponse;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Processes.class)
-public class ProcessesTest extends ProcessAbstractTest {
+public class ProcessesTest {
 
-	@Test
-	public void testSuccess() {
-		CommandLineRequest request = new CommandLineRequestBuilder()//
-				.build(Arrays.asList(shArg(), exitCode0ScriptArg()));
-		CommandLineResponse response = Processes.execute(request);
-		assertEquals(0, response.getExitCode());
-		assertTrue(response.succeeded());
-		assertEquals("info 1\ninfo 2\n", response.getInfoStream());
-		assertEquals("error 1\nerror 2\n", response.getErrorStream());
-		assertNull(response.getException());
-		assertFalse(response.exceptionThrown());
-		assertFalse(response.interrupted());
+	private CommandLineRequest request;
+
+	@Before
+	public void setup() {
+		spy(Processes.class);
+		request = new CommandLineRequestBuilder()//
+				.build("blah blah");
 	}
 
 	@Test
-	public void testFailureByEvaluatorInfoStream() {
-		CommandLineRequest request = new CommandLineRequestBuilder()//
-				.withEvaluator(new CommandLineEvaluatorAbstractImpl() {
+	public void testFailureByInputStreamInterrupted() throws Exception {
+		Process mockProcess = mock(Process.class);
+		ProcessStreamReader mockInputStreamReader = mock(ProcessStreamReader.class);
+		ProcessStreamReader mockErrorStreamReader = mock(ProcessStreamReader.class);
+		ProcessStreamListener mockInputStreamListener = mock(ProcessStreamListener.class);
+		ProcessStreamListener mockErrorStreamListener = mock(ProcessStreamListener.class);
 
-					@Override
-					public Evaluation evaluateInfoStream(String infoStreamLine) {
-						if (infoStreamLine.contains("info 1")) {
-							return Evaluation.NON_CONCLUSIVE;
-						}
-						return ConclusiveEvaluation.FAILURE;
-					}
+		doReturn(mockProcess).when(Processes.class, "startProcess", request);
+		doReturn(mockInputStreamReader).when(Processes.class, "createInputStreamReader", mockProcess, request);
+		doReturn(mockErrorStreamReader).when(Processes.class, "createErrorStreamReader", mockProcess, request);
+		doReturn(mockInputStreamListener).when(Processes.class, "createStreamListener", mockProcess, request, mockInputStreamReader);
+		doReturn(mockErrorStreamListener).when(Processes.class, "createStreamListener", mockProcess, request, mockErrorStreamReader);
+		doThrow(new InterruptedException("mock")).when(mockInputStreamListener).join();
 
-					@Override
-					public Evaluation evaluateErrorStream(String errorStreamLine) {
-						return Evaluation.NON_CONCLUSIVE;
-					}
-
-				})//
-				.build(Arrays.asList(shArg(), exitCode0ScriptArg()));
 		CommandLineResponse response = Processes.execute(request);
-		assertEquals(0, response.getExitCode());
-		assertTrue(response.failed());
-		assertEquals("info 1\ninfo 2\n", response.getInfoStream());
-		assertEquals("error 1\nerror 2\n", response.getErrorStream());
-		assertNull(response.getException());
-		assertFalse(response.exceptionThrown());
-		assertFalse(response.interrupted());
-	}
 
-	@Test
-	public void testFailureByEvaluatorErrorStream() {
-		CommandLineRequest request = new CommandLineRequestBuilder()//
-				.withEvaluator(new CommandLineEvaluatorAbstractImpl() {
+		verifyStatic();
 
-					@Override
-					public Evaluation evaluateInfoStream(String infoStreamLine) {
-						return Evaluation.NON_CONCLUSIVE;
-					}
-
-					@Override
-					public Evaluation evaluateErrorStream(String errorStreamLine) {
-						if (errorStreamLine.contains("error 1")) {
-							return Evaluation.NON_CONCLUSIVE;
-						}
-						return ConclusiveEvaluation.FAILURE;
-					}
-
-				})//
-				.build(Arrays.asList(shArg(), exitCode0ScriptArg()));
-		CommandLineResponse response = Processes.execute(request);
-		assertEquals(0, response.getExitCode());
-		assertTrue(response.failed());
-		assertEquals("info 1\ninfo 2\n", response.getInfoStream());
-		assertEquals("error 1\nerror 2\n", response.getErrorStream());
-		assertNull(response.getException());
-		assertFalse(response.exceptionThrown());
-		assertFalse(response.interrupted());
-	}
-
-	@Test
-	public void testFailureByExitCode() {
-		CommandLineRequest request = new CommandLineRequestBuilder()//
-				.build(Arrays.asList(shArg(), exitCode1ScriptArg()));
-		CommandLineResponse response = Processes.execute(request);
-		assertEquals(1, response.getExitCode());
-		assertTrue(response.failed());
-		assertEquals("info 1\ninfo 2\n", response.getInfoStream());
-		assertEquals("error 1\nerror 2\n", response.getErrorStream());
-		assertNull(response.getException());
-		assertFalse(response.exceptionThrown());
-		assertFalse(response.interrupted());
-	}
-
-	@Test
-	public void testFailureByInterruption() {
-		CommandLineRequest request = new CommandLineRequestBuilder()//
-				.interruptAfter(200)//
-				.build(Arrays.asList(shArg(), exitCode0SlowScriptArg()));
-		CommandLineResponse response = Processes.execute(request);
 		assertEquals(CommandLineResponse.INTERRUPTED_BEFORE_COMPLETION_EXIT_CODE, response.getExitCode());
 		assertTrue(response.failed());
-		assertEquals("info 1\n", response.getInfoStream());
-		assertEquals("", response.getErrorStream());
+		assertNull(response.getInfoStream());
+		assertNull(response.getErrorStream());
 		assertEquals(InterruptedException.class, response.getException().getClass());
-		assertEquals("Process interrupted after 200 millis", response.getException().getMessage());
+		assertEquals("mock", response.getException().getMessage());
 		assertFalse(response.exceptionThrown());
 		assertTrue(response.interrupted());
 	}
 
 	@Test
-	public void testInterruptOnFailureByInfoStream() {
-		CommandLineRequest request = new CommandLineRequestBuilder()//
-				.interruptOnFailure()//
-				.withEvaluator(new CommandLineEvaluatorAbstractImpl() {
+	public void testFailureByErrorStreamInterrupted() throws Exception {
+		Process mockProcess = mock(Process.class);
+		ProcessStreamReader mockInputStreamReader = mock(ProcessStreamReader.class);
+		ProcessStreamReader mockErrorStreamReader = mock(ProcessStreamReader.class);
+		ProcessStreamListener mockInputStreamListener = mock(ProcessStreamListener.class);
+		ProcessStreamListener mockErrorStreamListener = mock(ProcessStreamListener.class);
 
-					@Override
-					public ConclusiveEvaluation evaluateInfoStream(String infoStreamLine) {
-						return ConclusiveEvaluation.FAILURE;
-					}
+		doReturn(mockProcess).when(Processes.class, "startProcess", request);
+		doReturn(mockInputStreamReader).when(Processes.class, "createInputStreamReader", mockProcess, request);
+		doReturn(mockErrorStreamReader).when(Processes.class, "createErrorStreamReader", mockProcess, request);
+		doReturn(mockInputStreamListener).when(Processes.class, "createStreamListener", mockProcess, request, mockInputStreamReader);
+		doReturn(mockErrorStreamListener).when(Processes.class, "createStreamListener", mockProcess, request, mockErrorStreamReader);
+		doThrow(new InterruptedException("mock")).when(mockErrorStreamListener).join();
 
-					@Override
-					public Evaluation evaluateErrorStream(String errorStreamLine) {
-						return Evaluation.NON_CONCLUSIVE;
-					}
-
-				})//
-				.build(Arrays.asList(shArg(), exitCode0SlowScriptArg()));
 		CommandLineResponse response = Processes.execute(request);
+
+		verifyStatic();
+
 		assertEquals(CommandLineResponse.INTERRUPTED_BEFORE_COMPLETION_EXIT_CODE, response.getExitCode());
 		assertTrue(response.failed());
-		assertEquals("info 1\n", response.getInfoStream());
-		assertEquals("", response.getErrorStream());
-		assertNull(response.getException());
+		assertNull(response.getInfoStream());
+		assertNull(response.getErrorStream());
+		assertEquals(InterruptedException.class, response.getException().getClass());
+		assertEquals("mock", response.getException().getMessage());
 		assertFalse(response.exceptionThrown());
 		assertTrue(response.interrupted());
 	}
 
 	@Test
-	public void testInterruptOnFailureByErrorStream() {
-		CommandLineRequest request = new CommandLineRequestBuilder()//
-				.interruptOnFailure()//
-				.withEvaluator(new CommandLineEvaluatorAbstractImpl() {
+	public void testFailureByIOException() throws Exception {
+		doThrow(new IOException("mock")).when(Processes.class, "startProcess", request);
 
-					@Override
-					public Evaluation evaluateInfoStream(String infoStreamLine) {
-						return Evaluation.NON_CONCLUSIVE;
-					}
-
-					@Override
-					public Evaluation evaluateErrorStream(String errorStreamLine) {
-						return ConclusiveEvaluation.FAILURE;
-					}
-
-				})//
-				.build(Arrays.asList(shArg(), exitCode0ScriptArg()));
 		CommandLineResponse response = Processes.execute(request);
-		assertEquals(CommandLineResponse.INTERRUPTED_BEFORE_COMPLETION_EXIT_CODE, response.getExitCode());
+
+		verifyStatic();
+
+		assertEquals(CommandLineResponse.EXCEPTION_THROWN_EXIT_CODE, response.getExitCode());
 		assertTrue(response.failed());
-		assertEquals("info 1\ninfo 2\n", response.getInfoStream());
-		assertEquals("error 1\n", response.getErrorStream());
-		assertNull(response.getException());
-		assertFalse(response.exceptionThrown());
-		assertTrue(response.interrupted());
+		assertNull(response.getInfoStream());
+		assertNull(response.getErrorStream());
+		assertEquals(IOException.class, response.getException().getClass());
+		assertEquals("mock", response.getException().getMessage());
+		assertTrue(response.exceptionThrown());
+		assertFalse(response.interrupted());
 	}
 
 }

@@ -35,7 +35,7 @@ import org.junit.Test;
 
 import com.alanbuttars.commons.cli.evaluator.evaluation.ConclusiveEvaluation;
 import com.alanbuttars.commons.cli.evaluator.evaluation.Evaluation;
-import com.alanbuttars.commons.cli.util.Function;
+import com.alanbuttars.commons.util.functions.Function;
 
 /**
  * Test class for {@link ProcessStreamReader}.
@@ -43,7 +43,7 @@ import com.alanbuttars.commons.cli.util.Function;
  * @author Alan Buttars
  *
  */
-public class ProcessStreamReaderTest extends ProcessAbstractTest {
+public class ProcessStreamReaderTest {
 
 	@Test
 	public void testSuccessByEvaluation() throws IOException {

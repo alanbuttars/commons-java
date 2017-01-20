@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alanbuttars.commons.cli.util;
+package com.alanbuttars.commons.util.functions;
 
 /**
- * A general interface intended as a lambda wrapper for Java 1.7 and below.
+ * A general interface intended for lambdas. For Java 1.7 and below.
  * 
  * @author Alan Buttars
  *
