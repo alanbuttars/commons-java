@@ -19,5 +19,3 @@ out/
 # OS X
 .DS_Store
 /bin/
-/commons-cli/
-/commons-util/
