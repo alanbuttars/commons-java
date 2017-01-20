@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import com.alanbuttars.commons.cli.evaluator.evaluation.ConclusiveEvaluation;
+import com.alanbuttars.commons.cli.evaluator.evaluation.Evaluation;
 import com.alanbuttars.commons.cli.util.Function;
 import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 
@@ -33,8 +35,9 @@ import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 class ProcessStreamReader extends Thread {
 
 	private final InputStream inputStream;
-	private final Function<String, Boolean> evaluationFunction;
+	private final Function<String, Evaluation> evaluationFunction;
 	private final boolean interruptOnFailure;
+	private final boolean interruptOnSuccess;
 	private final ProcessStreamResult result;
 
 	/**
@@ -46,11 +49,14 @@ class ProcessStreamReader extends Thread {
 	 *            non-null function to determine whether this {@link #inputStream} indicates success or not
 	 * @param interruptOnFailure
 	 *            if <code>true</code>, this thread will return after the first indication of failure
+	 * @param interruptOnSuccess
+	 *            if <code>true</code>, this thread will return after the first indication of success
 	 */
-	public ProcessStreamReader(InputStream inputStream, Function<String, Boolean> evaluationFunction, boolean interruptOnFailure) {
+	public ProcessStreamReader(InputStream inputStream, Function<String, Evaluation> evaluationFunction, boolean interruptOnFailure, boolean interruptOnSuccess) {
 		this.inputStream = inputStream;
 		this.evaluationFunction = evaluationFunction;
 		this.interruptOnFailure = interruptOnFailure;
+		this.interruptOnSuccess = interruptOnSuccess;
 		this.result = new ProcessStreamResult();
 	}
 
@@ -62,17 +68,27 @@ class ProcessStreamReader extends Thread {
 			String line = null;
 			while ((line = bufferedReader.readLine()) != null) {
 				result.appendToStream(line);
-				if (!evaluationFunction.apply(line)) {
-					result.setSuccess(false);
-					if (interruptOnFailure) {
-						result.setInterrupted(true);
-						return;
+				if (result.nonConclusive()) {
+					Evaluation evaluation = evaluationFunction.apply(line);
+					if (evaluation.succeeded()) {
+						result.setEvaluation(evaluation);
+						if (interruptOnSuccess) {
+							result.setInterrupted(true);
+							return;
+						}
+					}
+					else if (evaluation.failed()) {
+						result.setEvaluation(evaluation);
+						if (interruptOnFailure) {
+							result.setInterrupted(true);
+							return;
+						}
 					}
 				}
 			}
 		}
 		catch (IOException e) {
-			result.setSuccess(false);
+			result.setEvaluation(ConclusiveEvaluation.FAILURE);
 			result.setException(e);
 		}
 	}

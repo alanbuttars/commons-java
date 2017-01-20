@@ -15,17 +15,20 @@
  */
 package com.alanbuttars.commons.cli.response;
 
+import com.alanbuttars.commons.cli.util.EvaluationResult;
+
 /**
- * Models a command line {@link Process} result. This object may be evaluated in
- * the following manner: <br/>
+ * Models a command line {@link Process} result. This object may be evaluated in the following manner: <br/>
  *
  * <pre>
  * CommandLineResponse response = getResponse();
  * if (response.succeeded()) {
  * 	logger.info(response.getInfoStream());
- * } else if (response.getExitCode() == CommandLineResponse.EXCEPTION_THROWN_EXIT_CODE) {
+ * }
+ * else if (response.getExitCode() == CommandLineResponse.EXCEPTION_THROWN_EXIT_CODE) {
  * 	throw response.getException();
- * } else {
+ * }
+ * else {
  * 	logger.error(response.getErrorStream());
  * }
  * </pre>
@@ -33,14 +36,13 @@ package com.alanbuttars.commons.cli.response;
  * @author Alan Buttars
  *
  */
-public class CommandLineResponse {
+public class CommandLineResponse extends EvaluationResult {
 
 	public static final int EXCEPTION_THROWN_EXIT_CODE = Integer.MIN_VALUE;
 	public static final int INTERRUPTED_BEFORE_COMPLETION_EXIT_CODE = Integer.MAX_VALUE;
 	private int exitCode;
 	private String infoStream;
 	private String errorStream;
-	private boolean success;
 	private Exception exception;
 
 	public void setExitCode(int exitCode) {
@@ -74,17 +76,6 @@ public class CommandLineResponse {
 	 */
 	public String getErrorStream() {
 		return errorStream;
-	}
-
-	public void setSuccess(boolean success) {
-		this.success = success;
-	}
-
-	/**
-	 * @return whether the command line process succeeded
-	 */
-	public boolean succeeded() {
-		return success;
 	}
 
 	public void setException(Exception exception) {

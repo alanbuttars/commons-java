@@ -15,6 +15,7 @@
  */
 package com.alanbuttars.commons.cli.process;
 
+import com.alanbuttars.commons.cli.evaluator.evaluation.ConclusiveEvaluation;
 import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 
 /**
@@ -23,6 +24,7 @@ import com.alanbuttars.commons.util.annotations.VisibleForTesting;
  * <ol>
  * <li>Performing cleanup operations on the {@link ProcessStreamResult}, if necessary</li>
  * <li>Killing the process, if requested, if the process failed</li>
+ * <li>Killing the process, if requested, if the process succeeded</li>
  * </ol>
  * 
  * @author Alan Buttars
@@ -33,12 +35,30 @@ class ProcessStreamListener extends Thread {
 	private final Process process;
 	private final ProcessStreamReader reader;
 	private final boolean interruptOnFailure;
+	private final boolean interruptOnSuccess;
 	private final long interruptAfter;
 
-	public ProcessStreamListener(Process process, ProcessStreamReader reader, boolean interruptOnFailure, long interruptAfter) {
+	/**
+	 * Constructs an instance of this thread.
+	 * 
+	 * @param process
+	 *            the currently running process
+	 * @param reader
+	 *            the thread reading the process
+	 * @param interruptOnFailure
+	 *            if <code>true</code>, the {@link #process} will be destroyed at the earliest indication of conclusive
+	 *            failure
+	 * @param interruptOnSuccess
+	 *            if <code>true</code>, the {@link #process} will be destroyed at the earliest indication of conclusive
+	 *            success
+	 * @param interruptAfter
+	 *            milliseconds to wait for the {@link #reader} to conclude
+	 */
+	public ProcessStreamListener(Process process, ProcessStreamReader reader, boolean interruptOnFailure, boolean interruptOnSuccess, long interruptAfter) {
 		this.process = process;
 		this.reader = reader;
 		this.interruptOnFailure = interruptOnFailure;
+		this.interruptOnSuccess = interruptOnSuccess;
 		this.interruptAfter = interruptAfter;
 	}
 
@@ -58,11 +78,14 @@ class ProcessStreamListener extends Thread {
 	}
 
 	/**
-	 * If {@link #interruptOnFailure} is <code>true</code>, interrupts the running process.
+	 * Interrupts the running process if specified in the construction of this object.
 	 */
 	private void maybeKillProcess() {
 		ProcessStreamResult result = reader.getResult();
-		if (!result.succeeded() && interruptOnFailure) {
+		if (result.failed() && interruptOnFailure) {
+			process.destroy();
+		}
+		if (result.succeeded() && interruptOnSuccess) {
 			process.destroy();
 		}
 	}
@@ -84,7 +107,7 @@ class ProcessStreamListener extends Thread {
 	 */
 	private void updateInterruptedProcess(InterruptedException e) {
 		ProcessStreamResult result = reader.getResult();
-		result.setSuccess(false);
+		result.setEvaluation(ConclusiveEvaluation.FAILURE);
 		if (result.getException() == null) {
 			result.setException(e);
 		}

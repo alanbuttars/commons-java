@@ -15,6 +15,8 @@
  */
 package com.alanbuttars.commons.cli.evaluator;
 
+import com.alanbuttars.commons.cli.evaluator.evaluation.Evaluation;
+
 /**
  * Simple extension of {@link CommandLineEvaluatorAbstractImpl} which ignores the output of a {@link Process}'s info and
  * error streams, instead evaluating success based only on the exit code.
@@ -27,8 +29,11 @@ package com.alanbuttars.commons.cli.evaluator;
  * new CommandLineRequestBuilder().evaluateWith(new CommandLineEvaluatorExitStatusImpl() {
  *
  * 	&#64;Override
- * 	public boolean evaluateExitCode(int exitCode) {
- * 		return exitCode != -1;
+ * 	public Evaluation evaluateExitCode(int exitCode) {
+ * 		if (exitCode == -1) {
+ * 			return Evaluation.SUCCESS;
+ * 		}
+ * 		return Evaluation.FAILURE;
  * 	}
  * });
  * </pre>
@@ -38,13 +43,19 @@ package com.alanbuttars.commons.cli.evaluator;
  */
 public class CommandLineEvaluatorExitStatusImpl extends CommandLineEvaluatorAbstractImpl {
 
+	/**
+	 * {@inheritDoc} This class ignores the info stream.
+	 */
 	@Override
-	public boolean evaluateInfoStream(String infoStreamLine) {
-		return true;
+	public Evaluation evaluateInfoStream(String infoStreamLine) {
+		return Evaluation.NON_CONCLUSIVE;
 	}
 
+	/**
+	 * {@inheritDoc} This class ignores the error stream.
+	 */
 	@Override
-	public boolean evaluateErrorStream(String errorStreamLine) {
-		return true;
+	public Evaluation evaluateErrorStream(String errorStreamLine) {
+		return Evaluation.NON_CONCLUSIVE;
 	}
 }

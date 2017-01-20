@@ -40,6 +40,8 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import com.alanbuttars.commons.cli.evaluator.evaluation.ConclusiveEvaluation;
+import com.alanbuttars.commons.cli.evaluator.evaluation.Evaluation;
 import com.alanbuttars.commons.cli.util.Function;
 
 /**
@@ -56,15 +58,15 @@ public class ProcessStreamListenerTest extends ProcessAbstractTest {
 	private ProcessStreamReader reader;
 	private ProcessStreamListener listener;
 
-	private void setup(Function<String, Boolean> evaluationFunction, boolean interruptOnFailure, long interruptAfter) throws IOException {
+	private void setup(Function<String, Evaluation> evaluationFunction, boolean interruptOnFailure, boolean interruptOnSuccess, long interruptAfter) throws IOException {
 		process = mock(Process.class);
 		try (InputStream infoStream = new ByteArrayInputStream("info 1".getBytes());
 				InputStream errorStream = new ByteArrayInputStream("info 1".getBytes())) {
 			when(process.getInputStream()).thenReturn(infoStream);
 			when(process.getErrorStream()).thenReturn(errorStream);
 
-			reader = spy(new ProcessStreamReader(process.getInputStream(), evaluationFunction, interruptOnFailure));
-			listener = spy(new ProcessStreamListener(process, reader, interruptOnFailure, interruptAfter));
+			reader = spy(new ProcessStreamReader(process.getInputStream(), evaluationFunction, interruptOnFailure, interruptOnSuccess));
+			listener = spy(new ProcessStreamListener(process, reader, interruptOnFailure, interruptOnSuccess, interruptAfter));
 		}
 	}
 
@@ -81,15 +83,15 @@ public class ProcessStreamListenerTest extends ProcessAbstractTest {
 	}
 
 	@Test
-	public void testSuccess() throws IOException {
-		setup(new Function<String, Boolean>() {
+	public void testSuccessByEvaluation() throws IOException {
+		setup(new Function<String, Evaluation>() {
 
 			@Override
-			public Boolean apply(String input) {
-				return true;
+			public Evaluation apply(String input) {
+				return ConclusiveEvaluation.SUCCESS;
 			}
 
-		}, false, 0);
+		}, false, false, 0);
 		run();
 
 		verify(process, never()).destroy();
@@ -97,17 +99,71 @@ public class ProcessStreamListenerTest extends ProcessAbstractTest {
 		assertTrue(reader.getResult().succeeded());
 		assertNull(reader.getResult().getException());
 	}
+	
+	@Test
+	public void testSuccessByEvaluationAndInterruption() throws IOException {
+		setup(new Function<String, Evaluation>() {
+
+			@Override
+			public Evaluation apply(String input) {
+				return ConclusiveEvaluation.SUCCESS;
+			}
+
+		}, false, true, 0);
+		run();
+
+		verify(process).destroy();
+		verify(reader, never()).interrupt();
+		assertTrue(reader.getResult().succeeded());
+		assertNull(reader.getResult().getException());
+	}
+	
+	@Test
+	public void testFailureByEvaluation() throws IOException {
+		setup(new Function<String, Evaluation>() {
+
+			@Override
+			public Evaluation apply(String input) {
+				return ConclusiveEvaluation.FAILURE;
+			}
+
+		}, false, false, 0);
+		run();
+
+		verify(process, never()).destroy();
+		verify(reader, never()).interrupt();
+		assertFalse(reader.getResult().succeeded());
+		assertNull(reader.getResult().getException());
+	}
+
+	@Test
+	public void testFailureByEvaluationAndInterruption() throws IOException {
+		setup(new Function<String, Evaluation>() {
+
+			@Override
+			public Evaluation apply(String input) {
+				return ConclusiveEvaluation.FAILURE;
+			}
+
+		}, true, false, 0);
+		run();
+
+		verify(process).destroy();
+		verify(reader, never()).interrupt();
+		assertFalse(reader.getResult().succeeded());
+		assertNull(reader.getResult().getException());
+	}
 
 	@Test
 	public void testFailureByIOException() throws Exception {
-		setup(new Function<String, Boolean>() {
+		setup(new Function<String, Evaluation>() {
 
 			@Override
-			public Boolean apply(String input) {
-				return true;
+			public Evaluation apply(String input) {
+				return ConclusiveEvaluation.SUCCESS;
 			}
 
-		}, false, 0);
+		}, false, false, 0);
 
 		InputStreamReader mockStreamReader = mock(InputStreamReader.class);
 		BufferedReader mockBufferedReader = mock(BufferedReader.class);
@@ -127,14 +183,14 @@ public class ProcessStreamListenerTest extends ProcessAbstractTest {
 
 	@Test
 	public void testFailureByInterruption() throws IOException {
-		setup(new Function<String, Boolean>() {
+		setup(new Function<String, Evaluation>() {
 
 			@Override
-			public Boolean apply(String input) {
-				return true;
+			public Evaluation apply(String input) {
+				return ConclusiveEvaluation.SUCCESS;
 			}
 
-		}, false, 1);
+		}, false, false, 1);
 		run();
 
 		verify(process, never()).destroy();
@@ -144,40 +200,42 @@ public class ProcessStreamListenerTest extends ProcessAbstractTest {
 		assertEquals(InterruptedException.class, reader.getResult().getException().getClass());
 		assertEquals("Process interrupted after 1 millis", reader.getResult().getException().getMessage());
 	}
-
+	
 	@Test
-	public void testFailureByEvaluation() throws IOException {
-		setup(new Function<String, Boolean>() {
+	public void testNonConclusiveByEvaluation() throws IOException {
+		setup(new Function<String, Evaluation>() {
 
 			@Override
-			public Boolean apply(String input) {
-				return false;
+			public Evaluation apply(String input) {
+				return ConclusiveEvaluation.SUCCESS;
 			}
 
-		}, false, 0);
+		}, false, false, 0);
 		run();
 
 		verify(process, never()).destroy();
 		verify(reader, never()).interrupt();
-		assertFalse(reader.getResult().succeeded());
+		assertTrue(reader.getResult().succeeded());
 		assertNull(reader.getResult().getException());
 	}
-
+	
 	@Test
-	public void testFailureByEvaluationAndInterruption() throws IOException {
-		setup(new Function<String, Boolean>() {
+	public void testNonConclusiveByEvaluationAndInterruption() throws IOException {
+		setup(new Function<String, Evaluation>() {
 
 			@Override
-			public Boolean apply(String input) {
-				return false;
+			public Evaluation apply(String input) {
+				return ConclusiveEvaluation.SUCCESS;
 			}
 
-		}, true, 0);
+		}, false, true, 0);
 		run();
 
 		verify(process).destroy();
 		verify(reader, never()).interrupt();
-		assertFalse(reader.getResult().succeeded());
+		assertTrue(reader.getResult().succeeded());
 		assertNull(reader.getResult().getException());
 	}
+
+
 }

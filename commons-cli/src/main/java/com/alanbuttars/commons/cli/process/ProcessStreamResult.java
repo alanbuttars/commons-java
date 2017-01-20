@@ -17,22 +17,23 @@ package com.alanbuttars.commons.cli.process;
 
 import java.io.InputStream;
 
+import com.alanbuttars.commons.cli.evaluator.evaluation.Evaluation;
+import com.alanbuttars.commons.cli.util.EvaluationResult;
+
 /**
  * Simple POJO containing the results of an {@link InputStream} being consumed via {@link ProcessStreamReaderTest}.
  * 
  * @author Alan Buttars
  *
  */
-class ProcessStreamResult {
+class ProcessStreamResult extends EvaluationResult {
 
 	private StringBuilder stream;
-	private boolean success;
 	private boolean interrupted;
 	private Exception exception;
 
 	public ProcessStreamResult() {
 		this.stream = new StringBuilder();
-		this.success = true;
 	}
 
 	public String getStream() {
@@ -41,14 +42,6 @@ class ProcessStreamResult {
 
 	public void appendToStream(String line) {
 		this.stream.append(line).append("\n");
-	}
-
-	public void setSuccess(boolean success) {
-		this.success = success;
-	}
-
-	public boolean succeeded() {
-		return success;
 	}
 
 	public boolean interrupted() {
@@ -68,14 +61,14 @@ class ProcessStreamResult {
 	}
 
 	public boolean failedWithoutException() {
-		return !success && exception == null;
+		return failed() && exception == null;
 	}
 
 	@Override
 	public String toString() {
 		return new StringBuilder()//
 				.append("stream=").append(stream).append("&")//
-				.append("success=").append(success).append("&")//
+				.append("evaluation=").append(evaluation).append("&")//
 				.append("interrupted=").append(interrupted).append("&")//
 				.append("exception=").append(exception)//
 				.toString();

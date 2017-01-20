@@ -28,6 +28,8 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.alanbuttars.commons.cli.evaluator.CommandLineEvaluatorAbstractImpl;
+import com.alanbuttars.commons.cli.evaluator.evaluation.ConclusiveEvaluation;
+import com.alanbuttars.commons.cli.evaluator.evaluation.Evaluation;
 import com.alanbuttars.commons.cli.request.CommandLineRequest;
 import com.alanbuttars.commons.cli.request.CommandLineRequestBuilder;
 import com.alanbuttars.commons.cli.response.CommandLineResponse;
@@ -62,20 +64,23 @@ public class ProcessesTest extends ProcessAbstractTest {
 				.withEvaluator(new CommandLineEvaluatorAbstractImpl() {
 
 					@Override
-					public boolean evaluateInfoStream(String infoStreamLine) {
-						return !infoStreamLine.contains("info 1");
+					public Evaluation evaluateInfoStream(String infoStreamLine) {
+						if (infoStreamLine.contains("info 1")) {
+							return Evaluation.NON_CONCLUSIVE;
+						}
+						return ConclusiveEvaluation.FAILURE;
 					}
 
 					@Override
-					public boolean evaluateErrorStream(String errorStreamLine) {
-						return true;
+					public Evaluation evaluateErrorStream(String errorStreamLine) {
+						return Evaluation.NON_CONCLUSIVE;
 					}
 
 				})//
 				.build(Arrays.asList(shArg(), exitCode0ScriptArg()));
 		CommandLineResponse response = Processes.execute(request);
 		assertEquals(0, response.getExitCode());
-		assertFalse(response.succeeded());
+		assertTrue(response.failed());
 		assertEquals("info 1\ninfo 2\n", response.getInfoStream());
 		assertEquals("error 1\nerror 2\n", response.getErrorStream());
 		assertNull(response.getException());
@@ -89,20 +94,23 @@ public class ProcessesTest extends ProcessAbstractTest {
 				.withEvaluator(new CommandLineEvaluatorAbstractImpl() {
 
 					@Override
-					public boolean evaluateInfoStream(String infoStreamLine) {
-						return true;
+					public Evaluation evaluateInfoStream(String infoStreamLine) {
+						return Evaluation.NON_CONCLUSIVE;
 					}
 
 					@Override
-					public boolean evaluateErrorStream(String errorStreamLine) {
-						return !errorStreamLine.contains("error 1");
+					public Evaluation evaluateErrorStream(String errorStreamLine) {
+						if (errorStreamLine.contains("error 1")) {
+							return Evaluation.NON_CONCLUSIVE;
+						}
+						return ConclusiveEvaluation.FAILURE;
 					}
 
 				})//
 				.build(Arrays.asList(shArg(), exitCode0ScriptArg()));
 		CommandLineResponse response = Processes.execute(request);
 		assertEquals(0, response.getExitCode());
-		assertFalse(response.succeeded());
+		assertTrue(response.failed());
 		assertEquals("info 1\ninfo 2\n", response.getInfoStream());
 		assertEquals("error 1\nerror 2\n", response.getErrorStream());
 		assertNull(response.getException());
@@ -116,7 +124,7 @@ public class ProcessesTest extends ProcessAbstractTest {
 				.build(Arrays.asList(shArg(), exitCode1ScriptArg()));
 		CommandLineResponse response = Processes.execute(request);
 		assertEquals(1, response.getExitCode());
-		assertFalse(response.succeeded());
+		assertTrue(response.failed());
 		assertEquals("info 1\ninfo 2\n", response.getInfoStream());
 		assertEquals("error 1\nerror 2\n", response.getErrorStream());
 		assertNull(response.getException());
@@ -131,7 +139,7 @@ public class ProcessesTest extends ProcessAbstractTest {
 				.build(Arrays.asList(shArg(), exitCode0SlowScriptArg()));
 		CommandLineResponse response = Processes.execute(request);
 		assertEquals(CommandLineResponse.INTERRUPTED_BEFORE_COMPLETION_EXIT_CODE, response.getExitCode());
-		assertFalse(response.succeeded());
+		assertTrue(response.failed());
 		assertEquals("info 1\n", response.getInfoStream());
 		assertEquals("", response.getErrorStream());
 		assertEquals(InterruptedException.class, response.getException().getClass());
@@ -147,20 +155,20 @@ public class ProcessesTest extends ProcessAbstractTest {
 				.withEvaluator(new CommandLineEvaluatorAbstractImpl() {
 
 					@Override
-					public boolean evaluateInfoStream(String infoStreamLine) {
-						return false;
+					public ConclusiveEvaluation evaluateInfoStream(String infoStreamLine) {
+						return ConclusiveEvaluation.FAILURE;
 					}
 
 					@Override
-					public boolean evaluateErrorStream(String errorStreamLine) {
-						return true;
+					public Evaluation evaluateErrorStream(String errorStreamLine) {
+						return Evaluation.NON_CONCLUSIVE;
 					}
 
 				})//
 				.build(Arrays.asList(shArg(), exitCode0SlowScriptArg()));
 		CommandLineResponse response = Processes.execute(request);
 		assertEquals(CommandLineResponse.INTERRUPTED_BEFORE_COMPLETION_EXIT_CODE, response.getExitCode());
-		assertFalse(response.succeeded());
+		assertTrue(response.failed());
 		assertEquals("info 1\n", response.getInfoStream());
 		assertEquals("", response.getErrorStream());
 		assertNull(response.getException());
@@ -175,20 +183,20 @@ public class ProcessesTest extends ProcessAbstractTest {
 				.withEvaluator(new CommandLineEvaluatorAbstractImpl() {
 
 					@Override
-					public boolean evaluateInfoStream(String infoStreamLine) {
-						return true;
+					public Evaluation evaluateInfoStream(String infoStreamLine) {
+						return Evaluation.NON_CONCLUSIVE;
 					}
 
 					@Override
-					public boolean evaluateErrorStream(String errorStreamLine) {
-						return false;
+					public Evaluation evaluateErrorStream(String errorStreamLine) {
+						return ConclusiveEvaluation.FAILURE;
 					}
 
 				})//
 				.build(Arrays.asList(shArg(), exitCode0ScriptArg()));
 		CommandLineResponse response = Processes.execute(request);
 		assertEquals(CommandLineResponse.INTERRUPTED_BEFORE_COMPLETION_EXIT_CODE, response.getExitCode());
-		assertFalse(response.succeeded());
+		assertTrue(response.failed());
 		assertEquals("info 1\ninfo 2\n", response.getInfoStream());
 		assertEquals("error 1\n", response.getErrorStream());
 		assertNull(response.getException());

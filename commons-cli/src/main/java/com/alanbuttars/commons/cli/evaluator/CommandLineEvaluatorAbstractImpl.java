@@ -15,6 +15,7 @@
  */
 package com.alanbuttars.commons.cli.evaluator;
 
+import com.alanbuttars.commons.cli.evaluator.evaluation.ConclusiveEvaluation;
 import com.alanbuttars.commons.cli.response.CommandLineResponse;
 
 /**
@@ -29,8 +30,11 @@ public abstract class CommandLineEvaluatorAbstractImpl implements CommandLineEva
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean evaluateExitCode(int exitCode) {
-		return exitCode == 0;
+	public ConclusiveEvaluation evaluateExitCode(int exitCode) {
+		if (exitCode == 0) {
+			return ConclusiveEvaluation.SUCCESS;
+		}
+		return ConclusiveEvaluation.FAILURE;
 	}
 
 	/**
@@ -39,7 +43,7 @@ public abstract class CommandLineEvaluatorAbstractImpl implements CommandLineEva
 	@Override
 	public CommandLineResponse evaluateException(Exception e) {
 		CommandLineResponse response = new CommandLineResponse();
-		response.setSuccess(false);
+		response.setEvaluation(ConclusiveEvaluation.FAILURE);
 		if (e instanceof InterruptedException) {
 			response.setExitCode(CommandLineResponse.INTERRUPTED_BEFORE_COMPLETION_EXIT_CODE);
 		}

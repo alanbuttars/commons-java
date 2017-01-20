@@ -21,49 +21,49 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-import org.junit.Before;
 import org.junit.Test;
 
+import com.alanbuttars.commons.cli.evaluator.evaluation.ConclusiveEvaluation;
+import com.alanbuttars.commons.cli.evaluator.evaluation.Evaluation;
 import com.alanbuttars.commons.cli.response.CommandLineResponse;
 
 /**
  * Test class for {@link CommandLineEvaluatorAbstractImpl}.
  * 
  * @author Alan Buttars
+ * @param <E>
  *
  */
-public class CommandLineEvaluatorAbstractImplTest {
+public class CommandLineEvaluatorAbstractImplTest extends CommandLineEvaluatorTest<CommandLineEvaluatorAbstractImpl> {
 
-	private CommandLineEvaluator evaluator;
-
-	@Before
-	public void setup() {
-		evaluator = new CommandLineEvaluatorAbstractImpl() {
+	@Override
+	protected CommandLineEvaluatorAbstractImpl setupEvaluator() {
+		return new CommandLineEvaluatorAbstractImpl() {
 
 			@Override
-			public boolean evaluateInfoStream(String infoStreamLine) {
-				return false;
+			public Evaluation evaluateInfoStream(String infoStreamLine) {
+				return ConclusiveEvaluation.FAILURE;
 			}
 
 			@Override
-			public boolean evaluateErrorStream(String errorStreamLine) {
-				return false;
+			public Evaluation evaluateErrorStream(String errorStreamLine) {
+				return ConclusiveEvaluation.FAILURE;
 			}
 		};
 	}
 
 	@Test
 	public void testEvaluateExitCode() {
-		assertTrue(evaluator.evaluateExitCode(0));
-		assertFalse(evaluator.evaluateExitCode(-1));
-		assertFalse(evaluator.evaluateExitCode(1));
+		assertTrue(evaluator.evaluateExitCode(0).succeeded());
+		assertTrue(evaluator.evaluateExitCode(-1).failed());
+		assertTrue(evaluator.evaluateExitCode(1).failed());
 	}
 
 	@Test
 	public void testEvaluateInterruptedException() {
 		Exception exception = new InterruptedException();
 		CommandLineResponse response = evaluator.evaluateException(exception);
-		assertFalse(response.succeeded());
+		assertTrue(response.failed());
 		assertTrue(response.interrupted());
 		assertFalse(response.exceptionThrown());
 		assertEquals(exception, response.getException());
@@ -74,10 +74,11 @@ public class CommandLineEvaluatorAbstractImplTest {
 	public void testEvaluateNonInterruptedException() {
 		Exception exception = new IOException();
 		CommandLineResponse response = evaluator.evaluateException(exception);
-		assertFalse(response.succeeded());
+		assertTrue(response.failed());
 		assertFalse(response.interrupted());
 		assertTrue(response.exceptionThrown());
 		assertEquals(exception, response.getException());
 		assertEquals(CommandLineResponse.EXCEPTION_THROWN_EXIT_CODE, response.getExitCode());
 	}
+
 }

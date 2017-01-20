@@ -15,6 +15,8 @@
  */
 package com.alanbuttars.commons.cli.evaluator;
 
+import com.alanbuttars.commons.cli.evaluator.evaluation.ConclusiveEvaluation;
+import com.alanbuttars.commons.cli.evaluator.evaluation.Evaluation;
 import com.alanbuttars.commons.cli.response.CommandLineResponse;
 
 /**
@@ -30,27 +32,27 @@ public interface CommandLineEvaluator {
 	 * Evaluates the exit code of a completed {@link Process}.
 	 *
 	 * @param exitCode
-	 * @return <code>false</code> if the <code>exitCode</code> indicates a failure
+	 * @return non-null evaluation
 	 */
-	public boolean evaluateExitCode(int exitCode);
+	public ConclusiveEvaluation evaluateExitCode(int exitCode);
 
 	/**
 	 * Evaluates a single line from a running {@link Process}'s info stream.
 	 *
 	 * @param infoStreamLine
 	 *            Non-null but potentially empty line from the input stream
-	 * @return <code>false</code> if the <code>infoStreamLine</code> indicates a failure
+	 * @return non-null evaluation
 	 */
-	public boolean evaluateInfoStream(String infoStreamLine);
+	public Evaluation evaluateInfoStream(String infoStreamLine);
 
 	/**
 	 * Evaluates a single line from a running {@link Process}'s error stream.
 	 *
 	 * @param errorStreamLine
 	 *            Non-null but potentially empty line from the error stream
-	 * @return <code>false</code> if the <code>errorStreamLine</code> indicates a failure
+	 * @return non-null evaluation
 	 */
-	public boolean evaluateErrorStream(String errorStreamLine);
+	public Evaluation evaluateErrorStream(String errorStreamLine);
 
 	/**
 	 * Evaluates an exception thrown during the deployment or runtime of a {@link Process}.

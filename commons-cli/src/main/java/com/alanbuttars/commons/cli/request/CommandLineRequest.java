@@ -37,6 +37,7 @@ public class CommandLineRequest {
 	private List<Argument> arguments;
 	private CommandLineEvaluator evaluator;
 	private boolean interruptOnFailure;
+	private boolean interruptOnSuccess;
 	private long interruptAfter;
 
 	CommandLineRequest() {
@@ -73,6 +74,17 @@ public class CommandLineRequest {
 
 	void setInterruptOnFailure(boolean interruptOnFailure) {
 		this.interruptOnFailure = interruptOnFailure;
+	}
+
+	/**
+	 * @return <code>true</code> if the command line process should be halted as soon as a success is detected
+	 */
+	public boolean interruptOnSuccess() {
+		return interruptOnSuccess;
+	}
+
+	void setInterruptOnSuccess(boolean interruptOnSuccess) {
+		this.interruptOnSuccess = interruptOnSuccess;
 	}
 
 	/**

@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alanbuttars.commons.cli.evaluator.CommandLineEvaluator;
+import com.alanbuttars.commons.cli.evaluator.evaluation.ConclusiveEvaluation;
+import com.alanbuttars.commons.cli.evaluator.evaluation.Evaluation;
 import com.alanbuttars.commons.cli.request.CommandLineRequest;
 import com.alanbuttars.commons.cli.response.CommandLineResponse;
 import com.alanbuttars.commons.cli.util.Argument;
@@ -90,35 +92,35 @@ public class Processes {
 	 */
 	@VisibleForTesting
 	protected static ProcessStreamReader createInputStreamReader(Process process, final CommandLineRequest request) {
-		return new ProcessStreamReader(process.getInputStream(), new Function<String, Boolean>() {
+		return new ProcessStreamReader(process.getInputStream(), new Function<String, Evaluation>() {
 
 			@Override
-			public Boolean apply(String input) {
+			public Evaluation apply(String input) {
 				return request.getEvaluator().evaluateInfoStream(input);
 			}
 
-		}, request.interruptOnFailure());
+		}, request.interruptOnFailure(), request.interruptOnSuccess());
 	}
 
 	/**
 	 * Creates the thread which will read and process the {@lnk Process}'s error stream.
 	 */
 	private static ProcessStreamReader createErrorStreamReader(Process process, final CommandLineRequest request) {
-		return new ProcessStreamReader(process.getErrorStream(), new Function<String, Boolean>() {
+		return new ProcessStreamReader(process.getErrorStream(), new Function<String, Evaluation>() {
 
 			@Override
-			public Boolean apply(String input) {
+			public Evaluation apply(String input) {
 				return request.getEvaluator().evaluateErrorStream(input);
 			}
 
-		}, request.interruptOnFailure());
+		}, request.interruptOnFailure(), request.interruptOnSuccess());
 	}
 
 	/**
 	 * Creates a thread which will listen to a {@link ProcessStreamReaderTest} and react appropriately to its results.
 	 */
 	private static ProcessStreamListener createStreamListener(Process process, CommandLineRequest request, ProcessStreamReader streamReader) {
-		return new ProcessStreamListener(process, streamReader, request.interruptOnFailure(), request.interruptAfter());
+		return new ProcessStreamListener(process, streamReader, request.interruptOnFailure(), request.interruptOnSuccess(), request.interruptAfter());
 	}
 
 	/**
@@ -130,20 +132,33 @@ public class Processes {
 		Exception mergedException = mergeResultExceptions(inputStreamResult, errorStreamResult);
 		if (mergedException instanceof InterruptedException) {
 			response.setExitCode(CommandLineResponse.INTERRUPTED_BEFORE_COMPLETION_EXIT_CODE);
-			response.setSuccess(false);
+			response.setEvaluation(ConclusiveEvaluation.FAILURE);
 		}
 		else if (mergedException != null) {
 			response.setExitCode(CommandLineResponse.EXCEPTION_THROWN_EXIT_CODE);
-			response.setSuccess(false);
+			response.setEvaluation(ConclusiveEvaluation.FAILURE);
 		}
 		else if (inputStreamResult.interrupted() || errorStreamResult.interrupted()) {
 			response.setExitCode(CommandLineResponse.INTERRUPTED_BEFORE_COMPLETION_EXIT_CODE);
-			response.setSuccess(false);
+			response.setEvaluation(ConclusiveEvaluation.FAILURE);
 		}
 		else {
 			int exitCode = process.exitValue();
 			response.setExitCode(exitCode);
-			response.setSuccess(inputStreamResult.succeeded() && errorStreamResult.succeeded() && evaluator.evaluateExitCode(exitCode));
+
+			Evaluation exitCodeEvaluation = evaluator.evaluateExitCode(exitCode);
+			if (inputStreamResult.nonConclusive() && errorStreamResult.nonConclusive()) {
+				response.setEvaluation(exitCodeEvaluation);
+			}
+			else if (inputStreamResult.failed() || errorStreamResult.failed()) {
+				response.setEvaluation(ConclusiveEvaluation.FAILURE);
+			}
+			else if (exitCodeEvaluation == Evaluation.NON_CONCLUSIVE) {
+				response.setEvaluation(ConclusiveEvaluation.SUCCESS);
+			}
+			else {
+				response.setEvaluation(exitCodeEvaluation);
+			}
 		}
 		response.setException(mergedException);
 		response.setInfoStream(inputStreamResult.getStream());

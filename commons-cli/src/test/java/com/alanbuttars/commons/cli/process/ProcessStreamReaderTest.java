@@ -33,6 +33,8 @@ import java.io.InputStreamReader;
 
 import org.junit.Test;
 
+import com.alanbuttars.commons.cli.evaluator.evaluation.ConclusiveEvaluation;
+import com.alanbuttars.commons.cli.evaluator.evaluation.Evaluation;
 import com.alanbuttars.commons.cli.util.Function;
 
 /**
@@ -44,16 +46,16 @@ import com.alanbuttars.commons.cli.util.Function;
 public class ProcessStreamReaderTest extends ProcessAbstractTest {
 
 	@Test
-	public void testSuccess() throws IOException {
+	public void testSuccessByEvaluation() throws IOException {
 		try (InputStream inputStream = new ByteArrayInputStream("a\nb".getBytes())) {
-			ProcessStreamReader reader = new ProcessStreamReader(inputStream, new Function<String, Boolean>() {
+			ProcessStreamReader reader = new ProcessStreamReader(inputStream, new Function<String, Evaluation>() {
 
 				@Override
-				public Boolean apply(String input) {
-					return true;
+				public Evaluation apply(String input) {
+					return ConclusiveEvaluation.SUCCESS;
 				}
 
-			}, false);
+			}, false, false);
 			reader.run();
 			ProcessStreamResult result = reader.getResult();
 			assertFalse(result.failedWithoutException());
@@ -65,19 +67,82 @@ public class ProcessStreamReaderTest extends ProcessAbstractTest {
 	}
 
 	@Test
+	public void testSuccessByEvaluationAndInterruption() throws IOException {
+		try (InputStream inputStream = new ByteArrayInputStream("a\nb".getBytes())) {
+			ProcessStreamReader reader = new ProcessStreamReader(inputStream, new Function<String, Evaluation>() {
+
+				@Override
+				public Evaluation apply(String input) {
+					return ConclusiveEvaluation.SUCCESS;
+				}
+
+			}, false, true);
+			reader.run();
+			ProcessStreamResult result = reader.getResult();
+			assertFalse(result.failedWithoutException());
+			assertNull(result.getException());
+			assertEquals("a\n", result.getStream());
+			assertTrue(result.interrupted());
+			assertTrue(result.succeeded());
+		}
+	}
+
+	@Test
+	public void testFailureByEvaluation() throws IOException {
+		try (InputStream inputStream = new ByteArrayInputStream("a\nb".getBytes())) {
+			ProcessStreamReader reader = new ProcessStreamReader(inputStream, new Function<String, Evaluation>() {
+
+				@Override
+				public Evaluation apply(String input) {
+					return ConclusiveEvaluation.FAILURE;
+				}
+
+			}, false, false);
+			reader.run();
+			ProcessStreamResult result = reader.getResult();
+			assertTrue(result.failedWithoutException());
+			assertNull(result.getException());
+			assertEquals("a\nb\n", result.getStream());
+			assertFalse(result.interrupted());
+			assertTrue(result.failed());
+		}
+	}
+
+	@Test
+	public void testFailureByEvaluationAndInterruption() throws IOException {
+		try (InputStream inputStream = new ByteArrayInputStream("a\nb".getBytes())) {
+			ProcessStreamReader reader = new ProcessStreamReader(inputStream, new Function<String, Evaluation>() {
+
+				@Override
+				public Evaluation apply(String input) {
+					return ConclusiveEvaluation.FAILURE;
+				}
+
+			}, true, false);
+			reader.run();
+			ProcessStreamResult result = reader.getResult();
+			assertTrue(result.failedWithoutException());
+			assertNull(result.getException());
+			assertEquals("a\n", result.getStream());
+			assertTrue(result.interrupted());
+			assertTrue(result.failed());
+		}
+	}
+
+	@Test
 	public void testFailureByIOException() throws IOException {
 		try (InputStream inputStream = new ByteArrayInputStream("info 1".getBytes())) {
 			InputStreamReader mockStreamReader = mock(InputStreamReader.class);
 			BufferedReader mockBufferedReader = mock(BufferedReader.class);
 
-			ProcessStreamReader reader = spy(new ProcessStreamReader(inputStream, new Function<String, Boolean>() {
+			ProcessStreamReader reader = spy(new ProcessStreamReader(inputStream, new Function<String, Evaluation>() {
 
 				@Override
-				public Boolean apply(String input) {
-					return false;
+				public Evaluation apply(String input) {
+					return Evaluation.NON_CONCLUSIVE;
 				}
 
-			}, false));
+			}, false, false));
 
 			doReturn(mockStreamReader).when(reader).inputStreamReader();
 			doReturn(mockBufferedReader).when(reader).bufferedReader(mockStreamReader);
@@ -91,49 +156,28 @@ public class ProcessStreamReaderTest extends ProcessAbstractTest {
 			assertEquals("mock", reader.getResult().getException().getMessage());
 			assertEquals("", result.getStream());
 			assertFalse(result.interrupted());
-			assertFalse(result.succeeded());
+			assertTrue(result.failed());
 		}
 	}
 
 	@Test
-	public void testFailureByEvaluation() throws IOException {
+	public void testNonConclusiveByEvaluation() throws IOException {
 		try (InputStream inputStream = new ByteArrayInputStream("a\nb".getBytes())) {
-			ProcessStreamReader reader = new ProcessStreamReader(inputStream, new Function<String, Boolean>() {
+			ProcessStreamReader reader = new ProcessStreamReader(inputStream, new Function<String, Evaluation>() {
 
 				@Override
-				public Boolean apply(String input) {
-					return false;
+				public Evaluation apply(String input) {
+					return Evaluation.NON_CONCLUSIVE;
 				}
 
-			}, false);
+			}, false, false);
 			reader.run();
 			ProcessStreamResult result = reader.getResult();
-			assertTrue(result.failedWithoutException());
+			assertFalse(result.failedWithoutException());
 			assertNull(result.getException());
 			assertEquals("a\nb\n", result.getStream());
 			assertFalse(result.interrupted());
-			assertFalse(result.succeeded());
-		}
-	}
-
-	@Test
-	public void testFailureByEvaluationAndInterruption() throws IOException {
-		try (InputStream inputStream = new ByteArrayInputStream("a\nb".getBytes())) {
-			ProcessStreamReader reader = new ProcessStreamReader(inputStream, new Function<String, Boolean>() {
-
-				@Override
-				public Boolean apply(String input) {
-					return false;
-				}
-
-			}, true);
-			reader.run();
-			ProcessStreamResult result = reader.getResult();
-			assertTrue(result.failedWithoutException());
-			assertNull(result.getException());
-			assertEquals("a\n", result.getStream());
-			assertTrue(result.interrupted());
-			assertFalse(result.succeeded());
+			assertTrue(result.nonConclusive());
 		}
 	}
 

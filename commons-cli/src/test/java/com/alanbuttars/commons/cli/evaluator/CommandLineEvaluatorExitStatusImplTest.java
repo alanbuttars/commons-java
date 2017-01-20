@@ -15,6 +15,10 @@
  */
 package com.alanbuttars.commons.cli.evaluator;
 
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
 /**
  * Test class for {@link CommandLineEvaluatorExitStatusImpl}.
  * 
@@ -22,6 +26,25 @@ package com.alanbuttars.commons.cli.evaluator;
  * @author Alan Buttars
  *
  */
-public class CommandLineEvaluatorExitStatusImplTest {
+public class CommandLineEvaluatorExitStatusImplTest extends CommandLineEvaluatorTest<CommandLineEvaluatorExitStatusImpl> {
+
+	@Override
+	public CommandLineEvaluatorExitStatusImpl setupEvaluator() {
+		return new CommandLineEvaluatorExitStatusImpl();
+	}
+
+	@Test
+	public void testEvaluateInfoStream() {
+		assertTrue(evaluator.evaluateInfoStream(null).nonConclusive());
+		assertTrue(evaluator.evaluateInfoStream("").nonConclusive());
+		assertTrue(evaluator.evaluateInfoStream("abc").nonConclusive());
+	}
+
+	@Test
+	public void testEvaluateErrorStream() {
+		assertTrue(evaluator.evaluateErrorStream(null).nonConclusive());
+		assertTrue(evaluator.evaluateErrorStream("").nonConclusive());
+		assertTrue(evaluator.evaluateErrorStream("abc").nonConclusive());
+	}
 
 }
