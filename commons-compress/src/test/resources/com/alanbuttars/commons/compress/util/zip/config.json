@@ -1,0 +1,44 @@
+[
+  {
+    "type": "zip",
+    "fileName": "a.zip",
+    "files": [
+      {
+        "fileName": "1.txt",
+        "contents": "1"
+      },
+      {
+        "fileName": "2.txt",
+        "contents": "2"
+      },
+      {
+        "fileName": "3.txt",
+        "contents": "3"
+      },
+      {
+        "fileName": "b/1.txt",
+        "contents": "1"
+      },
+      {
+        "fileName": "b/2.txt",
+        "contents": "2"
+      },
+      {
+        "fileName": "b/3.txt",
+        "contents": "3"
+      },
+      {
+        "fileName": "b/c/1.txt",
+        "contents": "1"
+      },
+      {
+        "fileName": "b/c/2.txt",
+        "contents": "2"
+      },
+      {
+        "fileName": "b/c/3.txt",
+        "contents": "3"
+      }
+    ]
+  }
+]
