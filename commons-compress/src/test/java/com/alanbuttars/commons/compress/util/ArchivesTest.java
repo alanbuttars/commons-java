@@ -15,6 +15,7 @@
  */
 package com.alanbuttars.commons.compress.util;
 
+import static com.alanbuttars.commons.compress.util.Archives.TAR;
 import static com.alanbuttars.commons.compress.util.Archives.ZIP;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -40,6 +41,16 @@ import com.google.gson.reflect.TypeToken;
  *
  */
 public class ArchivesTest {
+
+	@Test
+	public void testExtractTar() throws IOException {
+		testExtract(TAR);
+	}
+
+	@Test
+	public void testArchiveTar() throws IOException {
+		testArchive(TAR);
+	}
 
 	@Test
 	public void testExtractZip() throws IOException {
@@ -96,7 +107,7 @@ public class ArchivesTest {
 	}
 
 	private File getConfig(String archiveType) {
-		return new File(getArchiveDirectory(archiveType), "config.json");
+		return new File(getArchiveDirectory(archiveType), archiveType.toLowerCase() + ".json");
 	}
 
 	private File getArchive(String archiveType, String fileName) {

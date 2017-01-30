@@ -15,9 +15,11 @@
  */
 package com.alanbuttars.commons.compress.config;
 
+import static com.alanbuttars.commons.compress.util.Archives.TAR;
 import static com.alanbuttars.commons.compress.util.Archives.ZIP;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
@@ -25,6 +27,8 @@ import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 
 import org.apache.commons.compress.archivers.ArchiveOutputStream;
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+import org.apache.commons.compress.archivers.tar.TarConstants;
 import org.apache.commons.compress.archivers.zip.Zip64Mode;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream.UnicodeExtraFieldPolicy;
@@ -35,6 +39,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.alanbuttars.commons.compress.config.output.ArchiveOutputStreamConfig;
+import com.alanbuttars.commons.compress.config.output.ArchiveOutputStreamConfigTarImpl;
 import com.alanbuttars.commons.compress.config.output.ArchiveOutputStreamConfigZipImpl;
 import com.alanbuttars.commons.util.functions.Function;
 
@@ -60,6 +65,24 @@ public class ArchiveOutputStreamFunctionsTest {
 	private void prepare(String archiveType) {
 		configFunction = ArchiveOutputStreamFunctions.defaultConfigFunctions().get(archiveType);
 		streamFunction = ArchiveOutputStreamFunctions.defaultStreamFunctions().get(archiveType);
+	}
+
+	@Test
+	public void testTar() throws Exception {
+		prepare(TAR);
+
+		ArchiveOutputStreamConfig config = configFunction.apply(outputStream);
+		assertEquals(ArchiveOutputStreamConfigTarImpl.class, config.getClass());
+		ArchiveOutputStreamConfigTarImpl tarConfig = (ArchiveOutputStreamConfigTarImpl) config;
+		assertNull(tarConfig.getEncoding());
+		assertFalse(tarConfig.addPaxHeadersForNonAsciiNames());
+		assertEquals(TarArchiveOutputStream.BIGNUMBER_ERROR, tarConfig.getBigNumberMode());
+		assertEquals(TarConstants.DEFAULT_BLKSIZE, tarConfig.getBlockSize());
+		assertEquals(TarArchiveOutputStream.LONGFILE_ERROR, tarConfig.getLongFileMode());
+		assertEquals(TarConstants.DEFAULT_RCDSIZE, tarConfig.getRecordSize());
+		
+		ArchiveOutputStream stream = streamFunction.apply(tarConfig);
+		assertEquals(TarArchiveOutputStream.class, stream.getClass());
 	}
 
 	@Test

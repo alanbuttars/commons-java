@@ -15,10 +15,12 @@
  */
 package com.alanbuttars.commons.compress.config;
 
+import static com.alanbuttars.commons.compress.util.Archives.TAR;
 import static com.alanbuttars.commons.compress.util.Archives.ZIP;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.junit.Test;
 
@@ -33,6 +35,21 @@ import com.alanbuttars.commons.util.functions.Function;
  *
  */
 public class ArchiveEntryFunctionsTest {
+
+	@Test
+	public void testTar() {
+		DoubleInputFunction<String, Long, ArchiveEntryConfig> configFunction = ArchiveEntryFunctions.defaultConfigFunctions().get(TAR);
+		Function<ArchiveEntryConfig, ArchiveEntry> entryFunction = ArchiveEntryFunctions.defaultEntryFunctions().get(TAR);
+
+		ArchiveEntryConfig config = configFunction.apply("entryName.txt", 123L);
+		assertEquals("entryName.txt", config.getEntryName());
+
+		ArchiveEntry entry = entryFunction.apply(config);
+		assertEquals(TarArchiveEntry.class, entry.getClass());
+		TarArchiveEntry tarEntry = (TarArchiveEntry) entry;
+		assertEquals("entryName.txt", tarEntry.getName());
+		assertEquals(123L, tarEntry.getSize());
+	}
 
 	@Test
 	public void testZip() {

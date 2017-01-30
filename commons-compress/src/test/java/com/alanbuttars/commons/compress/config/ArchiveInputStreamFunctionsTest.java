@@ -15,15 +15,19 @@
  */
 package com.alanbuttars.commons.compress.config;
 
+import static com.alanbuttars.commons.compress.util.Archives.TAR;
 import static com.alanbuttars.commons.compress.util.Archives.ZIP;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.apache.commons.compress.archivers.ArchiveInputStream;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.archivers.tar.TarConstants;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +36,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.alanbuttars.commons.compress.config.input.ArchiveInputStreamConfig;
+import com.alanbuttars.commons.compress.config.input.ArchiveInputStreamConfigTarImpl;
 import com.alanbuttars.commons.compress.config.input.ArchiveInputStreamConfigZipImpl;
 import com.alanbuttars.commons.util.functions.Function;
 
@@ -57,6 +62,21 @@ public class ArchiveInputStreamFunctionsTest {
 	private void prepare(String archiveType) {
 		configFunction = ArchiveInputStreamFunctions.defaultConfigFunctions().get(archiveType);
 		streamFunction = ArchiveInputStreamFunctions.defaultStreamFunctions().get(archiveType);
+	}
+
+	@Test
+	public void testTar() throws Exception {
+		prepare(TAR);
+
+		ArchiveInputStreamConfig config = configFunction.apply(inputStream);
+		assertEquals(ArchiveInputStreamConfigTarImpl.class, config.getClass());
+		ArchiveInputStreamConfigTarImpl tarConfig = (ArchiveInputStreamConfigTarImpl) config;
+		assertNull(tarConfig.getEncoding());
+		assertEquals(TarConstants.DEFAULT_BLKSIZE, tarConfig.getBlockSize());
+		assertEquals(TarConstants.DEFAULT_RCDSIZE, tarConfig.getRecordSize());
+
+		ArchiveInputStream stream = streamFunction.apply(tarConfig);
+		assertEquals(TarArchiveInputStream.class, stream.getClass());
 	}
 
 	@Test

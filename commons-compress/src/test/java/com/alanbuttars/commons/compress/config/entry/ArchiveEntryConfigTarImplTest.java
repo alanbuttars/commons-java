@@ -22,15 +22,17 @@ import org.junit.Test;
 
 /**
  * Test class for {@link ArchiveEntryConfigTarImpl}.
+ * 
  * @author Alan Buttars
  *
  */
 public class ArchiveEntryConfigTarImplTest {
-	
+
 	@Test
 	public void testConstructor() {
-		ArchiveEntryConfigTarImpl config = new ArchiveEntryConfigTarImpl("entryName.txt");
+		ArchiveEntryConfigTarImpl config = new ArchiveEntryConfigTarImpl("entryName.txt", 123L);
 		assertEquals("entryName.txt", config.getEntryName());
+		assertEquals(123L, config.getLength());
 		assertFalse(config.preserveLeadingSlas());
 	}
 

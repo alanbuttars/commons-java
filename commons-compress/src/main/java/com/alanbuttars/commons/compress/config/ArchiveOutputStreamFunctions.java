@@ -168,7 +168,7 @@ class ArchiveOutputStreamFunctions {
 			public ArchiveOutputStream apply(ArchiveOutputStreamConfig config) {
 				ArchiveOutputStreamConfigTarImpl tarConfig = (ArchiveOutputStreamConfigTarImpl) config;
 				TarArchiveOutputStream stream = new TarArchiveOutputStream(tarConfig.getOutputStream(), tarConfig.getBlockSize(), tarConfig.getRecordSize(), tarConfig.getEncoding());
-				stream.setAddPaxHeadersForNonAsciiNames(tarConfig.isAddPaxHeadersForNonAsciiNames());
+				stream.setAddPaxHeadersForNonAsciiNames(tarConfig.addPaxHeadersForNonAsciiNames());
 				stream.setBigNumberMode(tarConfig.getBigNumberMode());
 				stream.setLongFileMode(tarConfig.getLongFileMode());
 				return stream;

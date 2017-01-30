@@ -25,11 +25,21 @@ import com.alanbuttars.commons.compress.util.Archives;
  */
 public class ArchiveEntryConfigTarImpl extends ArchiveEntryConfig {
 
+	private long length;
 	private boolean preserveLeadingSlashes;
-	
-	public ArchiveEntryConfigTarImpl(String entryName) {
+
+	public ArchiveEntryConfigTarImpl(String entryName, long length) {
 		super(entryName);
+		this.length = length;
 		this.preserveLeadingSlashes = false;
+	}
+
+	public long getLength() {
+		return length;
+	}
+
+	public void setLength(long length) {
+		this.length = length;
 	}
 
 	public boolean preserveLeadingSlas() {

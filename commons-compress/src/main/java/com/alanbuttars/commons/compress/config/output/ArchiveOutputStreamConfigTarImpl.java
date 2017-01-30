@@ -87,7 +87,7 @@ public class ArchiveOutputStreamConfigTarImpl extends ArchiveOutputStreamConfig 
 		this.recordSize = recordSize;
 	}
 
-	public boolean isAddPaxHeadersForNonAsciiNames() {
+	public boolean addPaxHeadersForNonAsciiNames() {
 		return addPaxHeadersForNonAsciiNames;
 	}
 

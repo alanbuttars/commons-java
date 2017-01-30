@@ -37,7 +37,7 @@ public class ArchiveOutputStreamConfigTarImplTest {
 	public void testConstructor() {
 		ArchiveOutputStreamConfigTarImpl config = new ArchiveOutputStreamConfigTarImpl(new ByteArrayOutputStream());
 		assertNotNull(config.getOutputStream());
-		assertFalse(config.isAddPaxHeadersForNonAsciiNames());
+		assertFalse(config.addPaxHeadersForNonAsciiNames());
 		assertEquals(TarArchiveOutputStream.BIGNUMBER_ERROR, config.getBigNumberMode());
 		assertEquals(TarConstants.DEFAULT_BLKSIZE, config.getBlockSize());
 		assertEquals(TarArchiveOutputStream.LONGFILE_ERROR, config.getLongFileMode());

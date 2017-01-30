@@ -137,7 +137,7 @@ class ArchiveEntryFunctions {
 
 			@Override
 			public ArchiveEntryConfig apply(String entryName, Long fileLength) {
-				return new ArchiveEntryConfigTarImpl(entryName);
+				return new ArchiveEntryConfigTarImpl(entryName, fileLength);
 			}
 
 		};
@@ -244,7 +244,9 @@ class ArchiveEntryFunctions {
 			@Override
 			public ArchiveEntry apply(ArchiveEntryConfig config) {
 				ArchiveEntryConfigTarImpl tarConfig = (ArchiveEntryConfigTarImpl) config;
-				return new TarArchiveEntry(tarConfig.getEntryName(), tarConfig.preserveLeadingSlas());
+				TarArchiveEntry entry = new TarArchiveEntry(tarConfig.getEntryName(), tarConfig.preserveLeadingSlas());
+				entry.setSize(tarConfig.getLength());
+				return entry;
 			}
 
 		};
