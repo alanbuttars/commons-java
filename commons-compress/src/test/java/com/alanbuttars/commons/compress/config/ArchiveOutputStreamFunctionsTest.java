@@ -15,6 +15,7 @@
  */
 package com.alanbuttars.commons.compress.config;
 
+import static com.alanbuttars.commons.compress.util.Archives.AR;
 import static com.alanbuttars.commons.compress.util.Archives.TAR;
 import static com.alanbuttars.commons.compress.util.Archives.ZIP;
 import static org.junit.Assert.assertEquals;
@@ -27,6 +28,7 @@ import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 
 import org.apache.commons.compress.archivers.ArchiveOutputStream;
+import org.apache.commons.compress.archivers.ar.ArArchiveOutputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.archivers.tar.TarConstants;
 import org.apache.commons.compress.archivers.zip.Zip64Mode;
@@ -39,6 +41,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.alanbuttars.commons.compress.config.output.ArchiveOutputStreamConfig;
+import com.alanbuttars.commons.compress.config.output.ArchiveOutputStreamConfigArImpl;
 import com.alanbuttars.commons.compress.config.output.ArchiveOutputStreamConfigTarImpl;
 import com.alanbuttars.commons.compress.config.output.ArchiveOutputStreamConfigZipImpl;
 import com.alanbuttars.commons.util.functions.Function;
@@ -68,6 +71,19 @@ public class ArchiveOutputStreamFunctionsTest {
 	}
 
 	@Test
+	public void testAr() throws Exception {
+		prepare(AR);
+
+		ArchiveOutputStreamConfig config = configFunction.apply(outputStream);
+		assertEquals(ArchiveOutputStreamConfigArImpl.class, config.getClass());
+		ArchiveOutputStreamConfigArImpl arConfig = (ArchiveOutputStreamConfigArImpl) config;
+		assertEquals(TarArchiveOutputStream.LONGFILE_ERROR, arConfig.getLongFileMode());
+
+		ArchiveOutputStream stream = streamFunction.apply(arConfig);
+		assertEquals(ArArchiveOutputStream.class, stream.getClass());
+	}
+
+	@Test
 	public void testTar() throws Exception {
 		prepare(TAR);
 
@@ -80,7 +96,7 @@ public class ArchiveOutputStreamFunctionsTest {
 		assertEquals(TarConstants.DEFAULT_BLKSIZE, tarConfig.getBlockSize());
 		assertEquals(TarArchiveOutputStream.LONGFILE_ERROR, tarConfig.getLongFileMode());
 		assertEquals(TarConstants.DEFAULT_RCDSIZE, tarConfig.getRecordSize());
-		
+
 		ArchiveOutputStream stream = streamFunction.apply(tarConfig);
 		assertEquals(TarArchiveOutputStream.class, stream.getClass());
 	}

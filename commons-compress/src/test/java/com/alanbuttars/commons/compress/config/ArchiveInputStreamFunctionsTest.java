@@ -15,6 +15,7 @@
  */
 package com.alanbuttars.commons.compress.config;
 
+import static com.alanbuttars.commons.compress.util.Archives.AR;
 import static com.alanbuttars.commons.compress.util.Archives.TAR;
 import static com.alanbuttars.commons.compress.util.Archives.ZIP;
 import static org.junit.Assert.assertEquals;
@@ -26,6 +27,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.apache.commons.compress.archivers.ArchiveInputStream;
+import org.apache.commons.compress.archivers.ar.ArArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarConstants;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
@@ -62,6 +64,17 @@ public class ArchiveInputStreamFunctionsTest {
 	private void prepare(String archiveType) {
 		configFunction = ArchiveInputStreamFunctions.defaultConfigFunctions().get(archiveType);
 		streamFunction = ArchiveInputStreamFunctions.defaultStreamFunctions().get(archiveType);
+	}
+
+	@Test
+	public void testAr() throws Exception {
+		prepare(AR);
+
+		ArchiveInputStreamConfig config = configFunction.apply(inputStream);
+		assertEquals(ArchiveInputStreamConfig.class, config.getClass());
+
+		ArchiveInputStream stream = streamFunction.apply(config);
+		assertEquals(ArArchiveInputStream.class, stream.getClass());
 	}
 
 	@Test

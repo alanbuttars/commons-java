@@ -1,0 +1,20 @@
+[
+  {
+    "type": "ar",
+    "fileName": "a.a",
+    "files": [
+      {
+        "fileName": "1.txt",
+        "contents": "1"
+      },
+      {
+        "fileName": "2.txt",
+        "contents": "2"
+      },
+      {
+        "fileName": "3.txt",
+        "contents": "3"
+      }
+    ]
+  }
+]

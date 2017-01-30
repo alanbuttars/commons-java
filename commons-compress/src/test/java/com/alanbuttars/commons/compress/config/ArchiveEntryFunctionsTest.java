@@ -15,11 +15,14 @@
  */
 package com.alanbuttars.commons.compress.config;
 
+import static com.alanbuttars.commons.compress.util.Archives.AR;
 import static com.alanbuttars.commons.compress.util.Archives.TAR;
 import static com.alanbuttars.commons.compress.util.Archives.ZIP;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.apache.commons.compress.archivers.ar.ArArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.junit.Test;
@@ -35,6 +38,26 @@ import com.alanbuttars.commons.util.functions.Function;
  *
  */
 public class ArchiveEntryFunctionsTest {
+
+	@Test
+	public void testAr() {
+		DoubleInputFunction<String, Long, ArchiveEntryConfig> configFunction = ArchiveEntryFunctions.defaultConfigFunctions().get(AR);
+		Function<ArchiveEntryConfig, ArchiveEntry> entryFunction = ArchiveEntryFunctions.defaultEntryFunctions().get(AR);
+
+		ArchiveEntryConfig config = configFunction.apply("entryName.txt", 123L);
+		assertEquals("entryName.txt", config.getEntryName());
+
+		ArchiveEntry entry = entryFunction.apply(config);
+		assertEquals(ArArchiveEntry.class, entry.getClass());
+		ArArchiveEntry arEntry = (ArArchiveEntry) entry;
+		assertEquals("entryName.txt", arEntry.getName());
+		assertEquals(123L, arEntry.getLength());
+		assertEquals(0, arEntry.getGroupId());
+		assertEquals(0, arEntry.getUserId());
+		assertEquals(33188, arEntry.getMode());
+		long now = System.currentTimeMillis() + 50;
+		assertTrue(now > arEntry.getLastModified());
+	}
 
 	@Test
 	public void testTar() {

@@ -15,6 +15,7 @@
  */
 package com.alanbuttars.commons.compress.util;
 
+import static com.alanbuttars.commons.compress.util.Archives.AR;
 import static com.alanbuttars.commons.compress.util.Archives.TAR;
 import static com.alanbuttars.commons.compress.util.Archives.ZIP;
 import static org.junit.Assert.assertEquals;
@@ -41,6 +42,16 @@ import com.google.gson.reflect.TypeToken;
  *
  */
 public class ArchivesTest {
+
+	@Test
+	public void testExtractAr() throws IOException {
+		testExtract(AR);
+	}
+
+	@Test
+	public void testArchiveAr() throws IOException {
+		testArchive(AR);
+	}
 
 	@Test
 	public void testExtractTar() throws IOException {
@@ -117,12 +128,12 @@ public class ArchivesTest {
 	private void assertFiles(Archive archive, File destination) throws IOException {
 		List<File> actualFiles = listActualFiles(destination);
 		assertEquals(actualFiles.size(), archive.getFiles().size());
-		assertFiles(archive, destination, actualFiles, archive.getFiles());
+		assertFiles(destination, actualFiles, archive.getFiles());
 	}
 
-	private void assertFiles(Archive archive, File destination, List<File> actualFiles, List<ArchiveFile> expectedFiles) throws IOException {
+	private void assertFiles(File destination, List<File> actualFiles, List<ArchiveFile> expectedFiles) throws IOException {
 		for (ArchiveFile expectedFile : expectedFiles) {
-			File actualFile = getActualFile(archive, destination, actualFiles, expectedFile);
+			File actualFile = getActualFile(destination, actualFiles, expectedFile);
 			assertNotNull("Could not find " + expectedFile.getFileName(), actualFile);
 
 			byte[] actualFileBytes = Files.readAllBytes(actualFile.toPath());
@@ -131,9 +142,9 @@ public class ArchivesTest {
 		}
 	}
 
-	private File getActualFile(Archive archive, File destination, List<File> actualFiles, ArchiveFile expectedFile) throws IOException {
+	private File getActualFile(File destination, List<File> actualFiles, ArchiveFile expectedFile) throws IOException {
 		for (File actualFile : actualFiles) {
-			String actualFilePrefix = getActualFilePrefix(archive, destination);
+			String actualFilePrefix = getActualFilePrefix(destination);
 			String actualFilePath = actualFile.getAbsolutePath().replaceFirst(actualFilePrefix, "");
 			if (expectedFile.getFileName().equals(actualFilePath)) {
 				return actualFile;
@@ -142,12 +153,8 @@ public class ArchivesTest {
 		return null;
 	}
 
-	private String getActualFilePrefix(Archive archive, File destination) {
-		String archiveFilename = archive.getFileName();
-		return destination.getAbsolutePath() + //
-				File.separator + //
-				archiveFilename.substring(0, archiveFilename.lastIndexOf(".")) + //
-				File.separator;
+	private String getActualFilePrefix(File destination) {
+		return destination.getAbsolutePath() + File.separator;
 	}
 
 	private List<File> listActualFiles(File file) {
