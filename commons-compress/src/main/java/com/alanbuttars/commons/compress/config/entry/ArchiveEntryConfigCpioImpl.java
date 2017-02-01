@@ -27,11 +27,21 @@ import com.alanbuttars.commons.compress.util.Archives;
  */
 public class ArchiveEntryConfigCpioImpl extends ArchiveEntryConfig {
 
+	private long length;
 	private short format;
 
-	public ArchiveEntryConfigCpioImpl(String entryName) {
+	public ArchiveEntryConfigCpioImpl(String entryName, long length) {
 		super(entryName);
+		this.length = length;
 		this.format = CpioConstants.FORMAT_NEW;
+	}
+
+	public long getLength() {
+		return length;
+	}
+
+	public void setLength(long length) {
+		this.length = length;
 	}
 
 	public short getFormat() {

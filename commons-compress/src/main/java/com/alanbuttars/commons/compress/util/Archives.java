@@ -34,6 +34,9 @@ import java.io.OutputStream;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.ArchiveOutputStream;
+import org.apache.commons.compress.archivers.ar.ArArchiveInputStream;
+import org.apache.commons.compress.archivers.cpio.CpioArchiveInputStream;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 
 import com.alanbuttars.commons.compress.config.ArchiveConfigs;
 import com.alanbuttars.commons.compress.config.entry.ArchiveEntryConfig;
@@ -127,26 +130,43 @@ public class Archives {
 			Function<ArchiveInputStreamConfig, ArchiveInputStream> streamFunction) throws IOException {
 		try (InputStream inputStream = new FileInputStream(source);
 				ArchiveInputStream archiveInputStream = createArchiveInputStream(archiveType, inputStream, streamConfigFunction, streamFunction)) {
-			ArchiveEntry archiveEntry = null;
-			while ((archiveEntry = archiveInputStream.getNextEntry()) != null) {
-				File outputFile = new File(destination, archiveEntry.getName());
-				if (archiveEntry.isDirectory()) {
-					outputFile.mkdirs();
-				}
-				else {
-					outputFile.getParentFile().mkdirs();
-					try (OutputStream outputStream = new FileOutputStream(outputFile);
-							BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream)) {
-						byte[] content = new byte[1024];
-						int length = 0;
-						while ((length = archiveInputStream.read(content)) > 0) {
-							bufferedOutputStream.write(content, 0, length);
-							bufferedOutputStream.flush();
-						}
+			readFromArchive(destination, archiveInputStream);
+		}
+	}
+
+	private static void readFromArchive(File destination, ArchiveInputStream archiveInputStream) throws IOException {
+		ArchiveEntry archiveEntry = null;
+		while ((archiveEntry = getNextEntry(archiveInputStream)) != null) {
+			File outputFile = new File(destination, archiveEntry.getName());
+			if (archiveEntry.isDirectory()) {
+				outputFile.mkdirs();
+			}
+			else {
+				outputFile.getParentFile().mkdirs();
+				try (OutputStream outputStream = new FileOutputStream(outputFile);
+						BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream)) {
+					byte[] content = new byte[1024];
+					int length = 0;
+					while ((length = archiveInputStream.read(content)) > 0) {
+						bufferedOutputStream.write(content, 0, length);
+						bufferedOutputStream.flush();
 					}
 				}
 			}
 		}
+	}
+
+	private static ArchiveEntry getNextEntry(ArchiveInputStream archiveInputStream) throws IOException {
+		if (archiveInputStream instanceof ArArchiveInputStream) {
+			return ((ArArchiveInputStream) archiveInputStream).getNextArEntry();
+		}
+		else if (archiveInputStream instanceof CpioArchiveInputStream) {
+			return ((CpioArchiveInputStream) archiveInputStream).getNextCPIOEntry();
+		}
+		else if (archiveInputStream instanceof TarArchiveInputStream) {
+			return ((TarArchiveInputStream) archiveInputStream).getNextTarEntry();
+		}
+		return archiveInputStream.getNextEntry();
 	}
 
 	/**

@@ -16,6 +16,7 @@
 package com.alanbuttars.commons.compress.config;
 
 import static com.alanbuttars.commons.compress.util.Archives.AR;
+import static com.alanbuttars.commons.compress.util.Archives.CPIO;
 import static com.alanbuttars.commons.compress.util.Archives.TAR;
 import static com.alanbuttars.commons.compress.util.Archives.ZIP;
 import static org.junit.Assert.assertEquals;
@@ -23,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ar.ArArchiveEntry;
+import org.apache.commons.compress.archivers.cpio.CpioArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.junit.Test;
@@ -57,6 +59,20 @@ public class ArchiveEntryFunctionsTest {
 		assertEquals(33188, arEntry.getMode());
 		long now = System.currentTimeMillis() + 50;
 		assertTrue(now > arEntry.getLastModified());
+	}
+
+	@Test
+	public void testCpio() {
+		DoubleInputFunction<String, Long, ArchiveEntryConfig> configFunction = ArchiveEntryFunctions.defaultConfigFunctions().get(CPIO);
+		Function<ArchiveEntryConfig, ArchiveEntry> entryFunction = ArchiveEntryFunctions.defaultEntryFunctions().get(CPIO);
+
+		ArchiveEntryConfig config = configFunction.apply("entryName.txt", 123L);
+		assertEquals("entryName.txt", config.getEntryName());
+
+		ArchiveEntry entry = entryFunction.apply(config);
+		assertEquals(CpioArchiveEntry.class, entry.getClass());
+		CpioArchiveEntry cpioEntry = (CpioArchiveEntry) entry;
+		assertEquals("entryName.txt", cpioEntry.getName());
 	}
 
 	@Test

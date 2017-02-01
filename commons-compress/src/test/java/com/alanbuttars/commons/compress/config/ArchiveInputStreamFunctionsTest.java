@@ -16,6 +16,7 @@
 package com.alanbuttars.commons.compress.config;
 
 import static com.alanbuttars.commons.compress.util.Archives.AR;
+import static com.alanbuttars.commons.compress.util.Archives.CPIO;
 import static com.alanbuttars.commons.compress.util.Archives.TAR;
 import static com.alanbuttars.commons.compress.util.Archives.ZIP;
 import static org.junit.Assert.assertEquals;
@@ -28,9 +29,12 @@ import java.io.InputStream;
 
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.ar.ArArchiveInputStream;
+import org.apache.commons.compress.archivers.cpio.CpioArchiveInputStream;
+import org.apache.commons.compress.archivers.cpio.CpioConstants;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarConstants;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
+import org.apache.commons.compress.utils.CharsetNames;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,6 +42,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.alanbuttars.commons.compress.config.input.ArchiveInputStreamConfig;
+import com.alanbuttars.commons.compress.config.input.ArchiveInputStreamConfigCpioImpl;
 import com.alanbuttars.commons.compress.config.input.ArchiveInputStreamConfigTarImpl;
 import com.alanbuttars.commons.compress.config.input.ArchiveInputStreamConfigZipImpl;
 import com.alanbuttars.commons.util.functions.Function;
@@ -75,6 +80,20 @@ public class ArchiveInputStreamFunctionsTest {
 
 		ArchiveInputStream stream = streamFunction.apply(config);
 		assertEquals(ArArchiveInputStream.class, stream.getClass());
+	}
+
+	@Test
+	public void testCpio() throws Exception {
+		prepare(CPIO);
+
+		ArchiveInputStreamConfig config = configFunction.apply(inputStream);
+		assertEquals(ArchiveInputStreamConfigCpioImpl.class, config.getClass());
+		ArchiveInputStreamConfigCpioImpl cpioConfig = (ArchiveInputStreamConfigCpioImpl) config;
+		assertEquals(CharsetNames.US_ASCII, cpioConfig.getEncoding());
+		assertEquals(CpioConstants.BLOCK_SIZE, cpioConfig.getBlockSize());
+
+		ArchiveInputStream stream = streamFunction.apply(config);
+		assertEquals(CpioArchiveInputStream.class, stream.getClass());
 	}
 
 	@Test

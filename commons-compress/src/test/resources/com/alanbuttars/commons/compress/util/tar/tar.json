@@ -1,7 +1,7 @@
 [
   {
     "type": "tar",
-    "fileName": "a.tar",
+    "fileName": "test.tar",
     "files": [
       {
         "fileName": "a/1.txt",

@@ -1,7 +1,7 @@
 [
   {
-    "type": "zip",
-    "fileName": "test.zip",
+    "type": "cpio",
+    "fileName": "test.cpio",
     "files": [
       {
         "fileName": "a/1.txt",

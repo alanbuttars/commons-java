@@ -16,6 +16,7 @@
 package com.alanbuttars.commons.compress.util;
 
 import static com.alanbuttars.commons.compress.util.Archives.AR;
+import static com.alanbuttars.commons.compress.util.Archives.CPIO;
 import static com.alanbuttars.commons.compress.util.Archives.TAR;
 import static com.alanbuttars.commons.compress.util.Archives.ZIP;
 import static org.junit.Assert.assertEquals;
@@ -51,6 +52,16 @@ public class ArchivesTest {
 	@Test
 	public void testArchiveAr() throws IOException {
 		testArchive(AR);
+	}
+
+	@Test
+	public void testExtractCpio() throws IOException {
+		testExtract(CPIO);
+	}
+
+	@Test
+	public void testArchiveCpio() throws IOException {
+		testArchive(CPIO);
 	}
 
 	@Test

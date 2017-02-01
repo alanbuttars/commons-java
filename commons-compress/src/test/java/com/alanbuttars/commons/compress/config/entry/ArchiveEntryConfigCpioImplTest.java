@@ -30,8 +30,9 @@ public class ArchiveEntryConfigCpioImplTest {
 
 	@Test
 	public void testConstructor() {
-		ArchiveEntryConfigCpioImpl config = new ArchiveEntryConfigCpioImpl("entryName.txt");
+		ArchiveEntryConfigCpioImpl config = new ArchiveEntryConfigCpioImpl("entryName.txt", 123L);
 		assertEquals("entryName.txt", config.getEntryName());
+		assertEquals(123L, config.getLength());
 		assertEquals(CpioConstants.FORMAT_NEW, config.getFormat());
 	}
 }

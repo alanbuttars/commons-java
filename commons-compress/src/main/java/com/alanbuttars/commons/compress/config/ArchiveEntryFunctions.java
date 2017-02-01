@@ -93,7 +93,7 @@ class ArchiveEntryFunctions {
 
 			@Override
 			public ArchiveEntryConfig apply(String entryName, Long fileLength) {
-				return new ArchiveEntryConfigCpioImpl(entryName);
+				return new ArchiveEntryConfigCpioImpl(entryName, fileLength);
 			}
 
 		};
@@ -196,7 +196,7 @@ class ArchiveEntryFunctions {
 			@Override
 			public ArchiveEntry apply(ArchiveEntryConfig config) {
 				ArchiveEntryConfigCpioImpl cpioConfig = (ArchiveEntryConfigCpioImpl) config;
-				return new CpioArchiveEntry(cpioConfig.getFormat(), cpioConfig.getEntryName());
+				return new CpioArchiveEntry(cpioConfig.getFormat(), cpioConfig.getEntryName(), cpioConfig.getLength());
 			}
 
 		};
