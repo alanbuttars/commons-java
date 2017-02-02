@@ -17,6 +17,7 @@ package com.alanbuttars.commons.compress.config;
 
 import static com.alanbuttars.commons.compress.util.Archives.AR;
 import static com.alanbuttars.commons.compress.util.Archives.CPIO;
+import static com.alanbuttars.commons.compress.util.Archives.DUMP;
 import static com.alanbuttars.commons.compress.util.Archives.TAR;
 import static com.alanbuttars.commons.compress.util.Archives.ZIP;
 import static org.junit.Assert.assertEquals;
@@ -101,6 +102,14 @@ public class ArchiveOutputStreamFunctionsTest {
 
 		ArchiveOutputStream stream = streamFunction.apply(cpioConfig);
 		assertEquals(CpioArchiveOutputStream.class, stream.getClass());
+	}
+
+	@Test
+	public void testDump() throws Exception {
+		prepare(DUMP);
+
+		assertNull(configFunction);
+		assertNull(streamFunction);
 	}
 
 	@Test

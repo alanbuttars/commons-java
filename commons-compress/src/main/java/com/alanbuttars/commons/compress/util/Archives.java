@@ -44,6 +44,7 @@ import com.alanbuttars.commons.compress.config.input.ArchiveInputStreamConfig;
 import com.alanbuttars.commons.compress.config.output.ArchiveOutputStreamConfig;
 import com.alanbuttars.commons.util.functions.DoubleInputFunction;
 import com.alanbuttars.commons.util.functions.Function;
+import com.alanbuttars.commons.util.validators.Arguments;
 
 /**
  * Utility functions class for file archives.
@@ -229,6 +230,7 @@ public class Archives {
 			Function<ArchiveOutputStreamConfig, ArchiveOutputStream> streamFunction, //
 			DoubleInputFunction<String, Long, ArchiveEntryConfig> entryConfigFunction, //
 			Function<ArchiveEntryConfig, ArchiveEntry> entryFunction) throws IOException {
+		Arguments.verify(!DUMP.equals(archiveType), "Creating " + DUMP + " archives is not supported");
 		try (OutputStream outputStream = new FileOutputStream(destination);
 				ArchiveOutputStream archiveOutputStream = createArchiveOutputStream(archiveType, outputStream, streamConfigFunction, streamFunction)) {
 			writeToArchive(archiveType, source, source, archiveOutputStream, entryConfigFunction, entryFunction);

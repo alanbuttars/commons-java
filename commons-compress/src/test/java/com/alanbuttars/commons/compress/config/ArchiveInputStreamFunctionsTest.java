@@ -17,16 +17,19 @@ package com.alanbuttars.commons.compress.config;
 
 import static com.alanbuttars.commons.compress.util.Archives.AR;
 import static com.alanbuttars.commons.compress.util.Archives.CPIO;
+import static com.alanbuttars.commons.compress.util.Archives.DUMP;
 import static com.alanbuttars.commons.compress.util.Archives.TAR;
 import static com.alanbuttars.commons.compress.util.Archives.ZIP;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.ar.ArArchiveInputStream;
 import org.apache.commons.compress.archivers.cpio.CpioArchiveInputStream;
@@ -43,6 +46,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.alanbuttars.commons.compress.config.input.ArchiveInputStreamConfig;
 import com.alanbuttars.commons.compress.config.input.ArchiveInputStreamConfigCpioImpl;
+import com.alanbuttars.commons.compress.config.input.ArchiveInputStreamConfigDumpImpl;
 import com.alanbuttars.commons.compress.config.input.ArchiveInputStreamConfigTarImpl;
 import com.alanbuttars.commons.compress.config.input.ArchiveInputStreamConfigZipImpl;
 import com.alanbuttars.commons.util.functions.Function;
@@ -94,6 +98,24 @@ public class ArchiveInputStreamFunctionsTest {
 
 		ArchiveInputStream stream = streamFunction.apply(config);
 		assertEquals(CpioArchiveInputStream.class, stream.getClass());
+	}
+
+	@Test
+	public void testDump() throws Exception {
+		prepare(DUMP);
+
+		ArchiveInputStreamConfig config = configFunction.apply(inputStream);
+		assertEquals(ArchiveInputStreamConfigDumpImpl.class, config.getClass());
+		ArchiveInputStreamConfigDumpImpl dumpConfig = (ArchiveInputStreamConfigDumpImpl) config;
+		assertEquals("UTF8", dumpConfig.getEncoding());
+
+		try {
+			streamFunction.apply(config);
+			fail();
+		}
+		catch (RuntimeException e) {
+			assertTrue(e.getCause() instanceof ArchiveException);
+		}
 	}
 
 	@Test

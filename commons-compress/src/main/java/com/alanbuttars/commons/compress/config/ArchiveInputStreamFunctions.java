@@ -101,7 +101,7 @@ class ArchiveInputStreamFunctions {
 
 			@Override
 			public ArchiveInputStreamConfig apply(InputStream input) {
-				return new ArchiveInputStreamConfig(input);
+				return new ArchiveInputStreamConfigDumpImpl(input);
 			}
 		};
 	}

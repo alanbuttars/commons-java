@@ -1,0 +1,14 @@
+[
+  {
+    "type": "dump",
+    "fileName": "bla.dump",
+    "files": [
+      {
+        "fileName": "test1.xml"
+      },
+      {
+        "fileName": "test2.xml"
+      }
+    ]
+  }
+]

@@ -17,11 +17,13 @@ package com.alanbuttars.commons.compress.util;
 
 import static com.alanbuttars.commons.compress.util.Archives.AR;
 import static com.alanbuttars.commons.compress.util.Archives.CPIO;
+import static com.alanbuttars.commons.compress.util.Archives.DUMP;
 import static com.alanbuttars.commons.compress.util.Archives.TAR;
 import static com.alanbuttars.commons.compress.util.Archives.ZIP;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileReader;
@@ -62,6 +64,22 @@ public class ArchivesTest {
 	@Test
 	public void testArchiveCpio() throws IOException {
 		testArchive(CPIO);
+	}
+
+	@Test
+	public void testExtractDump() throws IOException {
+		testExtract(DUMP);
+	}
+
+	@Test
+	public void testArchiveDump() throws IOException {
+		try {
+			testArchive(DUMP);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Creating dump archives is not supported", e.getMessage());
+		}
 	}
 
 	@Test
@@ -146,10 +164,13 @@ public class ArchivesTest {
 		for (ArchiveFile expectedFile : expectedFiles) {
 			File actualFile = getActualFile(destination, actualFiles, expectedFile);
 			assertNotNull("Could not find " + expectedFile.getFileName(), actualFile);
+			assertTrue(actualFile.length() > 0);
 
-			byte[] actualFileBytes = Files.readAllBytes(actualFile.toPath());
-			String actualFileContents = new String(actualFileBytes).trim();
-			assertEquals(expectedFile.getContents(), actualFileContents);
+			if (expectedFile.getContents() != null) {
+				byte[] actualFileBytes = Files.readAllBytes(actualFile.toPath());
+				String actualFileContents = new String(actualFileBytes).trim();
+				assertEquals(expectedFile.getContents(), actualFileContents);
+			}
 		}
 	}
 
