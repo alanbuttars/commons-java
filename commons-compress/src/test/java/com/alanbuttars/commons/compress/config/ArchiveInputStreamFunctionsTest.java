@@ -16,6 +16,7 @@
 package com.alanbuttars.commons.compress.config;
 
 import static com.alanbuttars.commons.compress.util.Archives.AR;
+import static com.alanbuttars.commons.compress.util.Archives.ARJ;
 import static com.alanbuttars.commons.compress.util.Archives.CPIO;
 import static com.alanbuttars.commons.compress.util.Archives.DUMP;
 import static com.alanbuttars.commons.compress.util.Archives.JAR;
@@ -47,6 +48,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.alanbuttars.commons.compress.config.input.ArchiveInputStreamConfig;
+import com.alanbuttars.commons.compress.config.input.ArchiveInputStreamConfigArjImpl;
 import com.alanbuttars.commons.compress.config.input.ArchiveInputStreamConfigCpioImpl;
 import com.alanbuttars.commons.compress.config.input.ArchiveInputStreamConfigDumpImpl;
 import com.alanbuttars.commons.compress.config.input.ArchiveInputStreamConfigJarImpl;
@@ -87,6 +89,24 @@ public class ArchiveInputStreamFunctionsTest {
 
 		ArchiveInputStream stream = streamFunction.apply(config);
 		assertEquals(ArArchiveInputStream.class, stream.getClass());
+	}
+
+	@Test
+	public void testArj() throws Exception {
+		prepare(ARJ);
+
+		ArchiveInputStreamConfig config = configFunction.apply(inputStream);
+		assertEquals(ArchiveInputStreamConfigArjImpl.class, config.getClass());
+		ArchiveInputStreamConfigArjImpl arjConfig = (ArchiveInputStreamConfigArjImpl) config;
+		assertEquals("CP437", arjConfig.getEncoding());
+
+		try {
+			streamFunction.apply(config);
+			fail();
+		}
+		catch (RuntimeException e) {
+			assertTrue(e.getCause() instanceof ArchiveException);
+		}
 	}
 
 	@Test

@@ -16,6 +16,7 @@
 package com.alanbuttars.commons.compress.util;
 
 import static com.alanbuttars.commons.compress.util.Archives.AR;
+import static com.alanbuttars.commons.compress.util.Archives.ARJ;
 import static com.alanbuttars.commons.compress.util.Archives.CPIO;
 import static com.alanbuttars.commons.compress.util.Archives.DUMP;
 import static com.alanbuttars.commons.compress.util.Archives.JAR;
@@ -55,6 +56,22 @@ public class ArchivesTest {
 	@Test
 	public void testArchiveAr() throws IOException {
 		testArchive(AR);
+	}
+
+	@Test
+	public void testExtractArj() throws IOException {
+		testExtract(ARJ);
+	}
+
+	@Test
+	public void testArchiveArj() throws IOException {
+		try {
+			testArchive(ARJ);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Creating arj archives is not supported", e.getMessage());
+		}
 	}
 
 	@Test

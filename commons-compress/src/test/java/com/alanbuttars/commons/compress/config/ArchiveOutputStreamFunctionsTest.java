@@ -16,6 +16,7 @@
 package com.alanbuttars.commons.compress.config;
 
 import static com.alanbuttars.commons.compress.util.Archives.AR;
+import static com.alanbuttars.commons.compress.util.Archives.ARJ;
 import static com.alanbuttars.commons.compress.util.Archives.CPIO;
 import static com.alanbuttars.commons.compress.util.Archives.DUMP;
 import static com.alanbuttars.commons.compress.util.Archives.JAR;
@@ -90,6 +91,14 @@ public class ArchiveOutputStreamFunctionsTest {
 
 		ArchiveOutputStream stream = streamFunction.apply(arConfig);
 		assertEquals(ArArchiveOutputStream.class, stream.getClass());
+	}
+
+	@Test
+	public void testArj() throws Exception {
+		prepare(ARJ);
+
+		assertNull(configFunction);
+		assertNull(streamFunction);
 	}
 
 	@Test

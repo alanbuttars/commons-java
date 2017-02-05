@@ -230,6 +230,7 @@ public class Archives {
 			Function<ArchiveOutputStreamConfig, ArchiveOutputStream> streamFunction, //
 			DoubleInputFunction<String, Long, ArchiveEntryConfig> entryConfigFunction, //
 			Function<ArchiveEntryConfig, ArchiveEntry> entryFunction) throws IOException {
+		Arguments.verify(!ARJ.equals(archiveType), "Creating " + ARJ + " archives is not supported");
 		Arguments.verify(!DUMP.equals(archiveType), "Creating " + DUMP + " archives is not supported");
 		try (OutputStream outputStream = new FileOutputStream(destination);
 				ArchiveOutputStream archiveOutputStream = createArchiveOutputStream(archiveType, outputStream, streamConfigFunction, streamFunction)) {

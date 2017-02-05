@@ -16,6 +16,7 @@
 package com.alanbuttars.commons.compress.config;
 
 import static com.alanbuttars.commons.compress.util.Archives.AR;
+import static com.alanbuttars.commons.compress.util.Archives.ARJ;
 import static com.alanbuttars.commons.compress.util.Archives.CPIO;
 import static com.alanbuttars.commons.compress.util.Archives.DUMP;
 import static com.alanbuttars.commons.compress.util.Archives.JAR;
@@ -27,6 +28,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ar.ArArchiveEntry;
+import org.apache.commons.compress.archivers.arj.ArjArchiveEntry;
 import org.apache.commons.compress.archivers.cpio.CpioArchiveEntry;
 import org.apache.commons.compress.archivers.dump.DumpArchiveEntry;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
@@ -64,6 +66,20 @@ public class ArchiveEntryFunctionsTest {
 		assertEquals(33188, arEntry.getMode());
 		long now = System.currentTimeMillis() + 50;
 		assertTrue(now > arEntry.getLastModified());
+	}
+
+	@Test
+	public void testArj() {
+		DoubleInputFunction<String, Long, ArchiveEntryConfig> configFunction = ArchiveEntryFunctions.defaultConfigFunctions().get(ARJ);
+		Function<ArchiveEntryConfig, ArchiveEntry> entryFunction = ArchiveEntryFunctions.defaultEntryFunctions().get(ARJ);
+
+		ArchiveEntryConfig config = configFunction.apply("entryName.txt", 123L);
+		assertEquals("entryName.txt", config.getEntryName());
+
+		ArchiveEntry entry = entryFunction.apply(config);
+		assertEquals(ArjArchiveEntry.class, entry.getClass());
+		ArjArchiveEntry arjEntry = (ArjArchiveEntry) entry;
+		assertNull(arjEntry.getName());
 	}
 
 	@Test

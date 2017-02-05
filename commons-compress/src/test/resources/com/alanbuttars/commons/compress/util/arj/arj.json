@@ -1,0 +1,14 @@
+[
+  {
+    "type": "arj",
+    "fileName": "bla.arj",
+    "files": [
+      {
+        "fileName": "test1.xml"
+      },
+      {
+        "fileName": "test2.xml"
+      }
+    ]
+  }
+]
