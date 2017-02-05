@@ -111,7 +111,7 @@ class ArchiveInputStreamFunctions {
 
 			@Override
 			public ArchiveInputStreamConfig apply(InputStream input) {
-				return new ArchiveInputStreamConfigZipImpl(input);
+				return new ArchiveInputStreamConfigJarImpl(input);
 			}
 		};
 	}

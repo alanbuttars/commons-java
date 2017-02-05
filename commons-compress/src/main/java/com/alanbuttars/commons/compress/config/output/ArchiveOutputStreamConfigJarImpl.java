@@ -13,14 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alanbuttars.commons.compress.config.input;
+package com.alanbuttars.commons.compress.config.output;
 
-import java.io.InputStream;
+import java.io.OutputStream;
 
-public class ArchiveInputStreamConfigJarImpl extends ArchiveInputStreamConfigZipImpl {
+import com.alanbuttars.commons.compress.util.Archives;
 
-	public ArchiveInputStreamConfigJarImpl(InputStream inputStream) {
-		super(inputStream);
+/**
+ * Extension of {@link ArchiveOutputStreamConfig} used for {@link Archives#JAR} archives.
+ * 
+ * @author Alan Buttars
+ *
+ */
+public class ArchiveOutputStreamConfigJarImpl extends ArchiveOutputStreamConfigZipImpl {
+
+	public ArchiveOutputStreamConfigJarImpl(OutputStream outputStream) {
+		super(outputStream);
 	}
 
 }

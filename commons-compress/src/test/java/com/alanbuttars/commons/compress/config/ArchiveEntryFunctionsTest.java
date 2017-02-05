@@ -18,6 +18,7 @@ package com.alanbuttars.commons.compress.config;
 import static com.alanbuttars.commons.compress.util.Archives.AR;
 import static com.alanbuttars.commons.compress.util.Archives.CPIO;
 import static com.alanbuttars.commons.compress.util.Archives.DUMP;
+import static com.alanbuttars.commons.compress.util.Archives.JAR;
 import static com.alanbuttars.commons.compress.util.Archives.TAR;
 import static com.alanbuttars.commons.compress.util.Archives.ZIP;
 import static org.junit.Assert.assertEquals;
@@ -28,6 +29,7 @@ import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ar.ArArchiveEntry;
 import org.apache.commons.compress.archivers.cpio.CpioArchiveEntry;
 import org.apache.commons.compress.archivers.dump.DumpArchiveEntry;
+import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.junit.Test;
@@ -91,6 +93,20 @@ public class ArchiveEntryFunctionsTest {
 		DumpArchiveEntry dumpEntry = (DumpArchiveEntry) entry;
 		assertEquals("entryName.txt", dumpEntry.getName());
 		assertNull(dumpEntry.getSimpleName());
+	}
+
+	@Test
+	public void testJar() {
+		DoubleInputFunction<String, Long, ArchiveEntryConfig> configFunction = ArchiveEntryFunctions.defaultConfigFunctions().get(JAR);
+		Function<ArchiveEntryConfig, ArchiveEntry> entryFunction = ArchiveEntryFunctions.defaultEntryFunctions().get(JAR);
+
+		ArchiveEntryConfig config = configFunction.apply("entryName.txt", 123L);
+		assertEquals("entryName.txt", config.getEntryName());
+
+		ArchiveEntry entry = entryFunction.apply(config);
+		assertEquals(JarArchiveEntry.class, entry.getClass());
+		JarArchiveEntry jarEntry = (JarArchiveEntry) entry;
+		assertEquals("entryName.txt", jarEntry.getName());
 	}
 
 	@Test

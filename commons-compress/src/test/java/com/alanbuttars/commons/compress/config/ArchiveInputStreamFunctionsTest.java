@@ -18,6 +18,7 @@ package com.alanbuttars.commons.compress.config;
 import static com.alanbuttars.commons.compress.util.Archives.AR;
 import static com.alanbuttars.commons.compress.util.Archives.CPIO;
 import static com.alanbuttars.commons.compress.util.Archives.DUMP;
+import static com.alanbuttars.commons.compress.util.Archives.JAR;
 import static com.alanbuttars.commons.compress.util.Archives.TAR;
 import static com.alanbuttars.commons.compress.util.Archives.ZIP;
 import static org.junit.Assert.assertEquals;
@@ -34,6 +35,7 @@ import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.ar.ArArchiveInputStream;
 import org.apache.commons.compress.archivers.cpio.CpioArchiveInputStream;
 import org.apache.commons.compress.archivers.cpio.CpioConstants;
+import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarConstants;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
@@ -47,6 +49,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import com.alanbuttars.commons.compress.config.input.ArchiveInputStreamConfig;
 import com.alanbuttars.commons.compress.config.input.ArchiveInputStreamConfigCpioImpl;
 import com.alanbuttars.commons.compress.config.input.ArchiveInputStreamConfigDumpImpl;
+import com.alanbuttars.commons.compress.config.input.ArchiveInputStreamConfigJarImpl;
 import com.alanbuttars.commons.compress.config.input.ArchiveInputStreamConfigTarImpl;
 import com.alanbuttars.commons.compress.config.input.ArchiveInputStreamConfigZipImpl;
 import com.alanbuttars.commons.util.functions.Function;
@@ -116,6 +119,22 @@ public class ArchiveInputStreamFunctionsTest {
 		catch (RuntimeException e) {
 			assertTrue(e.getCause() instanceof ArchiveException);
 		}
+	}
+
+	@Test
+	public void testJar() throws Exception {
+		prepare(JAR);
+
+		ArchiveInputStreamConfig config = configFunction.apply(inputStream);
+		assertEquals(ArchiveInputStreamConfigJarImpl.class, config.getClass());
+		ArchiveInputStreamConfigJarImpl jarConfig = (ArchiveInputStreamConfigJarImpl) config;
+		assertFalse(jarConfig.allowStoredEntriesWithDataDescriptor());
+		assertEquals("UTF8", jarConfig.getEncoding());
+		assertTrue(jarConfig.useUnicodeExtraFields());
+		assertEquals(inputStream, jarConfig.getInputStream());
+
+		ArchiveInputStream stream = streamFunction.apply(jarConfig);
+		assertEquals(JarArchiveInputStream.class, stream.getClass());
 	}
 
 	@Test

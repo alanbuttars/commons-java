@@ -18,6 +18,7 @@ package com.alanbuttars.commons.compress.config;
 import static com.alanbuttars.commons.compress.util.Archives.AR;
 import static com.alanbuttars.commons.compress.util.Archives.CPIO;
 import static com.alanbuttars.commons.compress.util.Archives.DUMP;
+import static com.alanbuttars.commons.compress.util.Archives.JAR;
 import static com.alanbuttars.commons.compress.util.Archives.TAR;
 import static com.alanbuttars.commons.compress.util.Archives.ZIP;
 import static org.junit.Assert.assertEquals;
@@ -33,6 +34,7 @@ import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.ar.ArArchiveOutputStream;
 import org.apache.commons.compress.archivers.cpio.CpioArchiveOutputStream;
 import org.apache.commons.compress.archivers.cpio.CpioConstants;
+import org.apache.commons.compress.archivers.jar.JarArchiveOutputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.archivers.tar.TarConstants;
 import org.apache.commons.compress.archivers.zip.Zip64Mode;
@@ -48,6 +50,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import com.alanbuttars.commons.compress.config.output.ArchiveOutputStreamConfig;
 import com.alanbuttars.commons.compress.config.output.ArchiveOutputStreamConfigArImpl;
 import com.alanbuttars.commons.compress.config.output.ArchiveOutputStreamConfigCpioImpl;
+import com.alanbuttars.commons.compress.config.output.ArchiveOutputStreamConfigJarImpl;
 import com.alanbuttars.commons.compress.config.output.ArchiveOutputStreamConfigTarImpl;
 import com.alanbuttars.commons.compress.config.output.ArchiveOutputStreamConfigZipImpl;
 import com.alanbuttars.commons.util.functions.Function;
@@ -110,6 +113,26 @@ public class ArchiveOutputStreamFunctionsTest {
 
 		assertNull(configFunction);
 		assertNull(streamFunction);
+	}
+
+	@Test
+	public void testJar() throws Exception {
+		prepare(JAR);
+
+		ArchiveOutputStreamConfig config = configFunction.apply(outputStream);
+		assertEquals(ArchiveOutputStreamConfigJarImpl.class, config.getClass());
+		ArchiveOutputStreamConfigJarImpl jarConfig = (ArchiveOutputStreamConfigJarImpl) config;
+		assertEquals("", jarConfig.getComment());
+		assertFalse(jarConfig.fallbackToUTF8());
+		assertEquals(ZipArchiveOutputStream.DEFAULT_COMPRESSION, jarConfig.getLevel());
+		assertEquals(ZipEntry.DEFLATED, jarConfig.getMethod());
+		assertEquals(outputStream, jarConfig.getOutputStream());
+		assertEquals(UnicodeExtraFieldPolicy.NEVER, jarConfig.getUnicodeExtraFieldPolicy());
+		assertTrue(jarConfig.useLanguageEncoding());
+		assertEquals(Zip64Mode.AsNeeded, jarConfig.getZip64Mode());
+
+		ArchiveOutputStream stream = streamFunction.apply(jarConfig);
+		assertEquals(JarArchiveOutputStream.class, stream.getClass());
 	}
 
 	@Test

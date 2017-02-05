@@ -35,6 +35,7 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import com.alanbuttars.commons.compress.config.output.ArchiveOutputStreamConfig;
 import com.alanbuttars.commons.compress.config.output.ArchiveOutputStreamConfigArImpl;
 import com.alanbuttars.commons.compress.config.output.ArchiveOutputStreamConfigCpioImpl;
+import com.alanbuttars.commons.compress.config.output.ArchiveOutputStreamConfigJarImpl;
 import com.alanbuttars.commons.compress.config.output.ArchiveOutputStreamConfigTarImpl;
 import com.alanbuttars.commons.compress.config.output.ArchiveOutputStreamConfigZipImpl;
 import com.alanbuttars.commons.util.functions.Function;
@@ -80,7 +81,14 @@ class ArchiveOutputStreamFunctions {
 	}
 
 	private static Function<OutputStream, ArchiveOutputStreamConfig> defaultJarConfigFunction() {
-		return defaultZipConfigFunction();
+		return new Function<OutputStream, ArchiveOutputStreamConfig>() {
+
+			@Override
+			public ArchiveOutputStreamConfig apply(OutputStream output) {
+				return new ArchiveOutputStreamConfigJarImpl(output);
+			}
+
+		};
 	}
 
 	private static Function<OutputStream, ArchiveOutputStreamConfig> defaultTarConfigFunction() {

@@ -1,0 +1,24 @@
+[
+  {
+    "type": "jar",
+    "fileName": "test.jar",
+    "files": [
+      {
+        "fileName": "app/AppTest.java",
+        "contents": "package app;\n\npublic class AppTest {\n\n\tpublic void test() {\n\t\tApp.main(new String[]{\"abc\"});\n\t}\n}"
+      },
+      {
+        "fileName": "app/App.java",
+        "contents": "package app;\n\npublic class App {\n\tpublic static void main(String[] args) {\n\t\tUtils.print(args[0]);\n\t}\n}"
+      },
+      {
+        "fileName": "app/UtilsTest.java",
+        "contents": "package app;\n\npublic class UtilsTest {\n\n}"
+      },
+      {
+        "fileName": "app/Utils.java",
+        "contents": "package app;\n\npublic class Utils {\n\tpublic static void print(String arg) {\n\t\tSystem.out.println(arg);\n\t}\n}"
+      }
+    ]
+  }
+]

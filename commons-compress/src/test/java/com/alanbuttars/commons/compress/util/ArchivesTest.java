@@ -18,6 +18,7 @@ package com.alanbuttars.commons.compress.util;
 import static com.alanbuttars.commons.compress.util.Archives.AR;
 import static com.alanbuttars.commons.compress.util.Archives.CPIO;
 import static com.alanbuttars.commons.compress.util.Archives.DUMP;
+import static com.alanbuttars.commons.compress.util.Archives.JAR;
 import static com.alanbuttars.commons.compress.util.Archives.TAR;
 import static com.alanbuttars.commons.compress.util.Archives.ZIP;
 import static org.junit.Assert.assertEquals;
@@ -80,6 +81,16 @@ public class ArchivesTest {
 		catch (IllegalArgumentException e) {
 			assertEquals("Creating dump archives is not supported", e.getMessage());
 		}
+	}
+
+	@Test
+	public void testExtractJar() throws IOException {
+		testExtract(JAR);
+	}
+
+	@Test
+	public void testArchiveJar() throws IOException {
+		testArchive(JAR);
 	}
 
 	@Test
