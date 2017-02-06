@@ -15,30 +15,13 @@
  */
 package com.alanbuttars.commons.compress.util;
 
-import static com.alanbuttars.commons.compress.util.Archives.AR;
-import static com.alanbuttars.commons.compress.util.Archives.ARJ;
-import static com.alanbuttars.commons.compress.util.Archives.CPIO;
-import static com.alanbuttars.commons.compress.util.Archives.DUMP;
-import static com.alanbuttars.commons.compress.util.Archives.JAR;
-import static com.alanbuttars.commons.compress.util.Archives.TAR;
-import static com.alanbuttars.commons.compress.util.Archives.ZIP;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.Test;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 /**
  * Test class for {@link Archives}.
@@ -48,189 +31,656 @@ import com.google.gson.reflect.TypeToken;
  */
 public class ArchivesTest {
 
-	@Test
-	public void testExtractAr() throws IOException {
-		testExtract(AR);
+	private File file() throws IOException {
+		return File.createTempFile("archive", ".tmp");
+	}
+
+	private File directory() throws IOException {
+		return java.nio.file.Files.createTempDirectory("archive").toFile();
 	}
 
 	@Test
-	public void testArchiveAr() throws IOException {
-		testArchive(AR);
-	}
-
-	@Test
-	public void testExtractArj() throws IOException {
-		testExtract(ARJ);
-	}
-
-	@Test
-	public void testArchiveArj() throws IOException {
+	public void testArchiveFilePathsArchiveTypeNull() throws IOException {
 		try {
-			testArchive(ARJ);
+			Archives.archive(null, directory().getAbsolutePath(), file().getAbsolutePath());
 			fail();
 		}
 		catch (IllegalArgumentException e) {
-			assertEquals("Creating arj archives is not supported", e.getMessage());
+			assertEquals("Archive type must be non-null", e.getMessage());
 		}
 	}
 
 	@Test
-	public void testExtractCpio() throws IOException {
-		testExtract(CPIO);
-	}
-
-	@Test
-	public void testArchiveCpio() throws IOException {
-		testArchive(CPIO);
-	}
-
-	@Test
-	public void testExtractDump() throws IOException {
-		testExtract(DUMP);
-	}
-
-	@Test
-	public void testArchiveDump() throws IOException {
+	public void testArchiveFilePathsArchiveTypeEmpty() throws IOException {
 		try {
-			testArchive(DUMP);
+			Archives.archive("", directory().getAbsolutePath(), file().getAbsolutePath());
 			fail();
 		}
 		catch (IllegalArgumentException e) {
-			assertEquals("Creating dump archives is not supported", e.getMessage());
+			assertEquals("Archive type must be non-empty", e.getMessage());
 		}
 	}
 
 	@Test
-	public void testExtractJar() throws IOException {
-		testExtract(JAR);
+	public void testArchiveFilePathsArchiveTypeBlank() throws IOException {
+		try {
+			Archives.archive(" ", directory().getAbsolutePath(), file().getAbsolutePath());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Archive type must be non-empty", e.getMessage());
+		}
 	}
 
 	@Test
-	public void testArchiveJar() throws IOException {
-		testArchive(JAR);
+	public void testArchiveFilePathsArchiveTypeInvalid() throws IOException {
+		try {
+			Archives.archive(Files.BZIP2, directory().getAbsolutePath(), file().getAbsolutePath());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("File type " + Files.BZIP2 + " cannot be archived; use Files.compress()", e.getMessage());
+		}
 	}
 
 	@Test
-	public void testExtractTar() throws IOException {
-		testExtract(TAR);
+	public void testArchiveFilePathsArchiveTypeUnrecognized() throws IOException {
+		try {
+			Archives.archive("blah", directory().getAbsolutePath(), file().getAbsolutePath());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Archive type blah is not recognized", e.getMessage());
+		}
 	}
 
 	@Test
-	public void testArchiveTar() throws IOException {
-		testArchive(TAR);
+	public void testArchiveFilePathsSourceNull() throws IOException {
+		try {
+			Archives.archive(Archives.AR, null, file().getAbsolutePath());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Source file path must be non-null", e.getMessage());
+		}
 	}
 
 	@Test
-	public void testExtractZip() throws IOException {
-		testExtract(ZIP);
+	public void testArchiveFilePathsSourceEmpty() throws IOException {
+		try {
+			Archives.archive(Archives.AR, "", file().getAbsolutePath());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Source file path must be non-empty", e.getMessage());
+		}
 	}
 
 	@Test
-	public void testArchiveZip() throws IOException {
-		testArchive(ZIP);
-	}
-
-	private void testExtract(String archiveType) throws IOException {
-		try (Reader reader = new FileReader(getConfig(archiveType))) {
-			List<Archive> archives = new Gson().fromJson(reader, new TypeToken<List<Archive>>() {
-			}.getType());
-			for (Archive archive : archives) {
-				File source = getArchive(archiveType, archive.getFileName());
-				File destination = Files.createTempDirectory(archiveType).toFile();
-				Archives.extract(archiveType, source, destination);
-
-				assertTrue(destination.exists());
-				assertFiles(archive, destination);
-			}
+	public void testArchiveFilePathsSourceBlank() throws IOException {
+		try {
+			Archives.archive(Archives.AR, " ", file().getAbsolutePath());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Source file path must be non-empty", e.getMessage());
 		}
 	}
 
-	private void testArchive(String archiveType) throws IOException {
-		try (Reader reader = new FileReader(getConfig(archiveType))) {
-			List<Archive> archives = new Gson().fromJson(reader, new TypeToken<List<Archive>>() {
-			}.getType());
-			for (Archive archive : archives) {
-				File extractSource = getArchive(archiveType, archive.getFileName());
-				File extractDestination = Files.createTempDirectory(archiveType).toFile();
-				Archives.extract(archiveType, extractSource, extractDestination);
-
-				File archiveDestination = Files.createTempFile(archiveType, "." + archiveType.toLowerCase()).toFile();
-				Archives.archive(archiveType, extractDestination, archiveDestination);
-
-				assertTrue(archiveDestination.exists());
-				assertTrue(archiveDestination.isFile());
-				assertTrue(archiveDestination.length() > 0);
-
-				File archiveSecondDestination = Files.createTempDirectory(archiveType).toFile();
-				Archives.extract(archiveType, archiveDestination, archiveSecondDestination);
-
-				assertTrue(archiveSecondDestination.exists());
-				assertFiles(archive, archiveSecondDestination);
-			}
+	@Test
+	public void testArchiveFilePathsSourceDoesntExist() throws IOException {
+		File source = new File("i-dont-exist.txt");
+		try {
+			Archives.archive(Archives.AR, source.getAbsolutePath(), file().getAbsolutePath());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Source " + source.getAbsolutePath() + " does not exist", e.getMessage());
 		}
 	}
 
-	private File getArchiveDirectory(String archiveType) {
-		return new File(getClass().getResource(archiveType).getFile());
-	}
-
-	private File getConfig(String archiveType) {
-		return new File(getArchiveDirectory(archiveType), archiveType.toLowerCase() + ".json");
-	}
-
-	private File getArchive(String archiveType, String fileName) {
-		return new File(getArchiveDirectory(archiveType), fileName);
-	}
-
-	private void assertFiles(Archive archive, File destination) throws IOException {
-		List<File> actualFiles = listActualFiles(destination);
-		assertEquals(actualFiles.size(), archive.getFiles().size());
-		assertFiles(destination, actualFiles, archive.getFiles());
-	}
-
-	private void assertFiles(File destination, List<File> actualFiles, List<ArchiveFile> expectedFiles) throws IOException {
-		for (ArchiveFile expectedFile : expectedFiles) {
-			File actualFile = getActualFile(destination, actualFiles, expectedFile);
-			assertNotNull("Could not find " + expectedFile.getFileName(), actualFile);
-			assertTrue(actualFile.length() > 0);
-
-			if (expectedFile.getContents() != null) {
-				byte[] actualFileBytes = Files.readAllBytes(actualFile.toPath());
-				String actualFileContents = new String(actualFileBytes).trim();
-				assertEquals(expectedFile.getContents(), actualFileContents);
-			}
+	@Test
+	public void testArchiveFilePathsSourceNotDirectory() throws IOException {
+		File source = file();
+		try {
+			Archives.archive(Archives.AR, source.getAbsolutePath(), file().getAbsolutePath());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Source " + source.getAbsolutePath() + " must be a directory; to compress a file use File.compress()", e.getMessage());
 		}
 	}
 
-	private File getActualFile(File destination, List<File> actualFiles, ArchiveFile expectedFile) throws IOException {
-		for (File actualFile : actualFiles) {
-			String actualFilePrefix = getActualFilePrefix(destination);
-			String actualFilePath = actualFile.getAbsolutePath().replaceFirst(actualFilePrefix, "");
-			if (expectedFile.getFileName().equals(actualFilePath)) {
-				return actualFile;
-			}
+	@Test
+	public void testArchiveFilePathsSourceUnreadable() throws IOException {
+		File source = directory();
+		source.setReadable(false);
+		try {
+			Archives.archive(Archives.AR, source.getAbsolutePath(), file().getAbsolutePath());
+			fail();
 		}
-		return null;
+		catch (IllegalArgumentException e) {
+			assertEquals("Source " + source.getAbsolutePath() + " is not readable", e.getMessage());
+		}
 	}
 
-	private String getActualFilePrefix(File destination) {
-		return destination.getAbsolutePath() + File.separator;
+	@Test
+	public void testArchiveFilePathsDestinationNull() throws IOException {
+		try {
+			Archives.archive(Archives.AR, directory().getAbsolutePath(), null);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Destination file path must be non-null", e.getMessage());
+		}
 	}
 
-	private List<File> listActualFiles(File file) {
-		return listActualFiles(file, new ArrayList<File>());
+	@Test
+	public void testArchiveFilePathsDestinationEmpty() throws IOException {
+		try {
+			Archives.archive(Archives.AR, directory().getAbsolutePath(), "");
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Destination file path must be non-empty", e.getMessage());
+		}
 	}
 
-	private List<File> listActualFiles(File file, List<File> filesSoFar) {
-		if (file.isFile()) {
-			filesSoFar.add(file);
+	@Test
+	public void testArchiveFilePathsDestinationBlank() throws IOException {
+		try {
+			Archives.archive(Archives.AR, directory().getAbsolutePath(), " ");
+			fail();
 		}
-		else {
-			for (File child : file.listFiles()) {
-				listActualFiles(child, filesSoFar);
-			}
+		catch (IllegalArgumentException e) {
+			assertEquals("Destination file path must be non-empty", e.getMessage());
 		}
-		return filesSoFar;
+	}
+
+	@Test
+	public void testArchiveFilePathsDestinationIsDirectory() throws IOException {
+		File destination = directory();
+		try {
+			Archives.archive(Archives.AR, directory().getAbsolutePath(), destination.getAbsolutePath());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Destination " + destination.getAbsolutePath() + " must not be a directory", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testArchiveFilePathsDestinationUnwriteable() throws IOException {
+		File destination = file();
+		destination.setWritable(false);
+		try {
+			Archives.archive(Archives.AR, directory().getAbsolutePath(), destination.getAbsolutePath());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Destination " + destination.getAbsolutePath() + " is not writable", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilePathsArchiveTypeNull() throws IOException {
+		try {
+			Archives.extract(null, file().getAbsolutePath(), directory().getAbsolutePath());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Archive type must be non-null", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilePathsArchiveTypeEmpty() throws IOException {
+		try {
+			Archives.extract("", file().getAbsolutePath(), directory().getAbsolutePath());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Archive type must be non-empty", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilePathsArchiveTypeBlank() throws IOException {
+		try {
+			Archives.extract(" ", file().getAbsolutePath(), directory().getAbsolutePath());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Archive type must be non-empty", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilePathsArchiveTypeInvalid() throws IOException {
+		try {
+			Archives.extract(Files.BZIP2, file().getAbsolutePath(), directory().getAbsolutePath());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("File type " + Files.BZIP2 + " cannot be extracted; use Files.decompress()", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilePathsArchiveTypeUnrecognized() throws IOException {
+		try {
+			Archives.extract("blah", file().getAbsolutePath(), directory().getAbsolutePath());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Archive type blah is not recognized", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilePathsSourceNull() throws IOException {
+		try {
+			Archives.extract(Archives.AR, null, directory().getAbsolutePath());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Source file path must be non-null", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilePathsSourceEmpty() throws IOException {
+		try {
+			Archives.extract(Archives.AR, "", directory().getAbsolutePath());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Source file path must be non-empty", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilePathsSourceBlank() throws IOException {
+		try {
+			Archives.extract(Archives.AR, " ", directory().getAbsolutePath());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Source file path must be non-empty", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilePathsSourceDoesntExist() throws IOException {
+		File source = new File("i-dont-exist.txt");
+		try {
+			Archives.extract(Archives.AR, source.getAbsolutePath(), directory().getAbsolutePath());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Source " + source.getAbsolutePath() + " does not exist", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilePathsSourceNotFile() throws IOException {
+		File source = directory();
+		try {
+			Archives.extract(Archives.AR, source.getAbsolutePath(), directory().getAbsolutePath());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Source " + source.getAbsolutePath() + " must not be a directory", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilePathsSourceUnreadable() throws IOException {
+		File source = file();
+		source.setReadable(false);
+		try {
+			Archives.extract(Archives.AR, source.getAbsolutePath(), directory().getAbsolutePath());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Source " + source.getAbsolutePath() + " is not readable", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilePathsDestinationNull() throws IOException {
+		try {
+			Archives.extract(Archives.AR, file().getAbsolutePath(), null);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Destination file path must be non-null", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilePathsDestinationEmpty() throws IOException {
+		try {
+			Archives.extract(Archives.AR, file().getAbsolutePath(), "");
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Destination file path must be non-empty", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilePathsDestinationBlank() throws IOException {
+		try {
+			Archives.extract(Archives.AR, file().getAbsolutePath(), " ");
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Destination file path must be non-empty", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilePathsDestinationIsFile() throws IOException {
+		File destination = file();
+		try {
+			Archives.extract(Archives.AR, file().getAbsolutePath(), destination.getAbsolutePath());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Destination " + destination.getAbsolutePath() + " must be a directory", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilePathsDestinationUnwriteable() throws IOException {
+		File destination = directory();
+		destination.setWritable(false);
+		try {
+			Archives.extract(Archives.AR, file().getAbsolutePath(), destination.getAbsolutePath());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Destination " + destination.getAbsolutePath() + " is not writable", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testArchiveFilesArchiveTypeNull() throws IOException {
+		try {
+			Archives.archive(null, directory(), file());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Archive type must be non-null", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testArchiveFilesArchiveTypeEmpty() throws IOException {
+		try {
+			Archives.archive("", directory(), file());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Archive type must be non-empty", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testArchiveFilesArchiveTypeBlank() throws IOException {
+		try {
+			Archives.archive(" ", directory(), file());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Archive type must be non-empty", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testArchiveFilesArchiveTypeInvalid() throws IOException {
+		try {
+			Archives.archive(Files.BZIP2, directory(), file());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("File type " + Files.BZIP2 + " cannot be archived; use Files.compress()", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testArchiveFilesArchiveTypeUnrecognized() throws IOException {
+		try {
+			Archives.archive("blah", directory(), file());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Archive type blah is not recognized", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testArchiveFilesSourceNull() throws IOException {
+		try {
+			Archives.archive(Archives.AR, null, file());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Source must be non-null", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testArchiveFilesSourceDoesntExist() throws IOException {
+		File source = new File("i-dont-exist.txt");
+		try {
+			Archives.archive(Archives.AR, source, file());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Source " + source.getAbsolutePath() + " does not exist", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testArchiveFilesSourceNotDirectory() throws IOException {
+		File source = file();
+		try {
+			Archives.archive(Archives.AR, source, file());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Source " + source.getAbsolutePath() + " must be a directory; to compress a file use File.compress()", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testArchiveFilesSourceUnreadable() throws IOException {
+		File source = directory();
+		source.setReadable(false);
+		try {
+			Archives.archive(Archives.AR, source, file());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Source " + source.getAbsolutePath() + " is not readable", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testArchiveFilesDestinationNull() throws IOException {
+		try {
+			Archives.archive(Archives.AR, directory(), null);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Destination must be non-null", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testArchiveFilesDestinationIsDirectory() throws IOException {
+		File destination = directory();
+		try {
+			Archives.archive(Archives.AR, directory(), destination);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Destination " + destination.getAbsolutePath() + " must not be a directory", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testArchiveFilesDestinationUnwriteable() throws IOException {
+		File destination = file();
+		destination.setWritable(false);
+		try {
+			Archives.archive(Archives.AR, directory(), destination);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Destination " + destination.getAbsolutePath() + " is not writable", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilesArchiveTypeNull() throws IOException {
+		try {
+			Archives.extract(null, file(), directory());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Archive type must be non-null", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilesArchiveTypeEmpty() throws IOException {
+		try {
+			Archives.extract("", file(), directory());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Archive type must be non-empty", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilesArchiveTypeBlank() throws IOException {
+		try {
+			Archives.extract(" ", file(), directory());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Archive type must be non-empty", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilesArchiveTypeInvalid() throws IOException {
+		try {
+			Archives.extract(Files.BZIP2, file(), directory());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("File type " + Files.BZIP2 + " cannot be extracted; use Files.decompress()", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilesArchiveTypeUnrecognized() throws IOException {
+		try {
+			Archives.extract("blah", file(), directory());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Archive type blah is not recognized", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilesSourceNull() throws IOException {
+		try {
+			Archives.extract(Archives.AR, null, directory());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Source must be non-null", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilesSourceDoesntExist() throws IOException {
+		File source = new File("i-dont-exist.txt");
+		try {
+			Archives.extract(Archives.AR, source, directory());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Source " + source.getAbsolutePath() + " does not exist", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilesSourceNotFile() throws IOException {
+		File source = directory();
+		try {
+			Archives.extract(Archives.AR, source, directory());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Source " + source.getAbsolutePath() + " must not be a directory", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilesSourceUnreadable() throws IOException {
+		File source = file();
+		source.setReadable(false);
+		try {
+			Archives.extract(Archives.AR, source, directory());
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Source " + source.getAbsolutePath() + " is not readable", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilesDestinationNull() throws IOException {
+		try {
+			Archives.extract(Archives.AR, file(), null);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Destination must be non-null", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilesDestinationIsFile() throws IOException {
+		File destination = file();
+		try {
+			Archives.extract(Archives.AR, file(), destination);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Destination " + destination.getAbsolutePath() + " must be a directory", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testExtractFilesDestinationUnwriteable() throws IOException {
+		File destination = directory();
+		destination.setWritable(false);
+		try {
+			Archives.extract(Archives.AR, file(), destination);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Destination " + destination.getAbsolutePath() + " is not writable", e.getMessage());
+		}
 	}
 
 }
