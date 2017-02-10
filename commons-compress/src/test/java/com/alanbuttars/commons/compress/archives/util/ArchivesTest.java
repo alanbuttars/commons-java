@@ -23,7 +23,6 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import com.alanbuttars.commons.compress.archives.util.Archives;
 import com.alanbuttars.commons.compress.files.util.Files;
 
 /**
@@ -333,7 +332,7 @@ public class ArchivesTest {
 			fail();
 		}
 		catch (IllegalArgumentException e) {
-			assertEquals("Source " + source.getAbsolutePath() + " must not be a directory", e.getMessage());
+			assertEquals("Source " + source.getAbsolutePath() + " must not be a directory; to extract a directory use Archives.extract()", e.getMessage());
 		}
 	}
 
@@ -633,7 +632,7 @@ public class ArchivesTest {
 			fail();
 		}
 		catch (IllegalArgumentException e) {
-			assertEquals("Source " + source.getAbsolutePath() + " must not be a directory", e.getMessage());
+			assertEquals("Source " + source.getAbsolutePath() + " must not be a directory; to extract a directory use Archives.extract()", e.getMessage());
 		}
 	}
 

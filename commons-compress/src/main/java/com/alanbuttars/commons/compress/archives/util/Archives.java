@@ -93,7 +93,7 @@ public class Archives {
 	 *             on any IO exception
 	 */
 	public static void extract(String archiveType, String sourceFilePath, String destinationFilePath) throws IOException {
-		validateArchiveType(archiveType);
+		validateExtractArchiveType(archiveType);
 		validateSourceFilePath(sourceFilePath);
 		validateDestinationFilePath(destinationFilePath);
 		extract(archiveType, new File(sourceFilePath), new File(destinationFilePath));
@@ -145,11 +145,11 @@ public class Archives {
 
 		Arguments.verify(source != null, "Source must be non-null");
 		Arguments.verify(source.exists(), "Source " + source.getAbsolutePath() + " does not exist");
-		Arguments.verify(!source.isDirectory(), "Source " + source.getAbsolutePath() + " must not be a directory");
+		Arguments.verify(source.isFile(), "Source " + source.getAbsolutePath() + " must not be a directory; to extract a directory use Archives.extract()");
 		Arguments.verify(source.canRead(), "Source " + source.getAbsolutePath() + " is not readable");
 
 		Arguments.verify(destination != null, "Destination must be non-null");
-		Arguments.verify(!destination.isFile(), "Destination " + destination.getAbsolutePath() + " must be a directory");
+		Arguments.verify(destination.isDirectory(), "Destination " + destination.getAbsolutePath() + " must be a directory");
 		Arguments.verify(destination.canWrite(), "Destination " + destination.getAbsolutePath() + " is not writable");
 
 		try (InputStream inputStream = new FileInputStream(source);
@@ -215,7 +215,7 @@ public class Archives {
 	 *             on any IO exception
 	 */
 	public static void archive(String archiveType, String sourceFilePath, String destinationFilePath) throws IOException {
-		validateArchiveType(archiveType);
+		validateArchiveArchiveType(archiveType);
 		validateSourceFilePath(sourceFilePath);
 		validateDestinationFilePath(destinationFilePath);
 		archive(archiveType, new File(sourceFilePath), new File(destinationFilePath));
@@ -273,7 +273,7 @@ public class Archives {
 		Arguments.verify(source.canRead(), "Source " + source.getAbsolutePath() + " is not readable");
 
 		Arguments.verify(destination != null, "Destination must be non-null");
-		Arguments.verify(!destination.isDirectory(), "Destination " + destination.getAbsolutePath() + " must not be a directory");
+		Arguments.verify(destination.isFile(), "Destination " + destination.getAbsolutePath() + " must not be a directory");
 		Arguments.verify(destination.canWrite(), "Destination " + destination.getAbsolutePath() + " is not writable");
 
 		try (OutputStream outputStream = new FileOutputStream(destination);
