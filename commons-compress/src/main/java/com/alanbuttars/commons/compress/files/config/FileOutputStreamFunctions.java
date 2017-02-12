@@ -15,13 +15,18 @@
  */
 package com.alanbuttars.commons.compress.files.config;
 
+import static com.alanbuttars.commons.compress.files.util.Files.BZIP2;
+
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.compress.compressors.CompressorOutputStream;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 
 import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConfig;
+import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConfigBzip2Impl;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
@@ -34,12 +39,42 @@ public class FileOutputStreamFunctions {
 
 	public static Map<String, Function<OutputStream, FileOutputStreamConfig>> defaultConfigFunctions() {
 		Map<String, Function<OutputStream, FileOutputStreamConfig>> functions = new HashMap<>();
+		functions.put(BZIP2, defaultBzip2ConfigFunction());
 		return functions;
+	}
+
+	private static Function<OutputStream, FileOutputStreamConfig> defaultBzip2ConfigFunction() {
+		return new Function<OutputStream, FileOutputStreamConfig>() {
+
+			@Override
+			public FileOutputStreamConfig apply(OutputStream output) {
+				return new FileOutputStreamConfigBzip2Impl(output);
+			}
+
+		};
 	}
 
 	public static Map<String, Function<FileOutputStreamConfig, CompressorOutputStream>> defaultStreamFunctions() {
 		Map<String, Function<FileOutputStreamConfig, CompressorOutputStream>> functions = new HashMap<>();
+		functions.put(BZIP2, defaultBzip2StreamFunction());
 		return functions;
+	}
+
+	private static Function<FileOutputStreamConfig, CompressorOutputStream> defaultBzip2StreamFunction() {
+		return new Function<FileOutputStreamConfig, CompressorOutputStream>() {
+
+			@Override
+			public CompressorOutputStream apply(FileOutputStreamConfig config) {
+				try {
+					FileOutputStreamConfigBzip2Impl bzip2Config = (FileOutputStreamConfigBzip2Impl) config;
+					return new BZip2CompressorOutputStream(bzip2Config.getOutputStream(), bzip2Config.getBlockSize());
+				}
+				catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+
+		};
 	}
 
 }

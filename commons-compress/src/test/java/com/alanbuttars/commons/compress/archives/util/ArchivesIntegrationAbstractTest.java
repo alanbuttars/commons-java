@@ -70,11 +70,11 @@ public class ArchivesIntegrationAbstractTest {
 				assertTrue(archiveDestination.isFile());
 				assertTrue(archiveDestination.length() > 0);
 
-				File archiveSecondDestination = Files.createTempDirectory(archiveType).toFile();
-				Archives.extract(archiveType, archiveDestination, archiveSecondDestination);
+				File extractSecondDestination = Files.createTempDirectory(archiveType).toFile();
+				Archives.extract(archiveType, archiveDestination, extractSecondDestination);
 
-				assertTrue(archiveSecondDestination.exists());
-				assertFiles(archive, archiveSecondDestination);
+				assertTrue(extractSecondDestination.exists());
+				assertFiles(archive, extractSecondDestination);
 			}
 		}
 	}

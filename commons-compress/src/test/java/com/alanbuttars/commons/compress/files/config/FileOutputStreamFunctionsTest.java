@@ -15,15 +15,22 @@
  */
 package com.alanbuttars.commons.compress.files.config;
 
+import static com.alanbuttars.commons.compress.files.util.Files.BZIP2;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 
 import org.apache.commons.compress.compressors.CompressorOutputStream;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConfig;
+import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConfigBzip2Impl;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
@@ -32,7 +39,7 @@ import com.alanbuttars.commons.util.functions.Function;
  * @author Alan Buttars
  *
  */
-//@RunWith(PowerMockRunner.class)
+@RunWith(PowerMockRunner.class)
 public class FileOutputStreamFunctionsTest {
 
 	private OutputStream outputStream;
@@ -47,5 +54,19 @@ public class FileOutputStreamFunctionsTest {
 	private void prepare(String archiveType) {
 		configFunction = FileOutputStreamFunctions.defaultConfigFunctions().get(archiveType);
 		streamFunction = FileOutputStreamFunctions.defaultStreamFunctions().get(archiveType);
+	}
+
+	@Test
+	public void testBzip2() throws Exception {
+		prepare(BZIP2);
+
+		FileOutputStreamConfig config = configFunction.apply(outputStream);
+		assertEquals(FileOutputStreamConfigBzip2Impl.class, config.getClass());
+		FileOutputStreamConfigBzip2Impl bzip2Config = (FileOutputStreamConfigBzip2Impl) config;
+		assertNotNull(bzip2Config.getOutputStream());
+		assertEquals(BZip2CompressorOutputStream.MAX_BLOCKSIZE, bzip2Config.getBlockSize());
+
+		CompressorOutputStream stream = streamFunction.apply(bzip2Config);
+		assertEquals(BZip2CompressorOutputStream.class, stream.getClass());
 	}
 }
