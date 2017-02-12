@@ -16,6 +16,7 @@
 package com.alanbuttars.commons.compress.files.config;
 
 import static com.alanbuttars.commons.compress.files.util.Files.BZIP2;
+import static com.alanbuttars.commons.compress.files.util.Files.DEFLATE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -27,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.compress.compressors.CompressorInputStream;
+import org.apache.commons.compress.compressors.deflate.DeflateCompressorInputStream;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +36,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.alanbuttars.commons.compress.files.config.input.FileInputStreamConfig;
 import com.alanbuttars.commons.compress.files.config.input.FileInputStreamConfigBzip2Impl;
+import com.alanbuttars.commons.compress.files.config.input.FileInputStreamConfigDeflateImpl;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
@@ -76,6 +79,20 @@ public class FileInputStreamFunctionsTest {
 		catch (RuntimeException e) {
 			assertTrue(e.getCause() instanceof IOException);
 		}
+	}
+
+	@Test
+	public void testDeflate() throws Exception {
+		prepare(DEFLATE);
+
+		FileInputStreamConfig config = configFunction.apply(inputStream);
+		assertEquals(FileInputStreamConfigDeflateImpl.class, config.getClass());
+		FileInputStreamConfigDeflateImpl deflateConfig = (FileInputStreamConfigDeflateImpl) config;
+		assertNotNull(deflateConfig.getInputStream());
+		assertNotNull(deflateConfig.getParameters());
+
+		CompressorInputStream stream = streamFunction.apply(config);
+		assertEquals(DeflateCompressorInputStream.class, stream.getClass());
 	}
 
 }
