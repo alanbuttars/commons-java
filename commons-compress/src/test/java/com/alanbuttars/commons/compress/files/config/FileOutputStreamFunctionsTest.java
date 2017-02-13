@@ -17,6 +17,7 @@ package com.alanbuttars.commons.compress.files.config;
 
 import static com.alanbuttars.commons.compress.files.util.Files.BZIP2;
 import static com.alanbuttars.commons.compress.files.util.Files.DEFLATE;
+import static com.alanbuttars.commons.compress.files.util.Files.GZIP;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -26,6 +27,7 @@ import java.io.OutputStream;
 import org.apache.commons.compress.compressors.CompressorOutputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.apache.commons.compress.compressors.deflate.DeflateCompressorOutputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +36,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConfig;
 import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConfigBzip2Impl;
 import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConfigDeflateImpl;
+import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConfigGzipImpl;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
@@ -85,5 +88,19 @@ public class FileOutputStreamFunctionsTest {
 
 		CompressorOutputStream stream = streamFunction.apply(deflateConfig);
 		assertEquals(DeflateCompressorOutputStream.class, stream.getClass());
+	}
+
+	@Test
+	public void testGzip() throws Exception {
+		prepare(GZIP);
+
+		FileOutputStreamConfig config = configFunction.apply(outputStream);
+		assertEquals(FileOutputStreamConfigGzipImpl.class, config.getClass());
+		FileOutputStreamConfigGzipImpl gzipConfig = (FileOutputStreamConfigGzipImpl) config;
+		assertNotNull(gzipConfig.getOutputStream());
+		assertNotNull(gzipConfig.getParameters());
+
+		CompressorOutputStream stream = streamFunction.apply(gzipConfig);
+		assertEquals(GzipCompressorOutputStream.class, stream.getClass());
 	}
 }

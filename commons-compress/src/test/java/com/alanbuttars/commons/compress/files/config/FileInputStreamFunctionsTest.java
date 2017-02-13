@@ -17,6 +17,7 @@ package com.alanbuttars.commons.compress.files.config;
 
 import static com.alanbuttars.commons.compress.files.util.Files.BZIP2;
 import static com.alanbuttars.commons.compress.files.util.Files.DEFLATE;
+import static com.alanbuttars.commons.compress.files.util.Files.GZIP;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -37,6 +38,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import com.alanbuttars.commons.compress.files.config.input.FileInputStreamConfig;
 import com.alanbuttars.commons.compress.files.config.input.FileInputStreamConfigBzip2Impl;
 import com.alanbuttars.commons.compress.files.config.input.FileInputStreamConfigDeflateImpl;
+import com.alanbuttars.commons.compress.files.config.input.FileInputStreamConfigGzipImpl;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
@@ -93,6 +95,25 @@ public class FileInputStreamFunctionsTest {
 
 		CompressorInputStream stream = streamFunction.apply(config);
 		assertEquals(DeflateCompressorInputStream.class, stream.getClass());
+	}
+
+	@Test
+	public void testGzip() throws Exception {
+		prepare(GZIP);
+
+		FileInputStreamConfig config = configFunction.apply(inputStream);
+		assertEquals(FileInputStreamConfigGzipImpl.class, config.getClass());
+		FileInputStreamConfigGzipImpl gzipConfig = (FileInputStreamConfigGzipImpl) config;
+		assertNotNull(gzipConfig.getInputStream());
+		assertFalse(gzipConfig.decompressConcatenated());
+
+		try {
+			streamFunction.apply(config);
+			fail();
+		}
+		catch (RuntimeException e) {
+			assertTrue(e.getCause() instanceof IOException);
+		}
 	}
 
 }

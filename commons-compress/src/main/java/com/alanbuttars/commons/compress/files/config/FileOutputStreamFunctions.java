@@ -17,6 +17,7 @@ package com.alanbuttars.commons.compress.files.config;
 
 import static com.alanbuttars.commons.compress.files.util.Files.BZIP2;
 import static com.alanbuttars.commons.compress.files.util.Files.DEFLATE;
+import static com.alanbuttars.commons.compress.files.util.Files.GZIP;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -26,10 +27,12 @@ import java.util.Map;
 import org.apache.commons.compress.compressors.CompressorOutputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.apache.commons.compress.compressors.deflate.DeflateCompressorOutputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 
 import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConfig;
 import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConfigBzip2Impl;
 import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConfigDeflateImpl;
+import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConfigGzipImpl;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
@@ -44,6 +47,7 @@ public class FileOutputStreamFunctions {
 		Map<String, Function<OutputStream, FileOutputStreamConfig>> functions = new HashMap<>();
 		functions.put(BZIP2, defaultBzip2ConfigFunction());
 		functions.put(DEFLATE, defaultDeflateConfigFunction());
+		functions.put(GZIP, defaultGzipConfigFunction());
 		return functions;
 	}
 
@@ -69,10 +73,22 @@ public class FileOutputStreamFunctions {
 		};
 	}
 
+	private static Function<OutputStream, FileOutputStreamConfig> defaultGzipConfigFunction() {
+		return new Function<OutputStream, FileOutputStreamConfig>() {
+
+			@Override
+			public FileOutputStreamConfig apply(OutputStream output) {
+				return new FileOutputStreamConfigGzipImpl(output);
+			}
+
+		};
+	}
+
 	public static Map<String, Function<FileOutputStreamConfig, CompressorOutputStream>> defaultStreamFunctions() {
 		Map<String, Function<FileOutputStreamConfig, CompressorOutputStream>> functions = new HashMap<>();
 		functions.put(BZIP2, defaultBzip2StreamFunction());
 		functions.put(DEFLATE, defaultDeflateStreamFunction());
+		functions.put(GZIP, defaultGzipStreamFunction());
 		return functions;
 	}
 
@@ -101,6 +117,23 @@ public class FileOutputStreamFunctions {
 				try {
 					FileOutputStreamConfigDeflateImpl deflateConfig = (FileOutputStreamConfigDeflateImpl) config;
 					return new DeflateCompressorOutputStream(deflateConfig.getOutputStream(), deflateConfig.getParameters());
+				}
+				catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+
+		};
+	}
+
+	private static Function<FileOutputStreamConfig, CompressorOutputStream> defaultGzipStreamFunction() {
+		return new Function<FileOutputStreamConfig, CompressorOutputStream>() {
+
+			@Override
+			public CompressorOutputStream apply(FileOutputStreamConfig config) {
+				try {
+					FileOutputStreamConfigGzipImpl gzipConfig = (FileOutputStreamConfigGzipImpl) config;
+					return new GzipCompressorOutputStream(gzipConfig.getOutputStream(), gzipConfig.getParameters());
 				}
 				catch (IOException e) {
 					throw new RuntimeException(e);
