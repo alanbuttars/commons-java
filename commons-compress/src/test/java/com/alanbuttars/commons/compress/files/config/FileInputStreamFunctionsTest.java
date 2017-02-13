@@ -18,6 +18,7 @@ package com.alanbuttars.commons.compress.files.config;
 import static com.alanbuttars.commons.compress.files.util.Files.BZIP2;
 import static com.alanbuttars.commons.compress.files.util.Files.DEFLATE;
 import static com.alanbuttars.commons.compress.files.util.Files.GZIP;
+import static com.alanbuttars.commons.compress.files.util.Files.LZMA;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -106,6 +107,23 @@ public class FileInputStreamFunctionsTest {
 		FileInputStreamConfigGzipImpl gzipConfig = (FileInputStreamConfigGzipImpl) config;
 		assertNotNull(gzipConfig.getInputStream());
 		assertFalse(gzipConfig.decompressConcatenated());
+
+		try {
+			streamFunction.apply(config);
+			fail();
+		}
+		catch (RuntimeException e) {
+			assertTrue(e.getCause() instanceof IOException);
+		}
+	}
+
+	@Test
+	public void testLzma() throws Exception {
+		prepare(LZMA);
+
+		FileInputStreamConfig config = configFunction.apply(inputStream);
+		assertEquals(FileInputStreamConfig.class, config.getClass());
+		assertNotNull(config.getInputStream());
 
 		try {
 			streamFunction.apply(config);

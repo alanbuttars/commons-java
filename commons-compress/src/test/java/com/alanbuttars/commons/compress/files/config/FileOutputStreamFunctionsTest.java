@@ -18,6 +18,7 @@ package com.alanbuttars.commons.compress.files.config;
 import static com.alanbuttars.commons.compress.files.util.Files.BZIP2;
 import static com.alanbuttars.commons.compress.files.util.Files.DEFLATE;
 import static com.alanbuttars.commons.compress.files.util.Files.GZIP;
+import static com.alanbuttars.commons.compress.files.util.Files.LZMA;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -28,6 +29,7 @@ import org.apache.commons.compress.compressors.CompressorOutputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.apache.commons.compress.compressors.deflate.DeflateCompressorOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
+import org.apache.commons.compress.compressors.lzma.LZMACompressorOutputStream;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -102,5 +104,17 @@ public class FileOutputStreamFunctionsTest {
 
 		CompressorOutputStream stream = streamFunction.apply(gzipConfig);
 		assertEquals(GzipCompressorOutputStream.class, stream.getClass());
+	}
+
+	@Test
+	public void testLzma() throws Exception {
+		prepare(LZMA);
+
+		FileOutputStreamConfig config = configFunction.apply(outputStream);
+		assertEquals(FileOutputStreamConfig.class, config.getClass());
+		assertNotNull(config.getOutputStream());
+
+		CompressorOutputStream stream = streamFunction.apply(config);
+		assertEquals(LZMACompressorOutputStream.class, stream.getClass());
 	}
 }

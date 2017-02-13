@@ -18,6 +18,7 @@ package com.alanbuttars.commons.compress.files.config;
 import static com.alanbuttars.commons.compress.files.util.Files.BZIP2;
 import static com.alanbuttars.commons.compress.files.util.Files.DEFLATE;
 import static com.alanbuttars.commons.compress.files.util.Files.GZIP;
+import static com.alanbuttars.commons.compress.files.util.Files.LZMA;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +29,7 @@ import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.compress.compressors.deflate.DeflateCompressorInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
+import org.apache.commons.compress.compressors.lzma.LZMACompressorInputStream;
 
 import com.alanbuttars.commons.compress.files.config.input.FileInputStreamConfig;
 import com.alanbuttars.commons.compress.files.config.input.FileInputStreamConfigBzip2Impl;
@@ -48,6 +50,7 @@ public class FileInputStreamFunctions {
 		functions.put(BZIP2, defaultBzip2ConfigFunction());
 		functions.put(DEFLATE, defaultDeflateConfigFunction());
 		functions.put(GZIP, defaultGzipConfigFunction());
+		functions.put(LZMA, defaultLzmaConfigFunction());
 		return functions;
 	}
 
@@ -84,11 +87,23 @@ public class FileInputStreamFunctions {
 		};
 	}
 
+	private static Function<InputStream, FileInputStreamConfig> defaultLzmaConfigFunction() {
+		return new Function<InputStream, FileInputStreamConfig>() {
+
+			@Override
+			public FileInputStreamConfig apply(InputStream input) {
+				return new FileInputStreamConfig(input);
+			}
+
+		};
+	}
+
 	public static Map<String, Function<FileInputStreamConfig, CompressorInputStream>> defaultStreamFunctions() {
 		Map<String, Function<FileInputStreamConfig, CompressorInputStream>> functions = new HashMap<>();
 		functions.put(BZIP2, defaultBzip2StreamFunction());
 		functions.put(DEFLATE, defaultDeflateStreamFunction());
 		functions.put(GZIP, defaultGzipStreamFunction());
+		functions.put(LZMA, defaultLzmaStreamFunction());
 		return functions;
 	}
 
@@ -129,6 +144,22 @@ public class FileInputStreamFunctions {
 				try {
 					FileInputStreamConfigGzipImpl gzipConfig = (FileInputStreamConfigGzipImpl) config;
 					return new GzipCompressorInputStream(gzipConfig.getInputStream(), gzipConfig.decompressConcatenated());
+				}
+				catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+
+		};
+	}
+
+	private static Function<FileInputStreamConfig, CompressorInputStream> defaultLzmaStreamFunction() {
+		return new Function<FileInputStreamConfig, CompressorInputStream>() {
+
+			@Override
+			public CompressorInputStream apply(FileInputStreamConfig config) {
+				try {
+					return new LZMACompressorInputStream(config.getInputStream());
 				}
 				catch (IOException e) {
 					throw new RuntimeException(e);
