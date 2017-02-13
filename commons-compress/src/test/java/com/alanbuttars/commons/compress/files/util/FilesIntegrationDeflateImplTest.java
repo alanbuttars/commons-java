@@ -30,7 +30,7 @@ import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConf
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Integration test class for {@link Files} for {@link Files#DEFLATE} archives.
+ * Integration test class for {@link Files} for {@link Files#DEFLATE} files.
  * 
  * @author Alan Buttars
  *

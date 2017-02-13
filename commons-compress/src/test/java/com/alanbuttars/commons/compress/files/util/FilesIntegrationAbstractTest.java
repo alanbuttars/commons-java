@@ -105,8 +105,10 @@ public class FilesIntegrationAbstractTest {
 	}
 
 	private void assertFile(ArchiveFile expectedFile, File actualFile) throws IOException {
-		byte[] actualFileBytes = java.nio.file.Files.readAllBytes(actualFile.toPath());
-		String actualFileContents = new String(actualFileBytes).trim();
-		assertEquals(expectedFile.getContents(), actualFileContents);
+		if (expectedFile.getContents() != null) {
+			byte[] actualFileBytes = java.nio.file.Files.readAllBytes(actualFile.toPath());
+			String actualFileContents = new String(actualFileBytes).trim();
+			assertEquals(expectedFile.getContents(), actualFileContents);
+		}
 	}
 }

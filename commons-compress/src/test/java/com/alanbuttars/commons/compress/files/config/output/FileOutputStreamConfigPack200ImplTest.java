@@ -15,33 +15,29 @@
  */
 package com.alanbuttars.commons.compress.files.config.output;
 
-import java.io.OutputStream;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
-import org.apache.commons.compress.compressors.gzip.GzipParameters;
+import java.io.ByteArrayOutputStream;
 
-import com.alanbuttars.commons.compress.files.util.Files;
+import org.apache.commons.compress.compressors.pack200.Pack200Strategy;
+import org.junit.Test;
 
 /**
- * Extension of {@link CompressorOutputStreamConfig} used for {@link Files#GZIP} files.
+ * Test class for {@link FileOutputStreamConfigPack200Impl}.
  * 
  * @author Alan Buttars
  *
  */
-public class FileOutputStreamConfigGzipImpl extends FileOutputStreamConfig {
-	
-	private GzipParameters parameters;
+public class FileOutputStreamConfigPack200ImplTest {
 
-	public FileOutputStreamConfigGzipImpl(OutputStream outputStream) {
-		super(outputStream);
-		this.parameters = new GzipParameters();
-	}
-
-	public GzipParameters getParameters() {
-		return parameters;
-	}
-
-	public void setParameters(GzipParameters parameters) {
-		this.parameters = parameters;
+	@Test
+	public void testConstructor() {
+		FileOutputStreamConfigPack200Impl config = new FileOutputStreamConfigPack200Impl(new ByteArrayOutputStream());
+		assertNotNull(config.getOutputStream());
+		assertEquals(Pack200Strategy.IN_MEMORY, config.getMode());
+		assertNull(config.getProperties());
 	}
 
 }

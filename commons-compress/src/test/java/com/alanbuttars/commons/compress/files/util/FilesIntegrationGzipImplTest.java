@@ -22,7 +22,7 @@ import java.io.IOException;
 import org.junit.Test;
 
 /**
- * Integration test class for {@link Files} for {@link Files#GZIP} archives.
+ * Integration test class for {@link Files} for {@link Files#GZIP} files.
  * 
  * @author Alan Buttars
  *

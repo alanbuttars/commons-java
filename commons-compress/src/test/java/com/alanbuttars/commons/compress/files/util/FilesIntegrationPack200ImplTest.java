@@ -15,27 +15,27 @@
  */
 package com.alanbuttars.commons.compress.files.util;
 
-import static com.alanbuttars.commons.compress.files.util.Files.BZIP2;
+import static com.alanbuttars.commons.compress.files.util.Files.PACK200;
 
 import java.io.IOException;
 
 import org.junit.Test;
 
 /**
- * Integration test class for {@link Files} for {@link Files#BZIP2} files.
+ * Integration test class for {@link Files} for {@link Files#PACK200} files.
  * 
  * @author Alan Buttars
  *
  */
-public class FilesIntegrationBzip2ImplTest extends FilesIntegrationAbstractTest {
+public class FilesIntegrationPack200ImplTest extends FilesIntegrationAbstractTest {
 
 	@Test
 	public void testDecompress() throws IOException {
-		testDecompress(BZIP2);
+		testDecompress(PACK200);
 	}
 
 	@Test
 	public void testCompress() throws IOException {
-		testCompress(BZIP2);
+		testCompress(PACK200);
 	}
 }

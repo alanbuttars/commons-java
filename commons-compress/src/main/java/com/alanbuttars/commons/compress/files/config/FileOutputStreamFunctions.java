@@ -19,6 +19,7 @@ import static com.alanbuttars.commons.compress.files.util.Files.BZIP2;
 import static com.alanbuttars.commons.compress.files.util.Files.DEFLATE;
 import static com.alanbuttars.commons.compress.files.util.Files.GZIP;
 import static com.alanbuttars.commons.compress.files.util.Files.LZMA;
+import static com.alanbuttars.commons.compress.files.util.Files.PACK200;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -30,11 +31,13 @@ import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream
 import org.apache.commons.compress.compressors.deflate.DeflateCompressorOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.apache.commons.compress.compressors.lzma.LZMACompressorOutputStream;
+import org.apache.commons.compress.compressors.pack200.Pack200CompressorOutputStream;
 
 import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConfig;
 import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConfigBzip2Impl;
 import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConfigDeflateImpl;
 import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConfigGzipImpl;
+import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConfigPack200Impl;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
@@ -51,6 +54,7 @@ public class FileOutputStreamFunctions {
 		functions.put(DEFLATE, defaultDeflateConfigFunction());
 		functions.put(GZIP, defaultGzipConfigFunction());
 		functions.put(LZMA, defaultLzmaConfigFunction());
+		functions.put(PACK200, defaultPack200ConfigFunction());
 		return functions;
 	}
 
@@ -98,12 +102,24 @@ public class FileOutputStreamFunctions {
 		};
 	}
 
+	private static Function<OutputStream, FileOutputStreamConfig> defaultPack200ConfigFunction() {
+		return new Function<OutputStream, FileOutputStreamConfig>() {
+
+			@Override
+			public FileOutputStreamConfig apply(OutputStream output) {
+				return new FileOutputStreamConfigPack200Impl(output);
+			}
+
+		};
+	}
+
 	public static Map<String, Function<FileOutputStreamConfig, CompressorOutputStream>> defaultStreamFunctions() {
 		Map<String, Function<FileOutputStreamConfig, CompressorOutputStream>> functions = new HashMap<>();
 		functions.put(BZIP2, defaultBzip2StreamFunction());
 		functions.put(DEFLATE, defaultDeflateStreamFunction());
 		functions.put(GZIP, defaultGzipStreamFunction());
 		functions.put(LZMA, defaultLzmaStreamFunction());
+		functions.put(PACK200, defaultPack200StreamFunction());
 		return functions;
 	}
 
@@ -165,6 +181,23 @@ public class FileOutputStreamFunctions {
 			public CompressorOutputStream apply(FileOutputStreamConfig config) {
 				try {
 					return new LZMACompressorOutputStream(config.getOutputStream());
+				}
+				catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+
+		};
+	}
+
+	private static Function<FileOutputStreamConfig, CompressorOutputStream> defaultPack200StreamFunction() {
+		return new Function<FileOutputStreamConfig, CompressorOutputStream>() {
+
+			@Override
+			public CompressorOutputStream apply(FileOutputStreamConfig config) {
+				try {
+					FileOutputStreamConfigPack200Impl packConfig = (FileOutputStreamConfigPack200Impl) config;
+					return new Pack200CompressorOutputStream(packConfig.getOutputStream(), packConfig.getMode(), packConfig.getProperties());
 				}
 				catch (IOException e) {
 					throw new RuntimeException(e);

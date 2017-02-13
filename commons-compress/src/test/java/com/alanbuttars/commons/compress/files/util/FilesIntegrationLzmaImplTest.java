@@ -22,7 +22,7 @@ import java.io.IOException;
 import org.junit.Test;
 
 /**
- * Integration test class for {@link Files} for {@link Files#LZMA} archives.
+ * Integration test class for {@link Files} for {@link Files#LZMA} files.
  * 
  * @author Alan Buttars
  *

@@ -19,8 +19,10 @@ import static com.alanbuttars.commons.compress.files.util.Files.BZIP2;
 import static com.alanbuttars.commons.compress.files.util.Files.DEFLATE;
 import static com.alanbuttars.commons.compress.files.util.Files.GZIP;
 import static com.alanbuttars.commons.compress.files.util.Files.LZMA;
+import static com.alanbuttars.commons.compress.files.util.Files.PACK200;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
@@ -30,6 +32,8 @@ import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream
 import org.apache.commons.compress.compressors.deflate.DeflateCompressorOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.apache.commons.compress.compressors.lzma.LZMACompressorOutputStream;
+import org.apache.commons.compress.compressors.pack200.Pack200CompressorOutputStream;
+import org.apache.commons.compress.compressors.pack200.Pack200Strategy;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,6 +43,7 @@ import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConf
 import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConfigBzip2Impl;
 import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConfigDeflateImpl;
 import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConfigGzipImpl;
+import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConfigPack200Impl;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
@@ -116,5 +121,20 @@ public class FileOutputStreamFunctionsTest {
 
 		CompressorOutputStream stream = streamFunction.apply(config);
 		assertEquals(LZMACompressorOutputStream.class, stream.getClass());
+	}
+
+	@Test
+	public void testPack200() throws Exception {
+		prepare(PACK200);
+
+		FileOutputStreamConfig config = configFunction.apply(outputStream);
+		assertEquals(FileOutputStreamConfigPack200Impl.class, config.getClass());
+		FileOutputStreamConfigPack200Impl packConfig = (FileOutputStreamConfigPack200Impl) config;
+		assertNotNull(packConfig.getOutputStream());
+		assertEquals(Pack200Strategy.IN_MEMORY, packConfig.getMode());
+		assertNull(packConfig.getProperties());
+
+		CompressorOutputStream stream = streamFunction.apply(packConfig);
+		assertEquals(Pack200CompressorOutputStream.class, stream.getClass());
 	}
 }

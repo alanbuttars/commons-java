@@ -19,9 +19,11 @@ import static com.alanbuttars.commons.compress.files.util.Files.BZIP2;
 import static com.alanbuttars.commons.compress.files.util.Files.DEFLATE;
 import static com.alanbuttars.commons.compress.files.util.Files.GZIP;
 import static com.alanbuttars.commons.compress.files.util.Files.LZMA;
+import static com.alanbuttars.commons.compress.files.util.Files.PACK200;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -31,6 +33,7 @@ import java.io.InputStream;
 
 import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.deflate.DeflateCompressorInputStream;
+import org.apache.commons.compress.compressors.pack200.Pack200Strategy;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,6 +43,7 @@ import com.alanbuttars.commons.compress.files.config.input.FileInputStreamConfig
 import com.alanbuttars.commons.compress.files.config.input.FileInputStreamConfigBzip2Impl;
 import com.alanbuttars.commons.compress.files.config.input.FileInputStreamConfigDeflateImpl;
 import com.alanbuttars.commons.compress.files.config.input.FileInputStreamConfigGzipImpl;
+import com.alanbuttars.commons.compress.files.config.input.FileInputStreamConfigPack200Impl;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
@@ -124,6 +128,26 @@ public class FileInputStreamFunctionsTest {
 		FileInputStreamConfig config = configFunction.apply(inputStream);
 		assertEquals(FileInputStreamConfig.class, config.getClass());
 		assertNotNull(config.getInputStream());
+
+		try {
+			streamFunction.apply(config);
+			fail();
+		}
+		catch (RuntimeException e) {
+			assertTrue(e.getCause() instanceof IOException);
+		}
+	}
+
+	@Test
+	public void testPack200() throws Exception {
+		prepare(PACK200);
+
+		FileInputStreamConfig config = configFunction.apply(inputStream);
+		assertEquals(FileInputStreamConfigPack200Impl.class, config.getClass());
+		FileInputStreamConfigPack200Impl packConfig = (FileInputStreamConfigPack200Impl) config;
+		assertNotNull(packConfig.getInputStream());
+		assertEquals(Pack200Strategy.IN_MEMORY, packConfig.getMode());
+		assertNull(packConfig.getProperties());
 
 		try {
 			streamFunction.apply(config);

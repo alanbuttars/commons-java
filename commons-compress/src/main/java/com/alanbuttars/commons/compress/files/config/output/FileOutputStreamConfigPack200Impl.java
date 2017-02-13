@@ -16,32 +16,43 @@
 package com.alanbuttars.commons.compress.files.config.output;
 
 import java.io.OutputStream;
+import java.util.Map;
 
-import org.apache.commons.compress.compressors.gzip.GzipParameters;
+import org.apache.commons.compress.compressors.pack200.Pack200Strategy;
 
 import com.alanbuttars.commons.compress.files.util.Files;
 
 /**
- * Extension of {@link CompressorOutputStreamConfig} used for {@link Files#GZIP} files.
+ * Extension of {@link CompressorOutputStreamConfig} used for {@link Files#PACK200} files.
  * 
  * @author Alan Buttars
  *
  */
-public class FileOutputStreamConfigGzipImpl extends FileOutputStreamConfig {
-	
-	private GzipParameters parameters;
+public class FileOutputStreamConfigPack200Impl extends FileOutputStreamConfig {
 
-	public FileOutputStreamConfigGzipImpl(OutputStream outputStream) {
+	private Pack200Strategy mode;
+	private Map<String, String> properties;
+
+	public FileOutputStreamConfigPack200Impl(OutputStream outputStream) {
 		super(outputStream);
-		this.parameters = new GzipParameters();
+		this.mode = Pack200Strategy.IN_MEMORY;
+		this.properties = null;
 	}
 
-	public GzipParameters getParameters() {
-		return parameters;
+	public Pack200Strategy getMode() {
+		return mode;
 	}
 
-	public void setParameters(GzipParameters parameters) {
-		this.parameters = parameters;
+	public void setMode(Pack200Strategy mode) {
+		this.mode = mode;
+	}
+
+	public Map<String, String> getProperties() {
+		return properties;
+	}
+
+	public void setProperties(Map<String, String> properties) {
+		this.properties = properties;
 	}
 
 }
