@@ -22,6 +22,7 @@ import static com.alanbuttars.commons.compress.files.util.Files.LZMA;
 import static com.alanbuttars.commons.compress.files.util.Files.PACK200;
 import static com.alanbuttars.commons.compress.files.util.Files.SNAPPY;
 import static com.alanbuttars.commons.compress.files.util.Files.XZ;
+import static com.alanbuttars.commons.compress.files.util.Files.Z;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,6 +38,7 @@ import org.apache.commons.compress.compressors.pack200.Pack200CompressorInputStr
 import org.apache.commons.compress.compressors.snappy.FramedSnappyCompressorInputStream;
 import org.apache.commons.compress.compressors.snappy.SnappyCompressorInputStream;
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
+import org.apache.commons.compress.compressors.z.ZCompressorInputStream;
 
 import com.alanbuttars.commons.compress.files.config.input.FileInputStreamConfig;
 import com.alanbuttars.commons.compress.files.config.input.FileInputStreamConfigBzip2Impl;
@@ -64,6 +66,7 @@ public class FileInputStreamFunctions {
 		functions.put(PACK200, defaultPack200ConfigFunction());
 		functions.put(SNAPPY, defaultSnappyConfigFunction());
 		functions.put(XZ, defaultXzConfigFunction());
+		functions.put(Z, defaultZConfigFunction());
 		return functions;
 	}
 
@@ -144,6 +147,17 @@ public class FileInputStreamFunctions {
 		};
 	}
 
+	private static Function<InputStream, FileInputStreamConfig> defaultZConfigFunction() {
+		return new Function<InputStream, FileInputStreamConfig>() {
+
+			@Override
+			public FileInputStreamConfig apply(InputStream input) {
+				return new FileInputStreamConfig(input);
+			}
+
+		};
+	}
+
 	public static Map<String, Function<FileInputStreamConfig, CompressorInputStream>> defaultStreamFunctions() {
 		Map<String, Function<FileInputStreamConfig, CompressorInputStream>> functions = new HashMap<>();
 		functions.put(BZIP2, defaultBzip2StreamFunction());
@@ -153,6 +167,7 @@ public class FileInputStreamFunctions {
 		functions.put(PACK200, defaultPack200StreamFunction());
 		functions.put(SNAPPY, defaultSnappyStreamFunction());
 		functions.put(XZ, defaultXzStreamFunction());
+		functions.put(Z, defaultZStreamFunction());
 		return functions;
 	}
 
@@ -263,6 +278,22 @@ public class FileInputStreamFunctions {
 				try {
 					FileInputStreamConfigXzImpl xzConfig = (FileInputStreamConfigXzImpl) config;
 					return new XZCompressorInputStream(xzConfig.getInputStream(), xzConfig.decompressConcatenated());
+				}
+				catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+
+		};
+	}
+
+	private static Function<FileInputStreamConfig, CompressorInputStream> defaultZStreamFunction() {
+		return new Function<FileInputStreamConfig, CompressorInputStream>() {
+
+			@Override
+			public CompressorInputStream apply(FileInputStreamConfig config) {
+				try {
+					return new ZCompressorInputStream(config.getInputStream());
 				}
 				catch (IOException e) {
 					throw new RuntimeException(e);

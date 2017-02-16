@@ -22,6 +22,7 @@ import static com.alanbuttars.commons.compress.files.util.Files.LZMA;
 import static com.alanbuttars.commons.compress.files.util.Files.PACK200;
 import static com.alanbuttars.commons.compress.files.util.Files.SNAPPY;
 import static com.alanbuttars.commons.compress.files.util.Files.XZ;
+import static com.alanbuttars.commons.compress.files.util.Files.Z;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -220,6 +221,23 @@ public class FileInputStreamFunctionsTest {
 		}
 		catch (RuntimeException e) {
 			assertTrue(e.getCause() instanceof EOFException);
+		}
+	}
+
+	@Test
+	public void testZ() throws Exception {
+		prepare(Z);
+
+		FileInputStreamConfig config = configFunction.apply(inputStream);
+		assertEquals(FileInputStreamConfig.class, config.getClass());
+		assertNotNull(config.getInputStream());
+
+		try {
+			streamFunction.apply(config);
+			fail();
+		}
+		catch (RuntimeException e) {
+			assertTrue(e.getCause() instanceof IOException);
 		}
 	}
 

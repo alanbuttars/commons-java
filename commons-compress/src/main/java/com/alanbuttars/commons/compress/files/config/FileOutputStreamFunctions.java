@@ -21,6 +21,7 @@ import static com.alanbuttars.commons.compress.files.util.Files.GZIP;
 import static com.alanbuttars.commons.compress.files.util.Files.LZMA;
 import static com.alanbuttars.commons.compress.files.util.Files.PACK200;
 import static com.alanbuttars.commons.compress.files.util.Files.XZ;
+import static com.alanbuttars.commons.compress.files.util.Files.Z;
 
 import java.io.IOException;
 import java.io.OutputStream;
