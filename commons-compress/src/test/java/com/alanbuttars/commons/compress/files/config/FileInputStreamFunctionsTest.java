@@ -21,6 +21,7 @@ import static com.alanbuttars.commons.compress.files.util.Files.GZIP;
 import static com.alanbuttars.commons.compress.files.util.Files.LZMA;
 import static com.alanbuttars.commons.compress.files.util.Files.PACK200;
 import static com.alanbuttars.commons.compress.files.util.Files.SNAPPY;
+import static com.alanbuttars.commons.compress.files.util.Files.XZ;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -29,6 +30,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -49,6 +51,7 @@ import com.alanbuttars.commons.compress.files.config.input.FileInputStreamConfig
 import com.alanbuttars.commons.compress.files.config.input.FileInputStreamConfigPack200Impl;
 import com.alanbuttars.commons.compress.files.config.input.FileInputStreamConfigSnappyImpl;
 import com.alanbuttars.commons.compress.files.config.input.FileInputStreamConfigSnappyImpl.Format;
+import com.alanbuttars.commons.compress.files.config.input.FileInputStreamConfigXzImpl;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
@@ -198,6 +201,25 @@ public class FileInputStreamFunctionsTest {
 		}
 		catch (RuntimeException e) {
 			assertTrue(e.getCause() instanceof IOException);
+		}
+	}
+
+	@Test
+	public void testXz() throws Exception {
+		prepare(XZ);
+
+		FileInputStreamConfig config = configFunction.apply(inputStream);
+		assertEquals(FileInputStreamConfigXzImpl.class, config.getClass());
+		FileInputStreamConfigXzImpl xzConfig = (FileInputStreamConfigXzImpl) config;
+		assertNotNull(xzConfig.getInputStream());
+		assertFalse(xzConfig.decompressConcatenated());
+
+		try {
+			streamFunction.apply(config);
+			fail();
+		}
+		catch (RuntimeException e) {
+			assertTrue(e.getCause() instanceof EOFException);
 		}
 	}
 

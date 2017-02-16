@@ -76,14 +76,14 @@ public class FilesIntegrationAbstractTest {
 				File decompressDestination = File.createTempFile(testFile.getFileName(), ".tmp");
 				Files.decompress(fileType, decompressSource, decompressDestination, inputStreamConfigFunction, null);
 
-				File compressDestination = File.createTempFile(fileType, "." + fileType.toLowerCase());
+				File compressDestination = File.createTempFile(fileType + "-", "." + fileType.toLowerCase());
 				Files.compress(fileType, decompressDestination, compressDestination, outputStreamConfigFunction, null);
 
 				assertTrue(compressDestination.exists());
 				assertTrue(compressDestination.isFile());
 				assertTrue(compressDestination.length() > 0);
 
-				File decompressSecondDestination = File.createTempFile(fileType, "." + fileType.toLowerCase());
+				File decompressSecondDestination = File.createTempFile(fileType + "-", "." + fileType.toLowerCase());
 				Files.decompress(fileType, compressDestination, decompressSecondDestination, inputStreamConfigFunction, null);
 
 				assertTrue(decompressSecondDestination.exists());

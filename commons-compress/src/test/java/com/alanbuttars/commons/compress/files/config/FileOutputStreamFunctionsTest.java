@@ -20,6 +20,7 @@ import static com.alanbuttars.commons.compress.files.util.Files.DEFLATE;
 import static com.alanbuttars.commons.compress.files.util.Files.GZIP;
 import static com.alanbuttars.commons.compress.files.util.Files.LZMA;
 import static com.alanbuttars.commons.compress.files.util.Files.PACK200;
+import static com.alanbuttars.commons.compress.files.util.Files.XZ;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -34,16 +35,19 @@ import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.apache.commons.compress.compressors.lzma.LZMACompressorOutputStream;
 import org.apache.commons.compress.compressors.pack200.Pack200CompressorOutputStream;
 import org.apache.commons.compress.compressors.pack200.Pack200Strategy;
+import org.apache.commons.compress.compressors.xz.XZCompressorOutputStream;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.tukaani.xz.LZMA2Options;
 
 import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConfig;
 import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConfigBzip2Impl;
 import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConfigDeflateImpl;
 import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConfigGzipImpl;
 import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConfigPack200Impl;
+import com.alanbuttars.commons.compress.files.config.output.FileOutputStreamConfigXzImpl;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
@@ -136,5 +140,19 @@ public class FileOutputStreamFunctionsTest {
 
 		CompressorOutputStream stream = streamFunction.apply(packConfig);
 		assertEquals(Pack200CompressorOutputStream.class, stream.getClass());
+	}
+
+	@Test
+	public void testXz() throws Exception {
+		prepare(XZ);
+
+		FileOutputStreamConfig config = configFunction.apply(outputStream);
+		assertEquals(FileOutputStreamConfigXzImpl.class, config.getClass());
+		FileOutputStreamConfigXzImpl xzConfig = (FileOutputStreamConfigXzImpl) config;
+		assertNotNull(xzConfig.getOutputStream());
+		assertEquals(LZMA2Options.PRESET_DEFAULT, xzConfig.getPreset());
+
+		CompressorOutputStream stream = streamFunction.apply(xzConfig);
+		assertEquals(XZCompressorOutputStream.class, stream.getClass());
 	}
 }
