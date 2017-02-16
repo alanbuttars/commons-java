@@ -20,6 +20,7 @@ import static com.alanbuttars.commons.compress.files.util.Files.DEFLATE;
 import static com.alanbuttars.commons.compress.files.util.Files.GZIP;
 import static com.alanbuttars.commons.compress.files.util.Files.LZMA;
 import static com.alanbuttars.commons.compress.files.util.Files.PACK200;
+import static com.alanbuttars.commons.compress.files.util.Files.SNAPPY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -34,6 +35,8 @@ import java.io.InputStream;
 import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.deflate.DeflateCompressorInputStream;
 import org.apache.commons.compress.compressors.pack200.Pack200Strategy;
+import org.apache.commons.compress.compressors.snappy.FramedSnappyDialect;
+import org.apache.commons.compress.compressors.snappy.SnappyCompressorInputStream;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,6 +47,8 @@ import com.alanbuttars.commons.compress.files.config.input.FileInputStreamConfig
 import com.alanbuttars.commons.compress.files.config.input.FileInputStreamConfigDeflateImpl;
 import com.alanbuttars.commons.compress.files.config.input.FileInputStreamConfigGzipImpl;
 import com.alanbuttars.commons.compress.files.config.input.FileInputStreamConfigPack200Impl;
+import com.alanbuttars.commons.compress.files.config.input.FileInputStreamConfigSnappyImpl;
+import com.alanbuttars.commons.compress.files.config.input.FileInputStreamConfigSnappyImpl.Format;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
@@ -148,6 +153,44 @@ public class FileInputStreamFunctionsTest {
 		assertNotNull(packConfig.getInputStream());
 		assertEquals(Pack200Strategy.IN_MEMORY, packConfig.getMode());
 		assertNull(packConfig.getProperties());
+
+		try {
+			streamFunction.apply(config);
+			fail();
+		}
+		catch (RuntimeException e) {
+			assertTrue(e.getCause() instanceof IOException);
+		}
+	}
+
+	@Test
+	public void testSnappyStandard() throws Exception {
+		prepare(SNAPPY);
+
+		FileInputStreamConfig config = configFunction.apply(inputStream);
+		assertEquals(FileInputStreamConfigSnappyImpl.class, config.getClass());
+		FileInputStreamConfigSnappyImpl snappyConfig = (FileInputStreamConfigSnappyImpl) config;
+		assertNotNull(snappyConfig.getInputStream());
+		assertEquals(Format.STANDARD, snappyConfig.getFormat());
+		assertEquals(FramedSnappyDialect.STANDARD, snappyConfig.getDialect());
+		assertEquals(SnappyCompressorInputStream.DEFAULT_BLOCK_SIZE, snappyConfig.getBlockSize());
+
+		CompressorInputStream stream = streamFunction.apply(config);
+		assertEquals(SnappyCompressorInputStream.class, stream.getClass());
+	}
+
+	@Test
+	public void testSnappyFramed() throws Exception {
+		prepare(SNAPPY);
+
+		FileInputStreamConfig config = configFunction.apply(inputStream);
+		assertEquals(FileInputStreamConfigSnappyImpl.class, config.getClass());
+		FileInputStreamConfigSnappyImpl snappyConfig = (FileInputStreamConfigSnappyImpl) config;
+		snappyConfig.setFormat(Format.FRAMED);
+		assertNotNull(snappyConfig.getInputStream());
+		assertEquals(Format.FRAMED, snappyConfig.getFormat());
+		assertEquals(FramedSnappyDialect.STANDARD, snappyConfig.getDialect());
+		assertEquals(SnappyCompressorInputStream.DEFAULT_BLOCK_SIZE, snappyConfig.getBlockSize());
 
 		try {
 			streamFunction.apply(config);

@@ -1,0 +1,12 @@
+[
+	{
+		"fileName": "bla.tar.sz"
+	},
+	{
+		"fileName": "lorem-ipsum.txt.sz"
+	},
+	{
+		"fileName": "mixed.txt.sz",
+		"contents": "12345678956789567895678956789\n12341234"
+	}
+]

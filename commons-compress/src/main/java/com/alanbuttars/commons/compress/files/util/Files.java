@@ -264,7 +264,7 @@ public class Files {
 		}
 		if (streamFunction == null) {
 			streamFunction = OUTPUT_STREAM_FUNCTIONS.get(fileType);
-			Arguments.verify(streamFunction != null, "File	 type " + fileType + " is not recognized");
+			Arguments.verify(streamFunction != null, "File type " + fileType + " is not recognized");
 		}
 		FileOutputStreamConfig config = configFunction.apply(outputStream);
 		CompressorOutputStream stream = streamFunction.apply(config);
