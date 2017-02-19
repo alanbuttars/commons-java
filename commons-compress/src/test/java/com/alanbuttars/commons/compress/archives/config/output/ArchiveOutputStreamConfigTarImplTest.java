@@ -19,13 +19,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.archivers.tar.TarConstants;
 import org.junit.Test;
-
-import com.alanbuttars.commons.compress.archives.config.output.ArchiveOutputStreamConfigTarImpl;
 
 /**
  * Test class for {@link ArchiveOutputStreamConfigTarImpl}.
@@ -36,8 +35,8 @@ import com.alanbuttars.commons.compress.archives.config.output.ArchiveOutputStre
 public class ArchiveOutputStreamConfigTarImplTest {
 
 	@Test
-	public void testConstructor() {
-		ArchiveOutputStreamConfigTarImpl config = new ArchiveOutputStreamConfigTarImpl(new ByteArrayOutputStream());
+	public void testConstructor() throws IOException {
+		ArchiveOutputStreamConfigTarImpl config = new ArchiveOutputStreamConfigTarImpl(File.createTempFile(getClass().getName(), ".tmp"));
 		assertNotNull(config.getOutputStream());
 		assertFalse(config.addPaxHeadersForNonAsciiNames());
 		assertEquals(TarArchiveOutputStream.BIGNUMBER_ERROR, config.getBigNumberMode());

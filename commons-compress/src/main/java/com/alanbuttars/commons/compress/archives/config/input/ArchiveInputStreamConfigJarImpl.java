@@ -15,12 +15,20 @@
  */
 package com.alanbuttars.commons.compress.archives.config.input;
 
-import java.io.InputStream;
+import java.io.File;
 
+import com.alanbuttars.commons.compress.archives.util.Archives;
+
+/**
+ * Extension of {@link ArchiveInputStreamConfig} used for {@link Archives#JAR} archives.
+ * 
+ * @author Alan Buttars
+ *
+ */
 public class ArchiveInputStreamConfigJarImpl extends ArchiveInputStreamConfigZipImpl {
 
-	public ArchiveInputStreamConfigJarImpl(InputStream inputStream) {
-		super(inputStream);
+	public ArchiveInputStreamConfigJarImpl(File file) {
+		super(file);
 	}
 
 }

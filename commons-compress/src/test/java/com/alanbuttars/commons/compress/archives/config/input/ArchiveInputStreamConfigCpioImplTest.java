@@ -18,13 +18,12 @@ package com.alanbuttars.commons.compress.archives.config.input;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 
 import org.apache.commons.compress.archivers.cpio.CpioConstants;
 import org.apache.commons.compress.utils.CharsetNames;
 import org.junit.Test;
-
-import com.alanbuttars.commons.compress.archives.config.input.ArchiveInputStreamConfigCpioImpl;
 
 /**
  * Test class for {@link ArchiveInputStreamConfigCpioImpl}.
@@ -35,8 +34,8 @@ import com.alanbuttars.commons.compress.archives.config.input.ArchiveInputStream
 public class ArchiveInputStreamConfigCpioImplTest {
 
 	@Test
-	public void testConstructor() {
-		ArchiveInputStreamConfigCpioImpl config = new ArchiveInputStreamConfigCpioImpl(new ByteArrayInputStream("".getBytes()));
+	public void testConstructor() throws IOException {
+		ArchiveInputStreamConfigCpioImpl config = new ArchiveInputStreamConfigCpioImpl(File.createTempFile(getClass().getName(), ".tmp"));
 		assertNotNull(config.getInputStream());
 		assertEquals(CharsetNames.US_ASCII, config.getEncoding());
 		assertEquals(CpioConstants.BLOCK_SIZE, config.getBlockSize());

@@ -35,20 +35,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
-import org.apache.commons.compress.archivers.ArchiveInputStream;
-import org.apache.commons.compress.archivers.ArchiveOutputStream;
-import org.apache.commons.compress.archivers.ar.ArArchiveInputStream;
-import org.apache.commons.compress.archivers.cpio.CpioArchiveInputStream;
-import org.apache.commons.compress.archivers.dump.DumpArchiveInputStream;
-import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
-import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
-import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 
 import com.alanbuttars.commons.compress.archives.config.ArchiveConfigs;
 import com.alanbuttars.commons.compress.archives.config.entry.ArchiveEntryConfig;
 import com.alanbuttars.commons.compress.archives.config.input.ArchiveInputStreamConfig;
 import com.alanbuttars.commons.compress.archives.config.output.ArchiveOutputStreamConfig;
-import com.alanbuttars.commons.compress.files.util.Files;
+import com.alanbuttars.commons.compress.archives.input.ArchiveInputStream;
+import com.alanbuttars.commons.compress.archives.output.ArchiveOutputStream;
+import com.alanbuttars.commons.compress.files.util.CompressedFiles;
 import com.alanbuttars.commons.util.functions.DoubleInputFunction;
 import com.alanbuttars.commons.util.functions.Function;
 import com.alanbuttars.commons.util.validators.Arguments;
@@ -139,7 +133,7 @@ public class Archives {
 			String archiveType, //
 			File source, //
 			File destination, //
-			Function<InputStream, ArchiveInputStreamConfig> streamConfigFunction, //
+			Function<File, ArchiveInputStreamConfig> streamConfigFunction, //
 			Function<ArchiveInputStreamConfig, ArchiveInputStream> streamFunction) throws IOException {
 		validateExtractArchiveType(archiveType);
 
@@ -152,15 +146,14 @@ public class Archives {
 		Arguments.verify(destination.isDirectory(), "Destination " + destination.getAbsolutePath() + " must be a directory");
 		Arguments.verify(destination.canWrite(), "Destination " + destination.getAbsolutePath() + " is not writable");
 
-		try (InputStream inputStream = new FileInputStream(source);
-				ArchiveInputStream archiveInputStream = createArchiveInputStream(archiveType, inputStream, streamConfigFunction, streamFunction)) {
-			readFromArchive(destination, archiveInputStream);
+		try (ArchiveInputStream archiveInputStream = createArchiveInputStream(archiveType, source, streamConfigFunction, streamFunction)) {
+			readFromArchive(archiveInputStream, destination);
 		}
 	}
 
-	private static void readFromArchive(File destination, ArchiveInputStream archiveInputStream) throws IOException {
+	private static void readFromArchive(ArchiveInputStream archiveInputStream, File destination) throws IOException {
 		ArchiveEntry archiveEntry = null;
-		while ((archiveEntry = getNextEntry(archiveInputStream)) != null) {
+		while ((archiveEntry = archiveInputStream.getNextEntry()) != null) {
 			File outputFile = new File(destination, archiveEntry.getName());
 			if (archiveEntry.isDirectory()) {
 				outputFile.mkdirs();
@@ -178,28 +171,6 @@ public class Archives {
 				}
 			}
 		}
-	}
-
-	private static ArchiveEntry getNextEntry(ArchiveInputStream archiveInputStream) throws IOException {
-		if (archiveInputStream instanceof ArArchiveInputStream) {
-			return ((ArArchiveInputStream) archiveInputStream).getNextArEntry();
-		}
-		else if (archiveInputStream instanceof CpioArchiveInputStream) {
-			return ((CpioArchiveInputStream) archiveInputStream).getNextCPIOEntry();
-		}
-		else if (archiveInputStream instanceof DumpArchiveInputStream) {
-			return ((DumpArchiveInputStream) archiveInputStream).getNextDumpEntry();
-		}
-		else if (archiveInputStream instanceof JarArchiveInputStream) {
-			return ((JarArchiveInputStream) archiveInputStream).getNextJarEntry();
-		}
-		else if (archiveInputStream instanceof TarArchiveInputStream) {
-			return ((TarArchiveInputStream) archiveInputStream).getNextTarEntry();
-		}
-		else if (archiveInputStream instanceof ZipArchiveInputStream) {
-			return ((ZipArchiveInputStream) archiveInputStream).getNextZipEntry();
-		}
-		return archiveInputStream.getNextEntry();
 	}
 
 	/**
@@ -261,7 +232,7 @@ public class Archives {
 			String archiveType, //
 			File source, //
 			File destination, //
-			Function<OutputStream, ArchiveOutputStreamConfig> streamConfigFunction, //
+			Function<File, ArchiveOutputStreamConfig> streamConfigFunction, //
 			Function<ArchiveOutputStreamConfig, ArchiveOutputStream> streamFunction, //
 			DoubleInputFunction<String, Long, ArchiveEntryConfig> entryConfigFunction, //
 			Function<ArchiveEntryConfig, ArchiveEntry> entryFunction) throws IOException {
@@ -276,16 +247,15 @@ public class Archives {
 		Arguments.verify(destination.isFile(), "Destination " + destination.getAbsolutePath() + " must not be a directory");
 		Arguments.verify(destination.canWrite(), "Destination " + destination.getAbsolutePath() + " is not writable");
 
-		try (OutputStream outputStream = new FileOutputStream(destination);
-				ArchiveOutputStream archiveOutputStream = createArchiveOutputStream(archiveType, outputStream, streamConfigFunction, streamFunction)) {
+		try (ArchiveOutputStream archiveOutputStream = createArchiveOutputStream(archiveType, destination, streamConfigFunction, streamFunction)) {
 			writeToArchive(archiveType, source, source, archiveOutputStream, entryConfigFunction, entryFunction);
 		}
 	}
 
 	private static ArchiveInputStream createArchiveInputStream(//
 			String archiveType, //
-			InputStream inputStream, //
-			Function<InputStream, ArchiveInputStreamConfig> configFunction, //
+			File source, //
+			Function<File, ArchiveInputStreamConfig> configFunction, //
 			Function<ArchiveInputStreamConfig, ArchiveInputStream> streamFunction) {
 		if (configFunction == null) {
 			configFunction = INPUT_CONFIG_FUNCTIONS.get(archiveType);
@@ -295,15 +265,15 @@ public class Archives {
 			streamFunction = INPUT_STREAM_FUNCTIONS.get(archiveType);
 			Arguments.verify(streamFunction != null, "Archive type " + archiveType + " is not recognized");
 		}
-		ArchiveInputStreamConfig config = configFunction.apply(inputStream);
+		ArchiveInputStreamConfig config = configFunction.apply(source);
 		ArchiveInputStream stream = streamFunction.apply(config);
 		return stream;
 	}
 
 	private static ArchiveOutputStream createArchiveOutputStream(//
 			String archiveType, //
-			OutputStream outputStream, //
-			Function<OutputStream, ArchiveOutputStreamConfig> configFunction, //
+			File file, //
+			Function<File, ArchiveOutputStreamConfig> configFunction, //
 			Function<ArchiveOutputStreamConfig, ArchiveOutputStream> streamFunction) {
 		if (configFunction == null) {
 			configFunction = OUTPUT_CONFIG_FUNCTIONS.get(archiveType);
@@ -313,7 +283,7 @@ public class Archives {
 			streamFunction = OUTPUT_STREAM_FUNCTIONS.get(archiveType);
 			Arguments.verify(streamFunction != null, "Archive type " + archiveType + " is not recognized");
 		}
-		ArchiveOutputStreamConfig config = configFunction.apply(outputStream);
+		ArchiveOutputStreamConfig config = configFunction.apply(file);
 		ArchiveOutputStream stream = streamFunction.apply(config);
 		return stream;
 	}
@@ -370,12 +340,12 @@ public class Archives {
 
 	private static void validateExtractArchiveType(String archiveType) {
 		validateArchiveType(archiveType);
-		Arguments.verify(!Files.COMPRESS_TYPES.contains(archiveType), "File type " + archiveType + " cannot be extracted; use Files.decompress()");
+		Arguments.verify(!CompressedFiles.COMPRESS_TYPES.contains(archiveType), "File type " + archiveType + " cannot be extracted; use Files.decompress()");
 	}
 
 	private static void validateArchiveArchiveType(String archiveType) {
 		validateArchiveType(archiveType);
-		Arguments.verify(!Files.COMPRESS_TYPES.contains(archiveType), "File type " + archiveType + " cannot be archived; use Files.compress()");
+		Arguments.verify(!CompressedFiles.COMPRESS_TYPES.contains(archiveType), "File type " + archiveType + " cannot be archived; use Files.compress()");
 	}
 
 	private static void validateArchiveType(String archiveType) {

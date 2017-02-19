@@ -15,7 +15,7 @@
  */
 package com.alanbuttars.commons.compress.archives.config.output;
 
-import java.io.OutputStream;
+import java.io.File;
 
 import org.apache.commons.compress.archivers.cpio.CpioConstants;
 import org.apache.commons.compress.utils.CharsetNames;
@@ -34,8 +34,8 @@ public class ArchiveOutputStreamConfigCpioImpl extends ArchiveOutputStreamConfig
 	private short format;
 	private int blockSize;
 
-	public ArchiveOutputStreamConfigCpioImpl(OutputStream outputStream) {
-		super(outputStream);
+	public ArchiveOutputStreamConfigCpioImpl(File file) {
+		super(file);
 		this.encoding = CharsetNames.US_ASCII;
 		this.blockSize = CpioConstants.BLOCK_SIZE;
 		this.format = CpioConstants.FORMAT_NEW;

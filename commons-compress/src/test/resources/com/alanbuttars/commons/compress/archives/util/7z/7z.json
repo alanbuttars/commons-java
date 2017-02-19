@@ -1,0 +1,44 @@
+[
+  {
+    "type": "sevenz",
+    "fileName": "test.7z",
+    "files": [
+      {
+        "fileName": "a/1.txt",
+        "contents": "1"
+      },
+      {
+        "fileName": "a/2.txt",
+        "contents": "2"
+      },
+      {
+        "fileName": "a/3.txt",
+        "contents": "3"
+      },
+      {
+        "fileName": "a/b/1.txt",
+        "contents": "1"
+      },
+      {
+        "fileName": "a/b/2.txt",
+        "contents": "2"
+      },
+      {
+        "fileName": "a/b/3.txt",
+        "contents": "3"
+      },
+      {
+        "fileName": "a/b/c/1.txt",
+        "contents": "1"
+      },
+      {
+        "fileName": "a/b/c/2.txt",
+        "contents": "2"
+      },
+      {
+        "fileName": "a/b/c/3.txt",
+        "contents": "3"
+      }
+    ]
+  }
+]

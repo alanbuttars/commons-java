@@ -17,11 +17,10 @@ package com.alanbuttars.commons.compress.archives.config.output;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 
 import org.junit.Test;
-
-import com.alanbuttars.commons.compress.archives.config.output.ArchiveOutputStreamConfig;
 
 /**
  * Test class for {@link ArchiveOutputStreamConfig}.
@@ -32,8 +31,8 @@ import com.alanbuttars.commons.compress.archives.config.output.ArchiveOutputStre
 public class ArchiveOutputStreamConfigTest {
 
 	@Test
-	public void testConstructor() {
-		ArchiveOutputStreamConfig config = new ArchiveOutputStreamConfig(new ByteArrayOutputStream());
+	public void testConstructor() throws IOException {
+		ArchiveOutputStreamConfig config = new ArchiveOutputStreamConfig(File.createTempFile(getClass().getName(), ".tmp"));
 		assertNotNull(config.getOutputStream());
 	}
 }

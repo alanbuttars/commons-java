@@ -20,19 +20,22 @@ import static com.alanbuttars.commons.compress.archives.util.Archives.ARJ;
 import static com.alanbuttars.commons.compress.archives.util.Archives.CPIO;
 import static com.alanbuttars.commons.compress.archives.util.Archives.DUMP;
 import static com.alanbuttars.commons.compress.archives.util.Archives.JAR;
+import static com.alanbuttars.commons.compress.archives.util.Archives.SEVENZ;
 import static com.alanbuttars.commons.compress.archives.util.Archives.TAR;
 import static com.alanbuttars.commons.compress.archives.util.Archives.ZIP;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.io.EOFException;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 import org.apache.commons.compress.archivers.ArchiveException;
-import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.ar.ArArchiveInputStream;
 import org.apache.commons.compress.archivers.cpio.CpioArchiveInputStream;
 import org.apache.commons.compress.archivers.cpio.CpioConstants;
@@ -47,14 +50,16 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.alanbuttars.commons.compress.archives.config.ArchiveInputStreamFunctions;
 import com.alanbuttars.commons.compress.archives.config.input.ArchiveInputStreamConfig;
 import com.alanbuttars.commons.compress.archives.config.input.ArchiveInputStreamConfigArjImpl;
 import com.alanbuttars.commons.compress.archives.config.input.ArchiveInputStreamConfigCpioImpl;
 import com.alanbuttars.commons.compress.archives.config.input.ArchiveInputStreamConfigDumpImpl;
 import com.alanbuttars.commons.compress.archives.config.input.ArchiveInputStreamConfigJarImpl;
+import com.alanbuttars.commons.compress.archives.config.input.ArchiveInputStreamConfigSevenZImpl;
 import com.alanbuttars.commons.compress.archives.config.input.ArchiveInputStreamConfigTarImpl;
 import com.alanbuttars.commons.compress.archives.config.input.ArchiveInputStreamConfigZipImpl;
+import com.alanbuttars.commons.compress.archives.input.ArchiveInputStream;
+import com.alanbuttars.commons.compress.archives.input.ArchiveInputStreamImpl;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
@@ -67,13 +72,14 @@ import com.alanbuttars.commons.util.functions.Function;
 @PrepareForTest({ ZipArchiveInputStream.class })
 public class ArchiveInputStreamFunctionsTest {
 
-	private InputStream inputStream;
-	private Function<InputStream, ArchiveInputStreamConfig> configFunction;
+	private File file;
+	private Function<File, ArchiveInputStreamConfig> configFunction;
 	private Function<ArchiveInputStreamConfig, ArchiveInputStream> streamFunction;
 
 	@Before
-	public void setup() {
-		inputStream = new ByteArrayInputStream("a\nb\nc".getBytes());
+	public void setup() throws IOException {
+		file = File.createTempFile(getClass().getName(), ".tmp");
+		Files.write(file.toPath(), "a\nb\nc".getBytes());
 	}
 
 	private void prepare(String archiveType) {
@@ -85,18 +91,19 @@ public class ArchiveInputStreamFunctionsTest {
 	public void testAr() throws Exception {
 		prepare(AR);
 
-		ArchiveInputStreamConfig config = configFunction.apply(inputStream);
+		ArchiveInputStreamConfig config = configFunction.apply(file);
 		assertEquals(ArchiveInputStreamConfig.class, config.getClass());
 
 		ArchiveInputStream stream = streamFunction.apply(config);
-		assertEquals(ArArchiveInputStream.class, stream.getClass());
+		assertEquals(ArchiveInputStreamImpl.class, stream.getClass());
+		assertEquals(ArArchiveInputStream.class, stream.getStream().getClass());
 	}
 
 	@Test
 	public void testArj() throws Exception {
 		prepare(ARJ);
 
-		ArchiveInputStreamConfig config = configFunction.apply(inputStream);
+		ArchiveInputStreamConfig config = configFunction.apply(file);
 		assertEquals(ArchiveInputStreamConfigArjImpl.class, config.getClass());
 		ArchiveInputStreamConfigArjImpl arjConfig = (ArchiveInputStreamConfigArjImpl) config;
 		assertEquals("CP437", arjConfig.getEncoding());
@@ -114,21 +121,22 @@ public class ArchiveInputStreamFunctionsTest {
 	public void testCpio() throws Exception {
 		prepare(CPIO);
 
-		ArchiveInputStreamConfig config = configFunction.apply(inputStream);
+		ArchiveInputStreamConfig config = configFunction.apply(file);
 		assertEquals(ArchiveInputStreamConfigCpioImpl.class, config.getClass());
 		ArchiveInputStreamConfigCpioImpl cpioConfig = (ArchiveInputStreamConfigCpioImpl) config;
 		assertEquals(CharsetNames.US_ASCII, cpioConfig.getEncoding());
 		assertEquals(CpioConstants.BLOCK_SIZE, cpioConfig.getBlockSize());
 
 		ArchiveInputStream stream = streamFunction.apply(config);
-		assertEquals(CpioArchiveInputStream.class, stream.getClass());
+		assertEquals(ArchiveInputStreamImpl.class, stream.getClass());
+		assertEquals(CpioArchiveInputStream.class, stream.getStream().getClass());
 	}
 
 	@Test
 	public void testDump() throws Exception {
 		prepare(DUMP);
 
-		ArchiveInputStreamConfig config = configFunction.apply(inputStream);
+		ArchiveInputStreamConfig config = configFunction.apply(file);
 		assertEquals(ArchiveInputStreamConfigDumpImpl.class, config.getClass());
 		ArchiveInputStreamConfigDumpImpl dumpConfig = (ArchiveInputStreamConfigDumpImpl) config;
 		assertEquals("UTF8", dumpConfig.getEncoding());
@@ -146,23 +154,44 @@ public class ArchiveInputStreamFunctionsTest {
 	public void testJar() throws Exception {
 		prepare(JAR);
 
-		ArchiveInputStreamConfig config = configFunction.apply(inputStream);
+		ArchiveInputStreamConfig config = configFunction.apply(file);
 		assertEquals(ArchiveInputStreamConfigJarImpl.class, config.getClass());
 		ArchiveInputStreamConfigJarImpl jarConfig = (ArchiveInputStreamConfigJarImpl) config;
 		assertFalse(jarConfig.allowStoredEntriesWithDataDescriptor());
 		assertEquals("UTF8", jarConfig.getEncoding());
 		assertTrue(jarConfig.useUnicodeExtraFields());
-		assertEquals(inputStream, jarConfig.getInputStream());
+		assertNotNull(jarConfig.getInputStream());
 
 		ArchiveInputStream stream = streamFunction.apply(jarConfig);
-		assertEquals(JarArchiveInputStream.class, stream.getClass());
+		assertEquals(ArchiveInputStreamImpl.class, stream.getClass());
+		assertEquals(JarArchiveInputStream.class, stream.getStream().getClass());
+	}
+
+	@Test
+	public void testSevenZ() throws Exception {
+		prepare(SEVENZ);
+
+		ArchiveInputStreamConfig config = configFunction.apply(file);
+		assertEquals(ArchiveInputStreamConfigSevenZImpl.class, config.getClass());
+		ArchiveInputStreamConfigSevenZImpl sevenZConfig = (ArchiveInputStreamConfigSevenZImpl) config;
+		assertNotNull(sevenZConfig.getFile());
+		assertNull(sevenZConfig.getPassword());
+		assertNotNull(sevenZConfig.getInputStream());
+
+		try {
+			streamFunction.apply(config);
+			fail();
+		}
+		catch (RuntimeException e) {
+			assertTrue(e.getCause() instanceof EOFException);
+		}
 	}
 
 	@Test
 	public void testTar() throws Exception {
 		prepare(TAR);
 
-		ArchiveInputStreamConfig config = configFunction.apply(inputStream);
+		ArchiveInputStreamConfig config = configFunction.apply(file);
 		assertEquals(ArchiveInputStreamConfigTarImpl.class, config.getClass());
 		ArchiveInputStreamConfigTarImpl tarConfig = (ArchiveInputStreamConfigTarImpl) config;
 		assertNull(tarConfig.getEncoding());
@@ -170,23 +199,25 @@ public class ArchiveInputStreamFunctionsTest {
 		assertEquals(TarConstants.DEFAULT_RCDSIZE, tarConfig.getRecordSize());
 
 		ArchiveInputStream stream = streamFunction.apply(tarConfig);
-		assertEquals(TarArchiveInputStream.class, stream.getClass());
+		assertEquals(ArchiveInputStreamImpl.class, stream.getClass());
+		assertEquals(TarArchiveInputStream.class, stream.getStream().getClass());
 	}
 
 	@Test
 	public void testZip() throws Exception {
 		prepare(ZIP);
 
-		ArchiveInputStreamConfig config = configFunction.apply(inputStream);
+		ArchiveInputStreamConfig config = configFunction.apply(file);
 		assertEquals(ArchiveInputStreamConfigZipImpl.class, config.getClass());
 		ArchiveInputStreamConfigZipImpl zipConfig = (ArchiveInputStreamConfigZipImpl) config;
 		assertFalse(zipConfig.allowStoredEntriesWithDataDescriptor());
 		assertEquals("UTF8", zipConfig.getEncoding());
 		assertTrue(zipConfig.useUnicodeExtraFields());
-		assertEquals(inputStream, zipConfig.getInputStream());
+		assertNotNull(zipConfig.getInputStream());
 
 		ArchiveInputStream stream = streamFunction.apply(zipConfig);
-		assertEquals(ZipArchiveInputStream.class, stream.getClass());
+		assertEquals(ArchiveInputStreamImpl.class, stream.getClass());
+		assertEquals(ZipArchiveInputStream.class, stream.getStream().getClass());
 	}
 
 }

@@ -15,17 +15,16 @@
  */
 package com.alanbuttars.commons.compress.archives.config;
 
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.File;
 import java.util.Map;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
-import org.apache.commons.compress.archivers.ArchiveInputStream;
-import org.apache.commons.compress.archivers.ArchiveOutputStream;
 
 import com.alanbuttars.commons.compress.archives.config.entry.ArchiveEntryConfig;
 import com.alanbuttars.commons.compress.archives.config.input.ArchiveInputStreamConfig;
 import com.alanbuttars.commons.compress.archives.config.output.ArchiveOutputStreamConfig;
+import com.alanbuttars.commons.compress.archives.input.ArchiveInputStream;
+import com.alanbuttars.commons.compress.archives.output.ArchiveOutputStream;
 import com.alanbuttars.commons.util.functions.DoubleInputFunction;
 import com.alanbuttars.commons.util.functions.Function;
 
@@ -37,10 +36,10 @@ import com.alanbuttars.commons.util.functions.Function;
  */
 public class ArchiveConfigs {
 
-	public static Map<String, Function<InputStream, ArchiveInputStreamConfig>> INPUT_CONFIG_FUNCTIONS = ArchiveInputStreamFunctions.defaultConfigFunctions();
+	public static Map<String, Function<File, ArchiveInputStreamConfig>> INPUT_CONFIG_FUNCTIONS = ArchiveInputStreamFunctions.defaultConfigFunctions();
 	public static Map<String, Function<ArchiveInputStreamConfig, ArchiveInputStream>> INPUT_STREAM_FUNCTIONS = ArchiveInputStreamFunctions.defaultStreamFunctions();
 
-	public static Map<String, Function<OutputStream, ArchiveOutputStreamConfig>> OUTPUT_CONFIG_FUNCTIONS = ArchiveOutputStreamFunctions.defaultConfigFunctions();
+	public static Map<String, Function<File, ArchiveOutputStreamConfig>> OUTPUT_CONFIG_FUNCTIONS = ArchiveOutputStreamFunctions.defaultConfigFunctions();
 	public static Map<String, Function<ArchiveOutputStreamConfig, ArchiveOutputStream>> OUTPUT_STREAM_FUNCTIONS = ArchiveOutputStreamFunctions.defaultStreamFunctions();
 
 	public static Map<String, DoubleInputFunction<String, Long, ArchiveEntryConfig>> ENTRY_CONFIG_FUNCTIONS = ArchiveEntryFunctions.defaultConfigFunctions();

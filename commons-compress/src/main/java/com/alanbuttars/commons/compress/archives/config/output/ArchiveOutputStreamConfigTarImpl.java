@@ -15,7 +15,7 @@
  */
 package com.alanbuttars.commons.compress.archives.config.output;
 
-import java.io.OutputStream;
+import java.io.File;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.archivers.tar.TarConstants;
@@ -37,8 +37,8 @@ public class ArchiveOutputStreamConfigTarImpl extends ArchiveOutputStreamConfig 
 	private int recordSize;
 	private boolean addPaxHeadersForNonAsciiNames;
 
-	public ArchiveOutputStreamConfigTarImpl(OutputStream outputStream) {
-		super(outputStream);
+	public ArchiveOutputStreamConfigTarImpl(File file) {
+		super(file);
 		this.encoding = null;
 		this.addPaxHeadersForNonAsciiNames = false;
 		this.bigNumberMode = TarArchiveOutputStream.BIGNUMBER_ERROR;

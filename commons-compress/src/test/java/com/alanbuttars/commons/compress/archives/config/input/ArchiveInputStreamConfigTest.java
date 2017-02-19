@@ -17,11 +17,10 @@ package com.alanbuttars.commons.compress.archives.config.input;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 
 import org.junit.Test;
-
-import com.alanbuttars.commons.compress.archives.config.input.ArchiveInputStreamConfig;
 
 /**
  * Test class for {@link ArchiveInputStreamConfig}.
@@ -32,8 +31,8 @@ import com.alanbuttars.commons.compress.archives.config.input.ArchiveInputStream
 public class ArchiveInputStreamConfigTest {
 
 	@Test
-	public void testConstructor() {
-		ArchiveInputStreamConfig config = new ArchiveInputStreamConfig(new ByteArrayInputStream("".getBytes()));
+	public void testConstructor() throws IOException {
+		ArchiveInputStreamConfig config = new ArchiveInputStreamConfig(File.createTempFile(getClass().getName(), ".tmp"));
 		assertNotNull(config.getInputStream());
 	}
 

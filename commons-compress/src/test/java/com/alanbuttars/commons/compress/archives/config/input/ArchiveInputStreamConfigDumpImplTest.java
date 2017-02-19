@@ -18,11 +18,10 @@ package com.alanbuttars.commons.compress.archives.config.input;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 
 import org.junit.Test;
-
-import com.alanbuttars.commons.compress.archives.config.input.ArchiveInputStreamConfigDumpImpl;
 
 /**
  * Test class for {@link ArchiveInputStreamConfigDumpImpl}.
@@ -33,8 +32,8 @@ import com.alanbuttars.commons.compress.archives.config.input.ArchiveInputStream
 public class ArchiveInputStreamConfigDumpImplTest {
 
 	@Test
-	public void testConstructor() {
-		ArchiveInputStreamConfigDumpImpl config = new ArchiveInputStreamConfigDumpImpl(new ByteArrayInputStream("".getBytes()));
+	public void testConstructor() throws IOException {
+		ArchiveInputStreamConfigDumpImpl config = new ArchiveInputStreamConfigDumpImpl(File.createTempFile(getClass().getName(), ".tmp"));
 		assertNotNull(config.getInputStream());
 		assertEquals("UTF8", config.getEncoding());
 	}

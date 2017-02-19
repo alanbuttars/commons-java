@@ -15,7 +15,7 @@
  */
 package com.alanbuttars.commons.compress.archives.config.input;
 
-import java.io.InputStream;
+import java.io.File;
 
 import com.alanbuttars.commons.compress.archives.util.Archives;
 
@@ -31,8 +31,8 @@ public class ArchiveInputStreamConfigZipImpl extends ArchiveInputStreamConfig {
 	private boolean useUnicodeExtraFields;
 	private boolean allowStoredEntriesWithDataDescriptor;
 
-	public ArchiveInputStreamConfigZipImpl(InputStream inputStream) {
-		super(inputStream);
+	public ArchiveInputStreamConfigZipImpl(File file) {
+		super(file);
 		this.encoding = "UTF8";
 		this.allowStoredEntriesWithDataDescriptor = false;
 		this.useUnicodeExtraFields = true;

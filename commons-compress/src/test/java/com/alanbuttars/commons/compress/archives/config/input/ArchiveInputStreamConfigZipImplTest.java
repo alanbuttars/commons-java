@@ -20,11 +20,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 
 import org.junit.Test;
-
-import com.alanbuttars.commons.compress.archives.config.input.ArchiveInputStreamConfigZipImpl;
 
 /**
  * Test class for {@link ArchiveInputStreamConfigZipImpl}.
@@ -35,8 +34,8 @@ import com.alanbuttars.commons.compress.archives.config.input.ArchiveInputStream
 public class ArchiveInputStreamConfigZipImplTest {
 
 	@Test
-	public void testConstructor() {
-		ArchiveInputStreamConfigZipImpl config = new ArchiveInputStreamConfigZipImpl(new ByteArrayInputStream("".getBytes()));
+	public void testConstructor() throws IOException {
+		ArchiveInputStreamConfigZipImpl config = new ArchiveInputStreamConfigZipImpl(File.createTempFile(getClass().getName(), ".tmp"));
 		assertNotNull(config.getInputStream());
 		assertEquals("UTF8", config.getEncoding());
 		assertFalse(config.allowStoredEntriesWithDataDescriptor());

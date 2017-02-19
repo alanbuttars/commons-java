@@ -15,7 +15,7 @@
  */
 package com.alanbuttars.commons.compress.archives.config.output;
 
-import java.io.OutputStream;
+import java.io.File;
 import java.util.zip.ZipEntry;
 
 import org.apache.commons.compress.archivers.zip.Zip64Mode;
@@ -41,8 +41,8 @@ public class ArchiveOutputStreamConfigZipImpl extends ArchiveOutputStreamConfig 
 	private Zip64Mode zip64Mode;
 	private UnicodeExtraFieldPolicy unicodeExtraFieldPolicy;
 
-	public ArchiveOutputStreamConfigZipImpl(OutputStream outputStream) {
-		super(outputStream);
+	public ArchiveOutputStreamConfigZipImpl(File file) {
+		super(file);
 		this.comment = "";
 		this.encoding = "UTF8";
 		this.fallbackToUTF8 = false;

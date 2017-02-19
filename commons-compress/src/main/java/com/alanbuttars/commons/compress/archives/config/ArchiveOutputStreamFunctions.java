@@ -18,17 +18,19 @@ package com.alanbuttars.commons.compress.archives.config;
 import static com.alanbuttars.commons.compress.archives.util.Archives.AR;
 import static com.alanbuttars.commons.compress.archives.util.Archives.CPIO;
 import static com.alanbuttars.commons.compress.archives.util.Archives.JAR;
+import static com.alanbuttars.commons.compress.archives.util.Archives.SEVENZ;
 import static com.alanbuttars.commons.compress.archives.util.Archives.TAR;
 import static com.alanbuttars.commons.compress.archives.util.Archives.ZIP;
 
-import java.io.OutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.ar.ArArchiveOutputStream;
 import org.apache.commons.compress.archivers.cpio.CpioArchiveOutputStream;
 import org.apache.commons.compress.archivers.jar.JarArchiveOutputStream;
+import org.apache.commons.compress.archivers.sevenz.SevenZOutputFile;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 
@@ -36,8 +38,12 @@ import com.alanbuttars.commons.compress.archives.config.output.ArchiveOutputStre
 import com.alanbuttars.commons.compress.archives.config.output.ArchiveOutputStreamConfigArImpl;
 import com.alanbuttars.commons.compress.archives.config.output.ArchiveOutputStreamConfigCpioImpl;
 import com.alanbuttars.commons.compress.archives.config.output.ArchiveOutputStreamConfigJarImpl;
+import com.alanbuttars.commons.compress.archives.config.output.ArchiveOutputStreamConfigSevenZImpl;
 import com.alanbuttars.commons.compress.archives.config.output.ArchiveOutputStreamConfigTarImpl;
 import com.alanbuttars.commons.compress.archives.config.output.ArchiveOutputStreamConfigZipImpl;
+import com.alanbuttars.commons.compress.archives.output.ArchiveOutputStream;
+import com.alanbuttars.commons.compress.archives.output.ArchiveOutputStreamImpl;
+import com.alanbuttars.commons.compress.archives.output.ArchiveOutputStreamSevenZImpl;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
@@ -48,65 +54,77 @@ import com.alanbuttars.commons.util.functions.Function;
  */
 class ArchiveOutputStreamFunctions {
 
-	public static Map<String, Function<OutputStream, ArchiveOutputStreamConfig>> defaultConfigFunctions() {
-		Map<String, Function<OutputStream, ArchiveOutputStreamConfig>> functions = new HashMap<>();
+	public static Map<String, Function<File, ArchiveOutputStreamConfig>> defaultConfigFunctions() {
+		Map<String, Function<File, ArchiveOutputStreamConfig>> functions = new HashMap<>();
 		functions.put(AR, defaultArConfigFunction());
 		functions.put(CPIO, defaultCpioConfigFunction());
 		functions.put(JAR, defaultJarConfigFunction());
+		functions.put(SEVENZ, defaultSevenZConfigFunction());
 		functions.put(TAR, defaultTarConfigFunction());
 		functions.put(ZIP, defaultZipConfigFunction());
 		return functions;
 	}
 
-	private static Function<OutputStream, ArchiveOutputStreamConfig> defaultArConfigFunction() {
-		return new Function<OutputStream, ArchiveOutputStreamConfig>() {
+	private static Function<File, ArchiveOutputStreamConfig> defaultArConfigFunction() {
+		return new Function<File, ArchiveOutputStreamConfig>() {
 
 			@Override
-			public ArchiveOutputStreamConfig apply(OutputStream output) {
+			public ArchiveOutputStreamConfig apply(File output) {
 				return new ArchiveOutputStreamConfigArImpl(output);
 			}
 
 		};
 	}
 
-	private static Function<OutputStream, ArchiveOutputStreamConfig> defaultCpioConfigFunction() {
-		return new Function<OutputStream, ArchiveOutputStreamConfig>() {
+	private static Function<File, ArchiveOutputStreamConfig> defaultCpioConfigFunction() {
+		return new Function<File, ArchiveOutputStreamConfig>() {
 
 			@Override
-			public ArchiveOutputStreamConfig apply(OutputStream output) {
+			public ArchiveOutputStreamConfig apply(File output) {
 				return new ArchiveOutputStreamConfigCpioImpl(output);
 			}
 
 		};
 	}
 
-	private static Function<OutputStream, ArchiveOutputStreamConfig> defaultJarConfigFunction() {
-		return new Function<OutputStream, ArchiveOutputStreamConfig>() {
+	private static Function<File, ArchiveOutputStreamConfig> defaultJarConfigFunction() {
+		return new Function<File, ArchiveOutputStreamConfig>() {
 
 			@Override
-			public ArchiveOutputStreamConfig apply(OutputStream output) {
+			public ArchiveOutputStreamConfig apply(File output) {
 				return new ArchiveOutputStreamConfigJarImpl(output);
 			}
 
 		};
 	}
 
-	private static Function<OutputStream, ArchiveOutputStreamConfig> defaultTarConfigFunction() {
-		return new Function<OutputStream, ArchiveOutputStreamConfig>() {
+	private static Function<File, ArchiveOutputStreamConfig> defaultSevenZConfigFunction() {
+		return new Function<File, ArchiveOutputStreamConfig>() {
 
 			@Override
-			public ArchiveOutputStreamConfig apply(OutputStream output) {
+			public ArchiveOutputStreamConfig apply(File output) {
+				return new ArchiveOutputStreamConfigSevenZImpl(output);
+			}
+
+		};
+	}
+
+	private static Function<File, ArchiveOutputStreamConfig> defaultTarConfigFunction() {
+		return new Function<File, ArchiveOutputStreamConfig>() {
+
+			@Override
+			public ArchiveOutputStreamConfig apply(File output) {
 				return new ArchiveOutputStreamConfigTarImpl(output);
 			}
 
 		};
 	}
 
-	private static Function<OutputStream, ArchiveOutputStreamConfig> defaultZipConfigFunction() {
-		return new Function<OutputStream, ArchiveOutputStreamConfig>() {
+	private static Function<File, ArchiveOutputStreamConfig> defaultZipConfigFunction() {
+		return new Function<File, ArchiveOutputStreamConfig>() {
 
 			@Override
-			public ArchiveOutputStreamConfig apply(OutputStream output) {
+			public ArchiveOutputStreamConfig apply(File output) {
 				return new ArchiveOutputStreamConfigZipImpl(output);
 			}
 
@@ -118,6 +136,7 @@ class ArchiveOutputStreamFunctions {
 		functions.put(AR, defaultArStreamFunction());
 		functions.put(CPIO, defaultCpioStreamFunction());
 		functions.put(JAR, defaultJarStreamFunction());
+		functions.put(SEVENZ, defaultSevenZStreamFunction());
 		functions.put(TAR, defaultTarStreamFunction());
 		functions.put(ZIP, defaultZipStreamFunction());
 		return functions;
@@ -131,7 +150,7 @@ class ArchiveOutputStreamFunctions {
 				ArchiveOutputStreamConfigArImpl arConfig = (ArchiveOutputStreamConfigArImpl) config;
 				ArArchiveOutputStream stream = new ArArchiveOutputStream(arConfig.getOutputStream());
 				stream.setLongFileMode(arConfig.getLongFileMode());
-				return stream;
+				return new ArchiveOutputStreamImpl(stream);
 			}
 
 		};
@@ -143,7 +162,7 @@ class ArchiveOutputStreamFunctions {
 			@Override
 			public ArchiveOutputStream apply(ArchiveOutputStreamConfig config) {
 				ArchiveOutputStreamConfigCpioImpl cpioConfig = (ArchiveOutputStreamConfigCpioImpl) config;
-				return new CpioArchiveOutputStream(cpioConfig.getOutputStream(), cpioConfig.getFormat(), cpioConfig.getBlockSize(), cpioConfig.getEncoding());
+				return new ArchiveOutputStreamImpl(new CpioArchiveOutputStream(cpioConfig.getOutputStream(), cpioConfig.getFormat(), cpioConfig.getBlockSize(), cpioConfig.getEncoding()));
 			}
 
 		};
@@ -163,7 +182,26 @@ class ArchiveOutputStreamFunctions {
 				stream.setMethod(zipConfig.getMethod());
 				stream.setUseLanguageEncodingFlag(zipConfig.useLanguageEncoding());
 				stream.setUseZip64(zipConfig.getZip64Mode());
-				return stream;
+				return new ArchiveOutputStreamImpl(stream);
+			}
+
+		};
+	}
+
+	private static Function<ArchiveOutputStreamConfig, ArchiveOutputStream> defaultSevenZStreamFunction() {
+		return new Function<ArchiveOutputStreamConfig, ArchiveOutputStream>() {
+
+			@Override
+			public ArchiveOutputStream apply(ArchiveOutputStreamConfig config) {
+				try {
+					ArchiveOutputStreamConfigSevenZImpl sevenZConfig = (ArchiveOutputStreamConfigSevenZImpl) config;
+					SevenZOutputFile sevenZFile = new SevenZOutputFile(sevenZConfig.getFile());
+					sevenZFile.setContentMethods(sevenZConfig.getContentMethods());
+					return new ArchiveOutputStreamSevenZImpl(sevenZFile);
+				}
+				catch (IOException e) {
+					throw new RuntimeException(e);
+				}
 			}
 
 		};
@@ -179,7 +217,7 @@ class ArchiveOutputStreamFunctions {
 				stream.setAddPaxHeadersForNonAsciiNames(tarConfig.addPaxHeadersForNonAsciiNames());
 				stream.setBigNumberMode(tarConfig.getBigNumberMode());
 				stream.setLongFileMode(tarConfig.getLongFileMode());
-				return stream;
+				return new ArchiveOutputStreamImpl(stream);
 			}
 
 		};
@@ -200,7 +238,7 @@ class ArchiveOutputStreamFunctions {
 				stream.setMethod(zipConfig.getMethod());
 				stream.setUseLanguageEncodingFlag(zipConfig.useLanguageEncoding());
 				stream.setUseZip64(zipConfig.getZip64Mode());
-				return stream;
+				return new ArchiveOutputStreamImpl(stream);
 			}
 
 		};

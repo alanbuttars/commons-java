@@ -19,12 +19,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 
 import org.apache.commons.compress.archivers.tar.TarConstants;
 import org.junit.Test;
-
-import com.alanbuttars.commons.compress.archives.config.input.ArchiveInputStreamConfigTarImpl;
 
 /**
  * Test class for {@link ArchiveInputStreamConfigTarImpl}.
@@ -35,8 +34,8 @@ import com.alanbuttars.commons.compress.archives.config.input.ArchiveInputStream
 public class ArchiveInputStreamConfigTarImplTest {
 
 	@Test
-	public void testConstructor() {
-		ArchiveInputStreamConfigTarImpl config = new ArchiveInputStreamConfigTarImpl(new ByteArrayInputStream("".getBytes()));
+	public void testConstructor() throws IOException {
+		ArchiveInputStreamConfigTarImpl config = new ArchiveInputStreamConfigTarImpl(File.createTempFile(getClass().getName(), ".tmp"));
 		assertNotNull(config.getInputStream());
 		assertNull(config.getEncoding());
 		assertEquals(TarConstants.DEFAULT_BLKSIZE, config.getBlockSize());

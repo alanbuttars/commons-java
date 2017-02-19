@@ -15,7 +15,7 @@
  */
 package com.alanbuttars.commons.compress.archives.config.input;
 
-import java.io.InputStream;
+import java.io.File;
 
 import org.apache.commons.compress.archivers.tar.TarConstants;
 
@@ -33,8 +33,8 @@ public class ArchiveInputStreamConfigTarImpl extends ArchiveInputStreamConfig {
 	private int blockSize;
 	private int recordSize;
 
-	public ArchiveInputStreamConfigTarImpl(InputStream inputStream) {
-		super(inputStream);
+	public ArchiveInputStreamConfigTarImpl(File file) {
+		super(file);
 		this.encoding = null;
 		this.blockSize = TarConstants.DEFAULT_BLKSIZE;
 		this.recordSize = TarConstants.DEFAULT_RCDSIZE;

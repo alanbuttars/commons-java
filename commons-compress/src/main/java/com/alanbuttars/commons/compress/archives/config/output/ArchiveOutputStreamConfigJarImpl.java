@@ -15,7 +15,7 @@
  */
 package com.alanbuttars.commons.compress.archives.config.output;
 
-import java.io.OutputStream;
+import java.io.File;
 
 import com.alanbuttars.commons.compress.archives.util.Archives;
 
@@ -27,8 +27,8 @@ import com.alanbuttars.commons.compress.archives.util.Archives;
  */
 public class ArchiveOutputStreamConfigJarImpl extends ArchiveOutputStreamConfigZipImpl {
 
-	public ArchiveOutputStreamConfigJarImpl(OutputStream outputStream) {
-		super(outputStream);
+	public ArchiveOutputStreamConfigJarImpl(File file) {
+		super(file);
 	}
 
 }

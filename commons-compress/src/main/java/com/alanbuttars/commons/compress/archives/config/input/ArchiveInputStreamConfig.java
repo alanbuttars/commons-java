@@ -15,6 +15,9 @@
  */
 package com.alanbuttars.commons.compress.archives.config.input;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import org.apache.commons.compress.archivers.ArchiveInputStream;
@@ -27,14 +30,19 @@ import org.apache.commons.compress.archivers.ArchiveInputStream;
  */
 public class ArchiveInputStreamConfig {
 
-	private final InputStream inputStream;
+	protected final File file;
 
-	public ArchiveInputStreamConfig(InputStream inputStream) {
-		this.inputStream = inputStream;
+	public ArchiveInputStreamConfig(File file) {
+		this.file = file;
 	}
 
 	public InputStream getInputStream() {
-		return inputStream;
+		try {
+			return new FileInputStream(file);
+		}
+		catch (FileNotFoundException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

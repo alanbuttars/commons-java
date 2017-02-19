@@ -23,7 +23,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import com.alanbuttars.commons.compress.files.util.Files;
+import com.alanbuttars.commons.compress.files.util.CompressedFiles;
 
 /**
  * Test class for {@link Archives}.
@@ -77,11 +77,11 @@ public class ArchivesTest {
 	@Test
 	public void testArchiveFilePathsArchiveTypeInvalid() throws IOException {
 		try {
-			Archives.archive(Files.BZIP2, directory().getAbsolutePath(), file().getAbsolutePath());
+			Archives.archive(CompressedFiles.BZIP2, directory().getAbsolutePath(), file().getAbsolutePath());
 			fail();
 		}
 		catch (IllegalArgumentException e) {
-			assertEquals("File type " + Files.BZIP2 + " cannot be archived; use Files.compress()", e.getMessage());
+			assertEquals("File type " + CompressedFiles.BZIP2 + " cannot be archived; use Files.compress()", e.getMessage());
 		}
 	}
 
@@ -260,11 +260,11 @@ public class ArchivesTest {
 	@Test
 	public void testExtractFilePathsArchiveTypeInvalid() throws IOException {
 		try {
-			Archives.extract(Files.BZIP2, file().getAbsolutePath(), directory().getAbsolutePath());
+			Archives.extract(CompressedFiles.BZIP2, file().getAbsolutePath(), directory().getAbsolutePath());
 			fail();
 		}
 		catch (IllegalArgumentException e) {
-			assertEquals("File type " + Files.BZIP2 + " cannot be extracted; use Files.decompress()", e.getMessage());
+			assertEquals("File type " + CompressedFiles.BZIP2 + " cannot be extracted; use Files.decompress()", e.getMessage());
 		}
 	}
 
@@ -443,11 +443,11 @@ public class ArchivesTest {
 	@Test
 	public void testArchiveFilesArchiveTypeInvalid() throws IOException {
 		try {
-			Archives.archive(Files.BZIP2, directory(), file());
+			Archives.archive(CompressedFiles.BZIP2, directory(), file());
 			fail();
 		}
 		catch (IllegalArgumentException e) {
-			assertEquals("File type " + Files.BZIP2 + " cannot be archived; use Files.compress()", e.getMessage());
+			assertEquals("File type " + CompressedFiles.BZIP2 + " cannot be archived; use Files.compress()", e.getMessage());
 		}
 	}
 
@@ -582,11 +582,11 @@ public class ArchivesTest {
 	@Test
 	public void testExtractFilesArchiveTypeInvalid() throws IOException {
 		try {
-			Archives.extract(Files.BZIP2, file(), directory());
+			Archives.extract(CompressedFiles.BZIP2, file(), directory());
 			fail();
 		}
 		catch (IllegalArgumentException e) {
-			assertEquals("File type " + Files.BZIP2 + " cannot be extracted; use Files.decompress()", e.getMessage());
+			assertEquals("File type " + CompressedFiles.BZIP2 + " cannot be extracted; use Files.decompress()", e.getMessage());
 		}
 	}
 

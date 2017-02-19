@@ -15,14 +15,22 @@
  */
 package com.alanbuttars.commons.compress.archives.config.input;
 
-import java.io.InputStream;
+import java.io.File;
 
+import com.alanbuttars.commons.compress.archives.util.Archives;
+
+/**
+ * Extension of {@link ArchiveInputStreamConfig} used for {@link Archives#ARJ} archives.
+ * 
+ * @author Alan Buttars
+ *
+ */
 public class ArchiveInputStreamConfigArjImpl extends ArchiveInputStreamConfig {
 
 	private String encoding;
 
-	public ArchiveInputStreamConfigArjImpl(InputStream inputStream) {
-		super(inputStream);
+	public ArchiveInputStreamConfigArjImpl(File file) {
+		super(file);
 		this.encoding = "CP437";
 	}
 

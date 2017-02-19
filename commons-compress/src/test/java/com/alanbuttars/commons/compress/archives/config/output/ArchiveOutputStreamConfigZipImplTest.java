@@ -20,15 +20,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.zip.ZipEntry;
 
 import org.apache.commons.compress.archivers.zip.Zip64Mode;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream.UnicodeExtraFieldPolicy;
 import org.junit.Test;
-
-import com.alanbuttars.commons.compress.archives.config.output.ArchiveOutputStreamConfigZipImpl;
 
 /**
  * Test class for {@link ArchiveOutputStreamConfigZipImpl}.
@@ -39,8 +38,8 @@ import com.alanbuttars.commons.compress.archives.config.output.ArchiveOutputStre
 public class ArchiveOutputStreamConfigZipImplTest {
 
 	@Test
-	public void testConstructor() {
-		ArchiveOutputStreamConfigZipImpl config = new ArchiveOutputStreamConfigZipImpl(new ByteArrayOutputStream());
+	public void testConstructor() throws IOException {
+		ArchiveOutputStreamConfigZipImpl config = new ArchiveOutputStreamConfigZipImpl(File.createTempFile(getClass().getName(), ".tmp"));
 		assertNotNull(config.getOutputStream());
 		assertEquals("", config.getComment());
 		assertEquals("UTF8", config.getEncoding());

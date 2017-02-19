@@ -15,7 +15,7 @@
  */
 package com.alanbuttars.commons.compress.archives.config.output;
 
-import java.io.OutputStream;
+import java.io.File;
 
 import org.apache.commons.compress.archivers.ar.ArArchiveOutputStream;
 
@@ -31,8 +31,8 @@ public class ArchiveOutputStreamConfigArImpl extends ArchiveOutputStreamConfig {
 
 	private int longFileMode;
 
-	public ArchiveOutputStreamConfigArImpl(OutputStream outputStream) {
-		super(outputStream);
+	public ArchiveOutputStreamConfigArImpl(File file) {
+		super(file);
 		this.longFileMode = ArArchiveOutputStream.LONGFILE_ERROR;
 	}
 

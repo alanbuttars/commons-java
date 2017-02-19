@@ -18,12 +18,11 @@ package com.alanbuttars.commons.compress.archives.config.output;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 
 import org.apache.commons.compress.archivers.ar.ArArchiveOutputStream;
 import org.junit.Test;
-
-import com.alanbuttars.commons.compress.archives.config.output.ArchiveOutputStreamConfigArImpl;
 
 /**
  * Test class for {@link ArchiveOutputStreamConfigArImpl}.
@@ -34,8 +33,8 @@ import com.alanbuttars.commons.compress.archives.config.output.ArchiveOutputStre
 public class ArchiveOutputStreamConfigArImplTest {
 
 	@Test
-	public void testConstructor() {
-		ArchiveOutputStreamConfigArImpl config = new ArchiveOutputStreamConfigArImpl(new ByteArrayOutputStream());
+	public void testConstructor() throws IOException {
+		ArchiveOutputStreamConfigArImpl config = new ArchiveOutputStreamConfigArImpl(File.createTempFile(getClass().getName(), ".tmp"));
 		assertNotNull(config.getOutputStream());
 		assertEquals(ArArchiveOutputStream.LONGFILE_ERROR, config.getLongFileMode());
 	}

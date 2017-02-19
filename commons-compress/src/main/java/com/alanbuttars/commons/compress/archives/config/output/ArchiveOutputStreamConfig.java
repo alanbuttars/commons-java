@@ -15,6 +15,9 @@
  */
 package com.alanbuttars.commons.compress.archives.config.output;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.OutputStream;
 
 import org.apache.commons.compress.archivers.ArchiveOutputStream;
@@ -27,14 +30,19 @@ import org.apache.commons.compress.archivers.ArchiveOutputStream;
  */
 public class ArchiveOutputStreamConfig {
 
-	private final OutputStream outputStream;
+	protected final File file;
 
-	public ArchiveOutputStreamConfig(OutputStream outputStream) {
-		this.outputStream = outputStream;
+	public ArchiveOutputStreamConfig(File file) {
+		this.file = file;
 	}
 
 	public OutputStream getOutputStream() {
-		return outputStream;
+		try {
+			return new FileOutputStream(file);
+		}
+		catch (FileNotFoundException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }
