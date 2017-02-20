@@ -157,9 +157,7 @@ public class ArchiveInputStreamFunctionsTest {
 		ArchiveInputStreamConfig config = configFunction.apply(file);
 		assertEquals(ArchiveInputStreamConfigJarImpl.class, config.getClass());
 		ArchiveInputStreamConfigJarImpl jarConfig = (ArchiveInputStreamConfigJarImpl) config;
-		assertFalse(jarConfig.allowStoredEntriesWithDataDescriptor());
 		assertEquals("UTF8", jarConfig.getEncoding());
-		assertTrue(jarConfig.useUnicodeExtraFields());
 		assertNotNull(jarConfig.getInputStream());
 
 		ArchiveInputStream stream = streamFunction.apply(jarConfig);

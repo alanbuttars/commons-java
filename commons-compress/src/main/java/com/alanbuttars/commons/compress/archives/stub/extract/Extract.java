@@ -13,33 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alanbuttars.commons.compress.archives.config.input;
+package com.alanbuttars.commons.compress.archives.stub.extract;
 
 import java.io.File;
 
-import com.alanbuttars.commons.compress.archives.util.Archives;
-
 /**
- * Extension of {@link ArchiveInputStreamConfig} used for {@link Archives#JAR} archives.
+ * Entrypoint for archive extraction stubbing operations.
  * 
  * @author Alan Buttars
  *
  */
-public class ArchiveInputStreamConfigJarImpl extends ArchiveInputStreamConfig {
+public class Extract {
 
-	private String encoding;
-
-	public ArchiveInputStreamConfigJarImpl(File file) {
-		super(file);
-		this.encoding = "UTF8";
+	/**
+	 * Returns an intermediate extraction stubbing object.
+	 * 
+	 * @param archive
+	 *            Non-null archive file to be extracted
+	 */
+	public static ExtractFileStub archive(File archive) {
+		return new ExtractFileStub(archive);
 	}
-
-	public String getEncoding() {
-		return encoding;
-	}
-
-	public void setEncoding(String encoding) {
-		this.encoding = encoding;
-	}
-
 }

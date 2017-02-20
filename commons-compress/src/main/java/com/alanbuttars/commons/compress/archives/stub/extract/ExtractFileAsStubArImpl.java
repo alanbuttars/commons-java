@@ -13,33 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alanbuttars.commons.compress.archives.config.input;
+package com.alanbuttars.commons.compress.archives.stub.extract;
 
 import java.io.File;
 
+import com.alanbuttars.commons.compress.archives.config.ArchiveConfigs;
+import com.alanbuttars.commons.compress.archives.config.input.ArchiveInputStreamConfig;
+import com.alanbuttars.commons.compress.archives.input.ArchiveInputStream;
 import com.alanbuttars.commons.compress.archives.util.Archives;
+import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Extension of {@link ArchiveInputStreamConfig} used for {@link Archives#JAR} archives.
+ * Extension of {@link ExtractFileAsStub} for {@link Archives#AR} archives.
  * 
  * @author Alan Buttars
  *
  */
-public class ArchiveInputStreamConfigJarImpl extends ArchiveInputStreamConfig {
+class ExtractFileAsStubArImpl extends ExtractFileAsStub {
 
-	private String encoding;
-
-	public ArchiveInputStreamConfigJarImpl(File file) {
-		super(file);
-		this.encoding = "UTF8";
+	ExtractFileAsStubArImpl(File archive) {
+		super(archive, Archives.AR);
 	}
 
-	public String getEncoding() {
-		return encoding;
-	}
-
-	public void setEncoding(String encoding) {
-		this.encoding = encoding;
+	@Override
+	protected Function<ArchiveInputStreamConfig, ArchiveInputStream> streamFunction() {
+		return ArchiveConfigs.INPUT_STREAM_FUNCTIONS.get(archiveType);
 	}
 
 }
