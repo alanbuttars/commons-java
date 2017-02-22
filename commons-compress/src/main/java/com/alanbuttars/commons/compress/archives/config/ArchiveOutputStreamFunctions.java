@@ -173,15 +173,15 @@ class ArchiveOutputStreamFunctions {
 
 			@Override
 			public ArchiveOutputStream apply(ArchiveOutputStreamConfig config) {
-				ArchiveOutputStreamConfigZipImpl zipConfig = (ArchiveOutputStreamConfigZipImpl) config;
-				JarArchiveOutputStream stream = new JarArchiveOutputStream(zipConfig.getOutputStream(), zipConfig.getEncoding());
-				stream.setComment(zipConfig.getComment());
-				stream.setCreateUnicodeExtraFields(zipConfig.getUnicodeExtraFieldPolicy());
-				stream.setFallbackToUTF8(zipConfig.fallbackToUTF8());
-				stream.setLevel(zipConfig.getLevel());
-				stream.setMethod(zipConfig.getMethod());
-				stream.setUseLanguageEncodingFlag(zipConfig.useLanguageEncoding());
-				stream.setUseZip64(zipConfig.getZip64Mode());
+				ArchiveOutputStreamConfigJarImpl jarConfig = (ArchiveOutputStreamConfigJarImpl) config;
+				JarArchiveOutputStream stream = new JarArchiveOutputStream(jarConfig.getOutputStream(), jarConfig.getEncoding());
+				stream.setComment(jarConfig.getComment());
+				stream.setCreateUnicodeExtraFields(jarConfig.getUnicodeExtraFieldPolicy());
+				stream.setFallbackToUTF8(jarConfig.fallbackToUTF8());
+				stream.setLevel(jarConfig.getLevel());
+				stream.setMethod(jarConfig.getMethod());
+				stream.setUseLanguageEncodingFlag(jarConfig.useLanguageEncoding());
+				stream.setUseZip64(jarConfig.getZip64Mode());
 				return new ArchiveOutputStreamImpl(stream);
 			}
 
