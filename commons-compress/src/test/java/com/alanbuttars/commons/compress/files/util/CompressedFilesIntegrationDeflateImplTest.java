@@ -17,17 +17,14 @@ package com.alanbuttars.commons.compress.files.util;
 
 import static com.alanbuttars.commons.compress.files.util.CompressedFiles.DEFLATE;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
+import org.apache.commons.compress.compressors.deflate.DeflateParameters;
 import org.junit.Test;
 
-import com.alanbuttars.commons.compress.files.config.input.CompressedFileInputStreamConfig;
-import com.alanbuttars.commons.compress.files.config.input.CompressedFileInputStreamConfigDeflateImpl;
-import com.alanbuttars.commons.compress.files.config.output.CompressedFileOutputStreamConfig;
-import com.alanbuttars.commons.compress.files.config.output.CompressedFileOutputStreamConfigDeflateImpl;
-import com.alanbuttars.commons.util.functions.Function;
+import com.alanbuttars.commons.compress.stub.compress.Compress;
+import com.alanbuttars.commons.compress.util.FilesFunction;
 
 /**
  * Integration test class for {@link CompressedFiles} for {@link CompressedFiles#DEFLATE} files.
@@ -39,35 +36,33 @@ public class CompressedFilesIntegrationDeflateImplTest extends CompressedFilesIn
 
 	@Test
 	public void testDecompress() throws IOException {
-		testDecompress(DEFLATE, inputStreamConfigFunction());
+		testDecompress(DEFLATE, decompressFunction());
 	}
 
 	@Test
 	public void testCompress() throws IOException {
-		testCompress(DEFLATE, inputStreamConfigFunction(), outputStreamConfigFunction());
+		testCompress(DEFLATE, compressFunction(), decompressFunction());
 	}
 
-	private Function<InputStream, CompressedFileInputStreamConfig> inputStreamConfigFunction() {
-		return new Function<InputStream, CompressedFileInputStreamConfig>() {
+	private FilesFunction decompressFunction() {
+		return new FilesFunction() {
 
 			@Override
-			public CompressedFileInputStreamConfig apply(InputStream input) {
-				CompressedFileInputStreamConfigDeflateImpl config = new CompressedFileInputStreamConfigDeflateImpl(input);
-				config.getParameters().setWithZlibHeader(false);
-				return config;
+			public File act(File original) throws IOException {
+				return null;
 			}
 
 		};
 	}
 
-	private Function<OutputStream, CompressedFileOutputStreamConfig> outputStreamConfigFunction() {
-		return new Function<OutputStream, CompressedFileOutputStreamConfig>() {
+	private FilesFunction compressFunction() {
+		return new FilesFunction() {
 
 			@Override
-			public CompressedFileOutputStreamConfig apply(OutputStream output) {
-				CompressedFileOutputStreamConfigDeflateImpl config = new CompressedFileOutputStreamConfigDeflateImpl(output);
-				config.getParameters().setWithZlibHeader(false);
-				return config;
+			public File act(File original) throws IOException {
+				DeflateParameters parameters = new DeflateParameters();
+				parameters.setWithZlibHeader(false);
+				return Compress.file(original).withDeflate().andParameters(parameters).toTempFile();
 			}
 
 		};

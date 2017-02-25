@@ -16,6 +16,8 @@
 package com.alanbuttars.commons.util.validators;
 
 public class Arguments {
+	
+	private Arguments() {}
 
 	public static void verify(boolean expression) {
 		verify(expression, null);

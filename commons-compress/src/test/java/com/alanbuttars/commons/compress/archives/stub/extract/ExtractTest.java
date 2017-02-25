@@ -50,56 +50,56 @@ public class ExtractTest {
 	@Test
 	public void testAr() throws Exception {
 		PowerMockito.mockStatic(Archives.class);
-		Extract.archive(file).asAr().toDirectory(directory);
+		Extract.archive(file).withAr().to(directory);
 		PowerMockito.verifyStatic();
 	}
 
 	@Test
 	public void testArj() throws Exception {
 		PowerMockito.mockStatic(Archives.class);
-		Extract.archive(file).asArj().withEncoding("UTF8").toDirectory(directory);
+		Extract.archive(file).withArj().withEncoding("UTF8").to(directory);
 		PowerMockito.verifyStatic();
 	}
 
 	@Test
 	public void testCpio() throws Exception {
 		PowerMockito.mockStatic(Archives.class);
-		Extract.archive(file).asCpio().withEncoding("UTF8").withBlockSize(2).toDirectory(directory);
+		Extract.archive(file).withCpio().withEncoding("UTF8").withBlockSize(2).to(directory);
 		PowerMockito.verifyStatic();
 	}
 
 	@Test
 	public void testDump() throws Exception {
 		PowerMockito.mockStatic(Archives.class);
-		Extract.archive(file).asDump().withEncoding("UTF8").toDirectory(directory);
+		Extract.archive(file).withDump().withEncoding("UTF8").to(directory);
 		PowerMockito.verifyStatic();
 	}
 
 	@Test
 	public void testJar() throws Exception {
 		PowerMockito.mockStatic(Archives.class);
-		Extract.archive(file).asJar().withEncoding("UTF8").toDirectory(directory);
+		Extract.archive(file).withJar().withEncoding("UTF8").to(directory);
 		PowerMockito.verifyStatic();
 	}
 
 	@Test
 	public void testSevenZ() throws Exception {
 		PowerMockito.mockStatic(Archives.class);
-		Extract.archive(file).asSevenZ().withPassword("password".getBytes()).toDirectory(directory);
+		Extract.archive(file).withSevenZ().withPassword("password".getBytes()).to(directory);
 		PowerMockito.verifyStatic();
 	}
 
 	@Test
 	public void testTar() throws Exception {
 		PowerMockito.mockStatic(Archives.class);
-		Extract.archive(file).asTar().withEncoding("UTF8").withBlockSize(2).withRecordSize(4).toDirectory(directory);
+		Extract.archive(file).withTar().withEncoding("UTF8").withBlockSize(2).withRecordSize(4).to(directory);
 		PowerMockito.verifyStatic();
 	}
 
 	@Test
 	public void testZip() throws Exception {
 		PowerMockito.mockStatic(Archives.class);
-		Extract.archive(file).asZip().withEncoding("UTF8").withStoredEntriesWithDataDescriptor(false).withUnicodeExtraFields(false).toDirectory(directory);
+		Extract.archive(file).withZip().withEncoding("UTF8").withStoredEntriesWithDataDescriptor(false).withUnicodeExtraFields(false).to(directory);
 		PowerMockito.verifyStatic();
 	}
 

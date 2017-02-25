@@ -28,10 +28,10 @@ public class Extract {
 	/**
 	 * Returns an intermediate extraction stubbing object.
 	 * 
-	 * @param archive
+	 * @param source
 	 *            Non-null archive file to be extracted
 	 */
-	public static ExtractFileStub archive(File archive) {
-		return new ExtractFileStub(archive);
+	public static ExtractFileStub archive(File source) {
+		return new ExtractFileStub(source);
 	}
 }

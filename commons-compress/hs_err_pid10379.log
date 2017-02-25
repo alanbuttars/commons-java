@@ -1,0 +1,668 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGILL (0x4) at pc=0x00007f7810055341, pid=10379, tid=140152746952448
+#
+# JRE version: Java(TM) SE Runtime Environment (7.0_79-b15) (build 1.7.0_79-b15)
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (24.79-b02 mixed mode linux-amd64 compressed oops)
+# Problematic frame:
+# V  [libjvm.so+0x795341]  Matcher::match()+0x3d1
+#
+# Failed to write core dump. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.java.com/bugreport/crash.jsp
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007f780809d000):  JavaThread "C2 CompilerThread0" daemon [_thread_in_native, id=10398, stack(0x00007f77daa24000,0x00007f77dab25000)]
+
+siginfo:si_signo=SIGILL: si_errno=0, si_code=2 (ILL_ILLOPN), si_addr=0x00007f7810055341
+
+Registers:
+RAX=0x00007f77c8017b30, RBX=0x00007f77dab1fe70, RCX=0x00007f77dab1fe70, RDX=0x00007f77dab1fe70
+RSP=0x00007f77dab1fd60, RBP=0x00007f77dab1fe60, RSI=0x00007f77c8017b10, RDI=0x00007f77dab22190
+R8 =0x0000000000000008, R9 =0x00007f78106f83c0, R10=0x0000000000000028, R11=0x00007f77c800a218
+R12=0x0000000000000004, R13=0x0000000000000001, R14=0x0000000000000000, R15=0x0000000000000000
+RIP=0x00007f7810055341, EFLAGS=0x0000000000010206, CSGSFS=0x0000000000000033, ERR=0x0000000000000000
+  TRAPNO=0x0000000000000006
+
+Top of Stack: (sp=0x00007f77dab1fd60)
+0x00007f77dab1fd60:   0000000000000000 00007f78106f83c0
+0x00007f77dab1fd70:   0000000000000000 00007f77dab1fe70
+0x00007f77dab1fd80:   00007f77c8017b10 00000000000027d8
+0x00007f77dab1fd90:   00007f77dab207e0 000000060fb606b3
+0x00007f77dab1fda0:   0000000000000000 00007f780fb6048a
+0x00007f77dab1fdb0:   00007f77c80178d8 00007f77dab1fdf0
+0x00007f77dab1fdc0:   00000000000027d8 00007f77dab207e0
+0x00007f77dab1fdd0:   0000000000100000 0000000000000000
+0x00007f77dab1fde0:   0000000000000000 0000000000000000
+0x00007f77dab1fdf0:   0000000000000000 00007f77dab1fe70
+0x00007f77dab1fe00:   0000000000000000 0000000000000000
+0x00007f77dab1fe10:   0400000000000000 0000000000000000
+0x00007f77dab1fe20:   0000000000000000 00007f77dab20ac0
+0x00007f77dab1fe30:   00007f77dab1fe60 00007f77dab215f0
+0x00007f77dab1fe40:   00007f77dab22190 00007f77dab1fe70
+0x00007f77dab1fe50:   00007f77dab20ac0 00007f78106dfd20
+0x00007f77dab1fe60:   00007f77dab21640 00007f780fd03efa
+0x00007f77dab1fe70:   00007f78106bd7f0 0000000000000005
+0x00007f77dab1fe80:   00007f77dab22190 00007f780809d980
+0x00007f77dab1fe90:   00007f780809d980 0000000000000004
+0x00007f77dab1fea0:   00007f77c80178b0 00007f780809d980
+0x00007f77dab1feb0:   0000000000000040 00007f77c80178e0
+0x00007f77dab1fec0:   0000000000000000 0000000000000000
+0x00007f77dab1fed0:   0000000000000000 0000000000000000
+0x00007f77dab1fee0:   0000000000000000 0000000000000000
+0x00007f77dab1fef0:   0000000000000000 0000000000000000
+0x00007f77dab1ff00:   0000000000000000 0000000000000000
+0x00007f77dab1ff10:   0000000000000000 0000000000000000
+0x00007f77dab1ff20:   0000000000000000 0000000000000000
+0x00007f77dab1ff30:   0000000000000000 0000000000000000
+0x00007f77dab1ff40:   0000000000000000 0000000000000000
+0x00007f77dab1ff50:   0000000000000000 0000000000000000 
+
+Instructions: (pc=0x00007f7810055341)
+0x00007f7810055321:   00 00 00 00 c7 40 0c 00 00 00 00 c7 40 10 00 00
+0x00007f7810055331:   00 00 c7 40 14 00 00 00 00 c7 40 18 00 00 00 b0
+0x00007f7810055341:   06 ee b0 b0 3f ad 94 77 80 cd 94 00 00 00 c7 40
+0x00007f7810055351:   24 00 00 00 00 48 8b 8d 20 ff ff ff 4e 8b 64 b9 
+
+Register to memory mapping:
+
+RAX=0x00007f77c8017b30 is an unknown value
+RBX=0x00007f77dab1fe70 is pointing into the stack for thread: 0x00007f780809d000
+RCX=0x00007f77dab1fe70 is pointing into the stack for thread: 0x00007f780809d000
+RDX=0x00007f77dab1fe70 is pointing into the stack for thread: 0x00007f780809d000
+RSP=0x00007f77dab1fd60 is pointing into the stack for thread: 0x00007f780809d000
+RBP=0x00007f77dab1fe60 is pointing into the stack for thread: 0x00007f780809d000
+RSI=0x00007f77c8017b10 is an unknown value
+RDI=0x00007f77dab22190 is pointing into the stack for thread: 0x00007f780809d000
+R8 =0x0000000000000008 is an unknown value
+R9 =0x00007f78106f83c0: <offset 0xe383c0> in /home/capstone/installs/jdk1.7.0_79/jre/lib/amd64/server/libjvm.so at 0x00007f780f8c0000
+R10=0x0000000000000028 is an unknown value
+R11=0x00007f77c800a218 is an unknown value
+R12=0x0000000000000004 is an unknown value
+R13=0x0000000000000001 is an unknown value
+R14=0x0000000000000000 is an unknown value
+R15=0x0000000000000000 is an unknown value
+
+
+Stack: [0x00007f77daa24000,0x00007f77dab25000],  sp=0x00007f77dab1fd60,  free space=1007k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [libjvm.so+0x795341]  Matcher::match()+0x3d1
+V  [libjvm.so+0x443efa]  Compile::Code_Gen()+0x12a
+V  [libjvm.so+0x444a8d]  Compile::Compile(ciEnv*, TypeFunc const* (*)(), unsigned char*, char const*, int, bool, bool, bool)+0x7bd
+V  [libjvm.so+0x8abe19]  OptoRuntime::generate_stub(ciEnv*, TypeFunc const* (*)(), unsigned char*, char const*, int, bool, bool, bool)+0xd9
+V  [libjvm.so+0x8abff6]  OptoRuntime::generate(ciEnv*)+0x46
+V  [libjvm.so+0x3b19d9]  C2Compiler::initialize_runtime()+0x119
+V  [libjvm.so+0x1eabe3]  AbstractCompiler::initialize_runtimes(void (*)(), int volatile*)+0x1c3
+V  [libjvm.so+0x3b18aa]  C2Compiler::initialize()+0x2a
+V  [libjvm.so+0x3b1d1e]  C2Compiler::compile_method(ciEnv*, ciMethod*, int)+0x31e
+V  [libjvm.so+0x44ec6e]  CompileBroker::invoke_compiler_on_method(CompileTask*)+0x33e
+V  [libjvm.so+0x44fa4d]  CompileBroker::compiler_thread_loop()+0x43d
+V  [libjvm.so+0x95c11f]  JavaThread::thread_main_inner()+0xdf
+V  [libjvm.so+0x95c225]  JavaThread::run()+0xf5
+V  [libjvm.so+0x821ca8]  java_start(Thread*)+0x108
+
+
+Current CompileTask:
+C2:     43    1             java.lang.String::indexOf (70 bytes)
+
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x00007f78080a2800 JavaThread "Service Thread" daemon [_thread_blocked, id=10400, stack(0x00007f77da822000,0x00007f77da923000)]
+  0x00007f78080a0000 JavaThread "C2 CompilerThread1" daemon [_thread_blocked, id=10399, stack(0x00007f77da923000,0x00007f77daa24000)]
+=>0x00007f780809d000 JavaThread "C2 CompilerThread0" daemon [_thread_in_native, id=10398, stack(0x00007f77daa24000,0x00007f77dab25000)]
+  0x00007f780809b000 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=10397, stack(0x00007f77dab25000,0x00007f77dac26000)]
+  0x00007f7808079800 JavaThread "Finalizer" daemon [_thread_blocked, id=10396, stack(0x00007f77db5e5000,0x00007f77db6e6000)]
+  0x00007f7808077800 JavaThread "Reference Handler" daemon [_thread_blocked, id=10395, stack(0x00007f77db6e6000,0x00007f77db7e7000)]
+  0x00007f780800b000 JavaThread "main" [_thread_in_vm, id=10385, stack(0x00007f781123a000,0x00007f781133b000)]
+
+Other Threads:
+  0x00007f7808073800 VMThread [stack: 0x00007f77db7e7000,0x00007f77db8e8000] [id=10394]
+  0x00007f78080b5000 WatcherThread [stack: 0x00007f77da721000,0x00007f77da822000] [id=10401]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap
+ PSYoungGen      total 74752K, used 2580K [0x00000007ad000000, 0x00000007b2300000, 0x0000000800000000)
+  eden space 64512K, 4% used [0x00000007ad000000,0x00000007ad2852d8,0x00000007b0f00000)
+  from space 10240K, 0% used [0x00000007b1900000,0x00000007b1900000,0x00000007b2300000)
+  to   space 10240K, 0% used [0x00000007b0f00000,0x00000007b0f00000,0x00000007b1900000)
+ ParOldGen       total 169984K, used 0K [0x0000000707000000, 0x0000000711600000, 0x00000007ad000000)
+  object space 169984K, 0% used [0x0000000707000000,0x0000000707000000,0x0000000711600000)
+ PSPermGen       total 21504K, used 2571K [0x0000000701e00000, 0x0000000703300000, 0x0000000707000000)
+  object space 21504K, 11% used [0x0000000701e00000,0x0000000702083528,0x0000000703300000)
+
+Card table byte_map: [0x00007f780dd29000,0x00007f780e51b000] byte_map_base: 0x00007f780a51a000
+
+Polling page: 0x00007f781135d000
+
+Code Cache  [0x00007f7805000000, 0x00007f7805270000, 0x00007f7808000000)
+ total_blobs=168 nmethods=0 adapters=136 free_code_cache=48772Kb largest_free_block=49941376
+
+Compilation events (1 events):
+Event: 0.037 Thread 0x00007f780809d000    1             java.lang.String::indexOf (70 bytes)
+
+GC Heap History (0 events):
+No events
+
+Deoptimization events (0 events):
+No events
+
+Internal exceptions (2 events):
+Event: 0.015 Thread 0x00007f780800b000 Threw 0x00000007ad00f0c0 at /HUDSON/workspace/7u-2-build-linux-amd64/jdk7u79/2331/hotspot/src/share/vm/prims/jni.cpp:3991
+Event: 0.033 Thread 0x00007f780800b000 Threw 0x00000007ad057128 at /HUDSON/workspace/7u-2-build-linux-amd64/jdk7u79/2331/hotspot/src/share/vm/prims/jvm.cpp:1304
+
+Events (10 events):
+Event: 0.036 loading class 0x00007f780c75b390
+Event: 0.036 loading class 0x00007f780c75b390 done
+Event: 0.036 loading class 0x00007f78080af160
+Event: 0.036 loading class 0x00007f78080af160 done
+Event: 0.036 loading class 0x00007f780c75b4b0
+Event: 0.036 loading class 0x00007f78080af340
+Event: 0.036 loading class 0x00007f78080af340 done
+Event: 0.036 loading class 0x00007f780c75b4b0 done
+Event: 0.036 loading class 0x00007f780c75cc00
+Event: 0.036 loading class 0x00007f780c75cc00 done
+
+
+Dynamic libraries:
+00400000-00401000 r-xp 00000000 08:02 6567276                            /home/capstone/installs/jdk1.7.0_79/bin/java
+00600000-00601000 rw-p 00000000 08:02 6567276                            /home/capstone/installs/jdk1.7.0_79/bin/java
+0246a000-0248b000 rw-p 00000000 00:00 0                                  [heap]
+701e00000-703300000 rw-p 00000000 00:00 0 
+703300000-707000000 rw-p 00000000 00:00 0 
+707000000-711600000 rw-p 00000000 00:00 0 
+711600000-7ad000000 rw-p 00000000 00:00 0 
+7ad000000-7b2300000 rw-p 00000000 00:00 0 
+7b2300000-800000000 rw-p 00000000 00:00 0 
+7f77b4000000-7f77b4021000 rw-p 00000000 00:00 0 
+7f77b4021000-7f77b8000000 ---p 00000000 00:00 0 
+7f77bc000000-7f77bc021000 rw-p 00000000 00:00 0 
+7f77bc021000-7f77c0000000 ---p 00000000 00:00 0 
+7f77c0000000-7f77c0021000 rw-p 00000000 00:00 0 
+7f77c0021000-7f77c4000000 ---p 00000000 00:00 0 
+7f77c4000000-7f77c4021000 rw-p 00000000 00:00 0 
+7f77c4021000-7f77c8000000 ---p 00000000 00:00 0 
+7f77c8000000-7f77c8034000 rw-p 00000000 00:00 0 
+7f77c8034000-7f77cc000000 ---p 00000000 00:00 0 
+7f77cc000000-7f77cc021000 rw-p 00000000 00:00 0 
+7f77cc021000-7f77d0000000 ---p 00000000 00:00 0 
+7f77d0000000-7f77d0021000 rw-p 00000000 00:00 0 
+7f77d0021000-7f77d4000000 ---p 00000000 00:00 0 
+7f77d4000000-7f77d4021000 rw-p 00000000 00:00 0 
+7f77d4021000-7f77d8000000 ---p 00000000 00:00 0 
+7f77da4bd000-7f77da4d9000 r--s 00103000 08:02 7092747                    /home/capstone/.m2/repository/org/mockito/mockito-core/1.10.19/mockito-core-1.10.19.jar
+7f77da4d9000-7f77da721000 rw-p 00000000 00:00 0 
+7f77da721000-7f77da722000 ---p 00000000 00:00 0 
+7f77da722000-7f77da822000 rw-p 00000000 00:00 0 
+7f77da822000-7f77da825000 ---p 00000000 00:00 0 
+7f77da825000-7f77da923000 rw-p 00000000 00:00 0 
+7f77da923000-7f77da926000 ---p 00000000 00:00 0 
+7f77da926000-7f77daa24000 rw-p 00000000 00:00 0 
+7f77daa24000-7f77daa27000 ---p 00000000 00:00 0 
+7f77daa27000-7f77dab25000 rw-p 00000000 00:00 0 
+7f77dab25000-7f77dab28000 ---p 00000000 00:00 0 
+7f77dab28000-7f77dac26000 rw-p 00000000 00:00 0 
+7f77dac26000-7f77db5e5000 r--p 00000000 08:02 33101599                   /usr/lib/locale/locale-archive
+7f77db5e5000-7f77db5e8000 ---p 00000000 00:00 0 
+7f77db5e8000-7f77db6e6000 rw-p 00000000 00:00 0 
+7f77db6e6000-7f77db6e9000 ---p 00000000 00:00 0 
+7f77db6e9000-7f77db7e7000 rw-p 00000000 00:00 0 
+7f77db7e7000-7f77db7e8000 ---p 00000000 00:00 0 
+7f77db7e8000-7f77e4000000 rw-p 00000000 00:00 0 
+7f77e4000000-7f77e4021000 rw-p 00000000 00:00 0 
+7f77e4021000-7f77e8000000 ---p 00000000 00:00 0 
+7f77e8000000-7f77e8021000 rw-p 00000000 00:00 0 
+7f77e8021000-7f77ec000000 ---p 00000000 00:00 0 
+7f77ec000000-7f77ec021000 rw-p 00000000 00:00 0 
+7f77ec021000-7f77f0000000 ---p 00000000 00:00 0 
+7f77f0000000-7f77f0021000 rw-p 00000000 00:00 0 
+7f77f0021000-7f77f4000000 ---p 00000000 00:00 0 
+7f77f4000000-7f77f4021000 rw-p 00000000 00:00 0 
+7f77f4021000-7f77f8000000 ---p 00000000 00:00 0 
+7f77f8000000-7f77f8021000 rw-p 00000000 00:00 0 
+7f77f8021000-7f77fc000000 ---p 00000000 00:00 0 
+7f77fc000000-7f77fc021000 rw-p 00000000 00:00 0 
+7f77fc021000-7f7800000000 ---p 00000000 00:00 0 
+7f7800000000-7f7800021000 rw-p 00000000 00:00 0 
+7f7800021000-7f7804000000 ---p 00000000 00:00 0 
+7f780400d000-7f780402b000 r--s 00110000 08:02 7092536                    /home/capstone/.m2/repository/org/mockito/mockito-all/1.10.19/mockito-all-1.10.19.jar
+7f780402b000-7f7805000000 rw-p 00000000 00:00 0 
+7f7805000000-7f7805270000 rwxp 00000000 00:00 0 
+7f7805270000-7f7808162000 rw-p 00000000 00:00 0 
+7f7808162000-7f780c000000 ---p 00000000 00:00 0 
+7f780c011000-7f780c013000 r--s 00004000 08:02 7092753                    /home/capstone/.m2/repository/org/powermock/powermock-api-support/1.6.6/powermock-api-support-1.6.6.jar
+7f780c013000-7f780c015000 r--s 00008000 08:02 7092751                    /home/capstone/.m2/repository/org/powermock/powermock-api-mockito-common/1.6.6/powermock-api-mockito-common-1.6.6.jar
+7f780c015000-7f780c017000 r--s 00009000 08:02 7092749                    /home/capstone/.m2/repository/org/objenesis/objenesis/2.1/objenesis-2.1.jar
+7f780c017000-7f780c01a000 r--s 00011000 08:02 7092745                    /home/capstone/.m2/repository/org/powermock/powermock-api-mockito/1.6.6/powermock-api-mockito-1.6.6.jar
+7f780c01a000-7f780c01c000 r--s 0000d000 08:02 7092743                    /home/capstone/.m2/repository/org/powermock/powermock-reflect/1.6.6/powermock-reflect-1.6.6.jar
+7f780c01c000-7f780c4ce000 rw-p 00000000 00:00 0 
+7f780c4ce000-7f780c68e000 r--s 039f7000 08:02 6438489                    /home/capstone/installs/jdk1.7.0_79/jre/lib/rt.jar
+7f780c68e000-7f780cfc8000 rw-p 00000000 00:00 0 
+7f780cfc8000-7f780cfc9000 ---p 00000000 00:00 0 
+7f780cfc9000-7f780d0c9000 rw-p 00000000 00:00 0 
+7f780d0c9000-7f780d0ca000 ---p 00000000 00:00 0 
+7f780d0ca000-7f780d1ca000 rw-p 00000000 00:00 0 
+7f780d1ca000-7f780d1cb000 ---p 00000000 00:00 0 
+7f780d1cb000-7f780d2cb000 rw-p 00000000 00:00 0 
+7f780d2cb000-7f780d2cc000 ---p 00000000 00:00 0 
+7f780d2cc000-7f780d3cc000 rw-p 00000000 00:00 0 
+7f780d3cc000-7f780d3cd000 ---p 00000000 00:00 0 
+7f780d3cd000-7f780d4cd000 rw-p 00000000 00:00 0 
+7f780d4cd000-7f780d4ce000 ---p 00000000 00:00 0 
+7f780d4ce000-7f780d5ce000 rw-p 00000000 00:00 0 
+7f780d5ce000-7f780d5cf000 ---p 00000000 00:00 0 
+7f780d5cf000-7f780d6cf000 rw-p 00000000 00:00 0 
+7f780d6cf000-7f780d6d0000 ---p 00000000 00:00 0 
+7f780d6d0000-7f780d7db000 rw-p 00000000 00:00 0 
+7f780d7db000-7f780d7f9000 rw-p 00000000 00:00 0 
+7f780d7f9000-7f780d84c000 rw-p 00000000 00:00 0 
+7f780d84c000-7f780dd29000 rw-p 00000000 00:00 0 
+7f780dd29000-7f780dd34000 rw-p 00000000 00:00 0 
+7f780dd34000-7f780dd52000 rw-p 00000000 00:00 0 
+7f780dd52000-7f780dda5000 rw-p 00000000 00:00 0 
+7f780dda5000-7f780e282000 rw-p 00000000 00:00 0 
+7f780e282000-7f780e2ac000 rw-p 00000000 00:00 0 
+7f780e2ac000-7f780e51a000 rw-p 00000000 00:00 0 
+7f780e51a000-7f780e51b000 rw-p 00000000 00:00 0 
+7f780e51b000-7f780e535000 r-xp 00000000 08:02 6437836                    /home/capstone/installs/jdk1.7.0_79/jre/lib/amd64/libzip.so
+7f780e535000-7f780e735000 ---p 0001a000 08:02 6437836                    /home/capstone/installs/jdk1.7.0_79/jre/lib/amd64/libzip.so
+7f780e735000-7f780e736000 rw-p 0001a000 08:02 6437836                    /home/capstone/installs/jdk1.7.0_79/jre/lib/amd64/libzip.so
+7f780e736000-7f780e741000 r-xp 00000000 08:02 16288543                   /lib/x86_64-linux-gnu/libnss_files-2.23.so
+7f780e741000-7f780e940000 ---p 0000b000 08:02 16288543                   /lib/x86_64-linux-gnu/libnss_files-2.23.so
+7f780e940000-7f780e941000 r--p 0000a000 08:02 16288543                   /lib/x86_64-linux-gnu/libnss_files-2.23.so
+7f780e941000-7f780e942000 rw-p 0000b000 08:02 16288543                   /lib/x86_64-linux-gnu/libnss_files-2.23.so
+7f780e942000-7f780e948000 rw-p 00000000 00:00 0 
+7f780e948000-7f780e953000 r-xp 00000000 08:02 16288528                   /lib/x86_64-linux-gnu/libnss_nis-2.23.so
+7f780e953000-7f780eb52000 ---p 0000b000 08:02 16288528                   /lib/x86_64-linux-gnu/libnss_nis-2.23.so
+7f780eb52000-7f780eb53000 r--p 0000a000 08:02 16288528                   /lib/x86_64-linux-gnu/libnss_nis-2.23.so
+7f780eb53000-7f780eb54000 rw-p 0000b000 08:02 16288528                   /lib/x86_64-linux-gnu/libnss_nis-2.23.so
+7f780eb54000-7f780eb6a000 r-xp 00000000 08:02 16288539                   /lib/x86_64-linux-gnu/libnsl-2.23.so
+7f780eb6a000-7f780ed69000 ---p 00016000 08:02 16288539                   /lib/x86_64-linux-gnu/libnsl-2.23.so
+7f780ed69000-7f780ed6a000 r--p 00015000 08:02 16288539                   /lib/x86_64-linux-gnu/libnsl-2.23.so
+7f780ed6a000-7f780ed6b000 rw-p 00016000 08:02 16288539                   /lib/x86_64-linux-gnu/libnsl-2.23.so
+7f780ed6b000-7f780ed6d000 rw-p 00000000 00:00 0 
+7f780ed6d000-7f780ed75000 r-xp 00000000 08:02 16288540                   /lib/x86_64-linux-gnu/libnss_compat-2.23.so
+7f780ed75000-7f780ef74000 ---p 00008000 08:02 16288540                   /lib/x86_64-linux-gnu/libnss_compat-2.23.so
+7f780ef74000-7f780ef75000 r--p 00007000 08:02 16288540                   /lib/x86_64-linux-gnu/libnss_compat-2.23.so
+7f780ef75000-7f780ef76000 rw-p 00008000 08:02 16288540                   /lib/x86_64-linux-gnu/libnss_compat-2.23.so
+7f780ef76000-7f780ef9f000 r-xp 00000000 08:02 6437802                    /home/capstone/installs/jdk1.7.0_79/jre/lib/amd64/libjava.so
+7f780ef9f000-7f780f19f000 ---p 00029000 08:02 6437802                    /home/capstone/installs/jdk1.7.0_79/jre/lib/amd64/libjava.so
+7f780f19f000-7f780f1a1000 rw-p 00029000 08:02 6437802                    /home/capstone/installs/jdk1.7.0_79/jre/lib/amd64/libjava.so
+7f780f1a1000-7f780f1ae000 r-xp 00000000 08:02 6437829                    /home/capstone/installs/jdk1.7.0_79/jre/lib/amd64/libverify.so
+7f780f1ae000-7f780f3ad000 ---p 0000d000 08:02 6437829                    /home/capstone/installs/jdk1.7.0_79/jre/lib/amd64/libverify.so
+7f780f3ad000-7f780f3af000 rw-p 0000c000 08:02 6437829                    /home/capstone/installs/jdk1.7.0_79/jre/lib/amd64/libverify.so
+7f780f3af000-7f780f3b6000 r-xp 00000000 08:02 16288527                   /lib/x86_64-linux-gnu/librt-2.23.so
+7f780f3b6000-7f780f5b5000 ---p 00007000 08:02 16288527                   /lib/x86_64-linux-gnu/librt-2.23.so
+7f780f5b5000-7f780f5b6000 r--p 00006000 08:02 16288527                   /lib/x86_64-linux-gnu/librt-2.23.so
+7f780f5b6000-7f780f5b7000 rw-p 00007000 08:02 16288527                   /lib/x86_64-linux-gnu/librt-2.23.so
+7f780f5b7000-7f780f6bf000 r-xp 00000000 08:02 16288537                   /lib/x86_64-linux-gnu/libm-2.23.so
+7f780f6bf000-7f780f8be000 ---p 00108000 08:02 16288537                   /lib/x86_64-linux-gnu/libm-2.23.so
+7f780f8be000-7f780f8bf000 r--p 00107000 08:02 16288537                   /lib/x86_64-linux-gnu/libm-2.23.so
+7f780f8bf000-7f780f8c0000 rw-p 00108000 08:02 16288537                   /lib/x86_64-linux-gnu/libm-2.23.so
+7f780f8c0000-7f7810435000 r-xp 00000000 08:02 6437856                    /home/capstone/installs/jdk1.7.0_79/jre/lib/amd64/server/libjvm.so
+7f7810435000-7f7810635000 ---p 00b75000 08:02 6437856                    /home/capstone/installs/jdk1.7.0_79/jre/lib/amd64/server/libjvm.so
+7f7810635000-7f78106f9000 rw-p 00b75000 08:02 6437856                    /home/capstone/installs/jdk1.7.0_79/jre/lib/amd64/server/libjvm.so
+7f78106f9000-7f781073a000 rw-p 00000000 00:00 0 
+7f781073a000-7f78108f9000 r-xp 00000000 08:02 16288532                   /lib/x86_64-linux-gnu/libc-2.23.so
+7f78108f9000-7f7810af9000 ---p 001bf000 08:02 16288532                   /lib/x86_64-linux-gnu/libc-2.23.so
+7f7810af9000-7f7810afd000 r--p 001bf000 08:02 16288532                   /lib/x86_64-linux-gnu/libc-2.23.so
+7f7810afd000-7f7810aff000 rw-p 001c3000 08:02 16288532                   /lib/x86_64-linux-gnu/libc-2.23.so
+7f7810aff000-7f7810b03000 rw-p 00000000 00:00 0 
+7f7810b03000-7f7810b06000 r-xp 00000000 08:02 16288531                   /lib/x86_64-linux-gnu/libdl-2.23.so
+7f7810b06000-7f7810d05000 ---p 00003000 08:02 16288531                   /lib/x86_64-linux-gnu/libdl-2.23.so
+7f7810d05000-7f7810d06000 r--p 00002000 08:02 16288531                   /lib/x86_64-linux-gnu/libdl-2.23.so
+7f7810d06000-7f7810d07000 rw-p 00003000 08:02 16288531                   /lib/x86_64-linux-gnu/libdl-2.23.so
+7f7810d07000-7f7810d1d000 r-xp 00000000 08:02 6438537                    /home/capstone/installs/jdk1.7.0_79/lib/amd64/jli/libjli.so
+7f7810d1d000-7f7810f1d000 ---p 00016000 08:02 6438537                    /home/capstone/installs/jdk1.7.0_79/lib/amd64/jli/libjli.so
+7f7810f1d000-7f7810f1e000 rw-p 00016000 08:02 6438537                    /home/capstone/installs/jdk1.7.0_79/lib/amd64/jli/libjli.so
+7f7810f1e000-7f7810f36000 r-xp 00000000 08:02 16288538                   /lib/x86_64-linux-gnu/libpthread-2.23.so
+7f7810f36000-7f7811135000 ---p 00018000 08:02 16288538                   /lib/x86_64-linux-gnu/libpthread-2.23.so
+7f7811135000-7f7811136000 r--p 00017000 08:02 16288538                   /lib/x86_64-linux-gnu/libpthread-2.23.so
+7f7811136000-7f7811137000 rw-p 00018000 08:02 16288538                   /lib/x86_64-linux-gnu/libpthread-2.23.so
+7f7811137000-7f781113b000 rw-p 00000000 00:00 0 
+7f781113b000-7f7811161000 r-xp 00000000 08:02 16288521                   /lib/x86_64-linux-gnu/ld-2.23.so
+7f7811162000-7f781116c000 r--s 000aa000 08:02 7092741                    /home/capstone/.m2/repository/org/javassist/javassist/3.21.0-GA/javassist-3.21.0-GA.jar
+7f781116c000-7f7811170000 r--s 0001a000 08:02 7092739                    /home/capstone/.m2/repository/org/powermock/powermock-core/1.6.6/powermock-core-1.6.6.jar
+7f7811170000-7f7811172000 r--s 0000a000 08:02 7092735                    /home/capstone/.m2/repository/org/powermock/powermock-module-junit4/1.6.6/powermock-module-junit4-1.6.6.jar
+7f7811172000-7f781117a000 r--s 00045000 08:02 6829082                    /home/capstone/.m2/repository/junit/junit/4.12/junit-4.12.jar
+7f781117a000-7f7811184000 rw-p 00000000 00:00 0 
+7f7811184000-7f781123a000 rw-p 00000000 00:00 0 
+7f781123a000-7f781123d000 ---p 00000000 00:00 0 
+7f781123d000-7f781133f000 rw-p 00000000 00:00 0 
+7f781133f000-7f7811340000 r--s 00003000 08:02 7092737                    /home/capstone/.m2/repository/org/powermock/powermock-module-junit4-common/1.6.6/powermock-module-junit4-common-1.6.6.jar
+7f7811340000-7f7811342000 r--s 00009000 08:02 6829084                    /home/capstone/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar
+7f7811342000-7f7811347000 r--s 00034000 08:02 7224931                    /home/capstone/.m2/repository/com/google/code/gson/gson/2.8.0/gson-2.8.0.jar
+7f7811347000-7f781134b000 r--s 00016000 08:02 7225212                    /home/capstone/.m2/repository/org/tukaani/xz/1.6/xz-1.6.jar
+7f781134b000-7f7811354000 r--s 0006a000 08:02 7224476                    /home/capstone/.m2/repository/org/apache/commons/commons-compress/1.13/commons-compress-1.13.jar
+7f7811354000-7f781135c000 rw-s 00000000 08:02 17337031                   /tmp/hsperfdata_capstone/10379
+7f781135c000-7f781135d000 rw-p 00000000 00:00 0 
+7f781135d000-7f781135e000 r--p 00000000 00:00 0 
+7f781135e000-7f7811360000 rw-p 00000000 00:00 0 
+7f7811360000-7f7811361000 r--p 00025000 08:02 16288521                   /lib/x86_64-linux-gnu/ld-2.23.so
+7f7811361000-7f7811362000 rw-p 00026000 08:02 16288521                   /lib/x86_64-linux-gnu/ld-2.23.so
+7f7811362000-7f7811363000 rw-p 00000000 00:00 0 
+7ffd1018f000-7ffd101b1000 rw-p 00000000 00:00 0                          [stack]
+7ffd101d0000-7ffd101d2000 r--p 00000000 00:00 0                          [vvar]
+7ffd101d2000-7ffd101d4000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+
+VM Arguments:
+jvm_args: -ea -Dfile.encoding=UTF-8 
+java_command: org.eclipse.jdt.internal.junit.runner.RemoteTestRunner -version 3 -port 46044 -testLoaderClass org.eclipse.jdt.internal.junit4.runner.JUnit4TestLoader -loaderpluginname org.eclipse.jdt.junit4.runtime -test com.alanbuttars.commons.compress.stub.compress.CompressTest:testFileNull
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+JAVA_HOME=/home/capstone/installs/jdk1.8.0_111
+PATH=/home/capstone/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:$JAVA_HOME/bin:/snap/bin
+SHELL=/usr/bin/zsh
+DISPLAY=:0
+
+Signal Handlers:
+SIGSEGV: [libjvm.so+0x9a3bf0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGBUS: [libjvm.so+0x9a3bf0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGFPE: [libjvm.so+0x81cb60], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGPIPE: [libjvm.so+0x81cb60], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGXFSZ: [libjvm.so+0x81cb60], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGILL: [libjvm.so+0x81cb60], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGUSR1: SIG_DFL, sa_mask[0]=0x00000000, sa_flags=0x00000000
+SIGUSR2: [libjvm.so+0x81e360], sa_mask[0]=0x00000004, sa_flags=0x10000004
+SIGHUP: [libjvm.so+0x81f480], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGINT: [libjvm.so+0x81f480], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGTERM: [libjvm.so+0x81f480], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGQUIT: [libjvm.so+0x81f480], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+
+
+---------------  S Y S T E M  ---------------
+
+OS:stretch/sid
+
+uname:Linux 4.4.0-64-generic #85-Ubuntu SMP Mon Feb 20 11:50:30 UTC 2017 x86_64
+libc:glibc 2.23 NPTL 2.23 
+rlimit: STACK 8192k, CORE 0k, NPROC 62809, NOFILE 65536, AS infinity
+load average:0.99 0.52 0.33
+
+/proc/meminfo:
+MemTotal:       16312852 kB
+MemFree:         7516652 kB
+MemAvailable:   11569404 kB
+Buffers:          287960 kB
+Cached:          4594892 kB
+SwapCached:            0 kB
+Active:          5497920 kB
+Inactive:        2801344 kB
+Active(anon):    3438108 kB
+Inactive(anon):   749852 kB
+Active(file):    2059812 kB
+Inactive(file):  2051492 kB
+Unevictable:         340 kB
+Mlocked:             340 kB
+SwapTotal:      16657404 kB
+SwapFree:       16657404 kB
+Dirty:              9264 kB
+Writeback:             0 kB
+AnonPages:       3416816 kB
+Mapped:           626552 kB
+Shmem:            771552 kB
+Slab:             332708 kB
+SReclaimable:     278688 kB
+SUnreclaim:        54020 kB
+KernelStack:       12464 kB
+PageTables:        53212 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:    24813828 kB
+Committed_AS:   10461792 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:           0 kB
+VmallocChunk:          0 kB
+HardwareCorrupted:     0 kB
+AnonHugePages:   1382400 kB
+CmaTotal:              0 kB
+CmaFree:               0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+DirectMap4k:      245320 kB
+DirectMap2M:     8024064 kB
+DirectMap1G:     8388608 kB
+
+
+CPU:total 8 (4 cores per cpu, 2 threads per core) family 6 model 60 stepping 3, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, avx2, aes, erms, ht, tsc, tscinvbit
+
+/proc/cpuinfo:
+processor	: 0
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 60
+model name	: Intel(R) Core(TM) i7-4700HQ CPU @ 2.40GHz
+stepping	: 3
+microcode	: 0x9
+cpu MHz		: 3199.968
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 8
+core id		: 0
+cpu cores	: 4
+apicid		: 0
+initial apicid	: 0
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm epb tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid xsaveopt dtherm ida arat pln pts
+bugs		:
+bogomips	: 4788.83
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 1
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 60
+model name	: Intel(R) Core(TM) i7-4700HQ CPU @ 2.40GHz
+stepping	: 3
+microcode	: 0x9
+cpu MHz		: 3199.968
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 8
+core id		: 1
+cpu cores	: 4
+apicid		: 2
+initial apicid	: 2
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm epb tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid xsaveopt dtherm ida arat pln pts
+bugs		:
+bogomips	: 4788.83
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 2
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 60
+model name	: Intel(R) Core(TM) i7-4700HQ CPU @ 2.40GHz
+stepping	: 3
+microcode	: 0x9
+cpu MHz		: 3199.968
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 8
+core id		: 2
+cpu cores	: 4
+apicid		: 4
+initial apicid	: 4
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm epb tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid xsaveopt dtherm ida arat pln pts
+bugs		:
+bogomips	: 4788.83
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 3
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 60
+model name	: Intel(R) Core(TM) i7-4700HQ CPU @ 2.40GHz
+stepping	: 3
+microcode	: 0x9
+cpu MHz		: 3199.968
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 8
+core id		: 3
+cpu cores	: 4
+apicid		: 6
+initial apicid	: 6
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm epb tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid xsaveopt dtherm ida arat pln pts
+bugs		:
+bogomips	: 4788.83
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 4
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 60
+model name	: Intel(R) Core(TM) i7-4700HQ CPU @ 2.40GHz
+stepping	: 3
+microcode	: 0x9
+cpu MHz		: 3199.968
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 8
+core id		: 0
+cpu cores	: 4
+apicid		: 1
+initial apicid	: 1
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm epb tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid xsaveopt dtherm ida arat pln pts
+bugs		:
+bogomips	: 4788.83
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 5
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 60
+model name	: Intel(R) Core(TM) i7-4700HQ CPU @ 2.40GHz
+stepping	: 3
+microcode	: 0x9
+cpu MHz		: 3244.312
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 8
+core id		: 1
+cpu cores	: 4
+apicid		: 3
+initial apicid	: 3
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm epb tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid xsaveopt dtherm ida arat pln pts
+bugs		:
+bogomips	: 4788.83
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 6
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 60
+model name	: Intel(R) Core(TM) i7-4700HQ CPU @ 2.40GHz
+stepping	: 3
+microcode	: 0x9
+cpu MHz		: 3205.875
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 8
+core id		: 2
+cpu cores	: 4
+apicid		: 5
+initial apicid	: 5
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm epb tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid xsaveopt dtherm ida arat pln pts
+bugs		:
+bogomips	: 4788.83
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 7
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 60
+model name	: Intel(R) Core(TM) i7-4700HQ CPU @ 2.40GHz
+stepping	: 3
+microcode	: 0x9
+cpu MHz		: 3199.968
+cache size	: 6144 KB
+physical id	: 0
+siblings	: 8
+core id		: 3
+cpu cores	: 4
+apicid		: 7
+initial apicid	: 7
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm epb tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid xsaveopt dtherm ida arat pln pts
+bugs		:
+bogomips	: 4788.83
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+
+
+Memory: 4k page, physical 16312852k(7516652k free), swap 16657404k(16657404k free)
+
+vm_info: Java HotSpot(TM) 64-Bit Server VM (24.79-b02) for linux-amd64 JRE (1.7.0_79-b15), built on Apr 10 2015 11:34:48 by "java_re" with gcc 4.3.0 20080428 (Red Hat 4.3.0-8)
+
+time: Tue Mar  7 21:29:04 2017
+elapsed time: 0 seconds
+

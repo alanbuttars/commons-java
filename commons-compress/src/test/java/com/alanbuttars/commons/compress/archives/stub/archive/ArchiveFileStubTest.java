@@ -16,7 +16,8 @@
 package com.alanbuttars.commons.compress.archives.stub.archive;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +30,8 @@ import org.junit.Test;
 import com.alanbuttars.commons.compress.archives.config.entry.ArchiveEntryConfig;
 import com.alanbuttars.commons.compress.archives.config.output.ArchiveOutputStreamConfig;
 import com.alanbuttars.commons.compress.archives.output.ArchiveOutputStream;
-import com.alanbuttars.commons.util.functions.DoubleInputFunction;
+import com.alanbuttars.commons.compress.archives.util.Archives;
+import com.alanbuttars.commons.util.functions.BiFunction;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
@@ -50,21 +52,65 @@ public class ArchiveFileStubTest {
 	@Test
 	public void testConstructor() {
 		ArchiveFileStub stub = new ArchiveFileStub(directory);
-		assertEquals(directory, stub.directory);
+		assertEquals(directory, stub.source);
 	}
 
 	@Test
-	public void testAs() {
-		ArchiveFileAsStub stub = new ArchiveFileStub(directory).as("blah");
+	public void testWith() {
+		ArchiveFileWithStub stub = new ArchiveFileStub(directory).with(Archives.AR);
 
-		assertNull(stub.streamConfigFunction());
-		assertNull(stub.streamFunction());
-		assertNull(stub.entryConfigFunction());
-		assertNull(stub.entryFunction());
+		assertNotNull(stub.streamConfigFunction());
+		assertNotNull(stub.streamFunction());
+		assertNotNull(stub.entryConfigFunction());
+		assertNotNull(stub.entryFunction());
 	}
 
 	@Test
-	public void testAsInline() {
+	public void testWithNullArchiveType() {
+		try {
+			new ArchiveFileStub(directory).with(null);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Archive type must be non-null", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testWithEmptyArchiveType() {
+		try {
+			new ArchiveFileStub(directory).with("");
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Archive type must be non-empty", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testWithBlankArchiveType() {
+		try {
+			new ArchiveFileStub(directory).with(" ");
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Archive type must be non-empty", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testWithUnconfiguredArchiveType() {
+		try {
+			new ArchiveFileStub(directory).with("blah");
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Stream config function is not configured for archive type blah", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testWithInline() {
 		Function<File, ArchiveOutputStreamConfig> streamConfigFunction = new Function<File, ArchiveOutputStreamConfig>() {
 
 			@Override
@@ -81,7 +127,7 @@ public class ArchiveFileStubTest {
 			}
 
 		};
-		DoubleInputFunction<String, Long, ArchiveEntryConfig> entryConfigFunction = new DoubleInputFunction<String, Long, ArchiveEntryConfig>() {
+		BiFunction<String, Long, ArchiveEntryConfig> entryConfigFunction = new BiFunction<String, Long, ArchiveEntryConfig>() {
 
 			@Override
 			public ArchiveEntryConfig apply(String inputA, Long inputB) {
@@ -98,12 +144,55 @@ public class ArchiveFileStubTest {
 
 		};
 
-		ArchiveFileAsStub stub = new ArchiveFileStub(directory).as("blah", streamConfigFunction, streamFunction, entryConfigFunction, entryFunction);
+		ArchiveFileWithStub stub = new ArchiveFileStub(directory).with("blah", streamConfigFunction, streamFunction, entryConfigFunction, entryFunction);
 
 		assertEquals(streamConfigFunction, stub.streamConfigFunction());
 		assertEquals(streamFunction, stub.streamFunction());
 		assertEquals(entryConfigFunction, stub.entryConfigFunction());
 		assertEquals(entryFunction, stub.entryFunction());
 	}
+	
+	@Test
+	public void testWithInlineNullArchiveType() {
+		try {
+			new ArchiveFileStub(directory).with(null, null, null, null, null);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Archive type must be non-null", e.getMessage());
+		}
+	}
 
+	@Test
+	public void testWithInlineEmptyArchiveType() {
+		try {
+			new ArchiveFileStub(directory).with("", null, null, null, null);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Archive type must be non-empty", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testWithInlineBlankArchiveType() {
+		try {
+			new ArchiveFileStub(directory).with(" ", null, null, null, null);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Archive type must be non-empty", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testWithInlineNullStreamConfigFunction() {
+		try {
+			new ArchiveFileStub(directory).with(Archives.AR, null, null, null, null);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Stream config function must be non-null", e.getMessage());
+		}
+	}
 }

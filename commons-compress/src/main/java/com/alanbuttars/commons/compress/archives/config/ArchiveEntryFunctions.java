@@ -42,7 +42,7 @@ import com.alanbuttars.commons.compress.archives.config.entry.ArchiveEntryConfig
 import com.alanbuttars.commons.compress.archives.config.entry.ArchiveEntryConfigCpioImpl;
 import com.alanbuttars.commons.compress.archives.config.entry.ArchiveEntryConfigDumpImpl;
 import com.alanbuttars.commons.compress.archives.config.entry.ArchiveEntryConfigTarImpl;
-import com.alanbuttars.commons.util.functions.DoubleInputFunction;
+import com.alanbuttars.commons.util.functions.BiFunction;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
@@ -53,8 +53,8 @@ import com.alanbuttars.commons.util.functions.Function;
  */
 class ArchiveEntryFunctions {
 
-	public static Map<String, DoubleInputFunction<String, Long, ArchiveEntryConfig>> defaultConfigFunctions() {
-		Map<String, DoubleInputFunction<String, Long, ArchiveEntryConfig>> functions = new HashMap<>();
+	public static Map<String, BiFunction<String, Long, ArchiveEntryConfig>> defaultConfigFunctions() {
+		Map<String, BiFunction<String, Long, ArchiveEntryConfig>> functions = new HashMap<>();
 		functions.put(AR, defaultArConfigFunction());
 		functions.put(ARJ, defaultArjConfigFunction());
 		functions.put(CPIO, defaultCpioConfigFunction());
@@ -66,8 +66,8 @@ class ArchiveEntryFunctions {
 		return functions;
 	}
 
-	private static DoubleInputFunction<String, Long, ArchiveEntryConfig> defaultArConfigFunction() {
-		return new DoubleInputFunction<String, Long, ArchiveEntryConfig>() {
+	private static BiFunction<String, Long, ArchiveEntryConfig> defaultArConfigFunction() {
+		return new BiFunction<String, Long, ArchiveEntryConfig>() {
 
 			@Override
 			public ArchiveEntryConfig apply(String entryName, Long fileLength) {
@@ -77,8 +77,8 @@ class ArchiveEntryFunctions {
 		};
 	}
 
-	private static DoubleInputFunction<String, Long, ArchiveEntryConfig> defaultArjConfigFunction() {
-		return new DoubleInputFunction<String, Long, ArchiveEntryConfig>() {
+	private static BiFunction<String, Long, ArchiveEntryConfig> defaultArjConfigFunction() {
+		return new BiFunction<String, Long, ArchiveEntryConfig>() {
 
 			@Override
 			public ArchiveEntryConfig apply(String entryName, Long fileLength) {
@@ -88,8 +88,8 @@ class ArchiveEntryFunctions {
 		};
 	}
 
-	private static DoubleInputFunction<String, Long, ArchiveEntryConfig> defaultCpioConfigFunction() {
-		return new DoubleInputFunction<String, Long, ArchiveEntryConfig>() {
+	private static BiFunction<String, Long, ArchiveEntryConfig> defaultCpioConfigFunction() {
+		return new BiFunction<String, Long, ArchiveEntryConfig>() {
 
 			@Override
 			public ArchiveEntryConfig apply(String entryName, Long fileLength) {
@@ -99,8 +99,8 @@ class ArchiveEntryFunctions {
 		};
 	}
 
-	private static DoubleInputFunction<String, Long, ArchiveEntryConfig> defaultDumpConfigFunction() {
-		return new DoubleInputFunction<String, Long, ArchiveEntryConfig>() {
+	private static BiFunction<String, Long, ArchiveEntryConfig> defaultDumpConfigFunction() {
+		return new BiFunction<String, Long, ArchiveEntryConfig>() {
 
 			@Override
 			public ArchiveEntryConfig apply(String entryName, Long fileLength) {
@@ -110,8 +110,8 @@ class ArchiveEntryFunctions {
 		};
 	}
 
-	private static DoubleInputFunction<String, Long, ArchiveEntryConfig> defaultJarConfigFunction() {
-		return new DoubleInputFunction<String, Long, ArchiveEntryConfig>() {
+	private static BiFunction<String, Long, ArchiveEntryConfig> defaultJarConfigFunction() {
+		return new BiFunction<String, Long, ArchiveEntryConfig>() {
 
 			@Override
 			public ArchiveEntryConfig apply(String entryName, Long fileLength) {
@@ -121,8 +121,8 @@ class ArchiveEntryFunctions {
 		};
 	}
 
-	private static DoubleInputFunction<String, Long, ArchiveEntryConfig> defaultSevenZConfigFunction() {
-		return new DoubleInputFunction<String, Long, ArchiveEntryConfig>() {
+	private static BiFunction<String, Long, ArchiveEntryConfig> defaultSevenZConfigFunction() {
+		return new BiFunction<String, Long, ArchiveEntryConfig>() {
 
 			@Override
 			public ArchiveEntryConfig apply(String entryName, Long fileLength) {
@@ -132,8 +132,8 @@ class ArchiveEntryFunctions {
 		};
 	}
 
-	private static DoubleInputFunction<String, Long, ArchiveEntryConfig> defaultTarConfigFunction() {
-		return new DoubleInputFunction<String, Long, ArchiveEntryConfig>() {
+	private static BiFunction<String, Long, ArchiveEntryConfig> defaultTarConfigFunction() {
+		return new BiFunction<String, Long, ArchiveEntryConfig>() {
 
 			@Override
 			public ArchiveEntryConfig apply(String entryName, Long fileLength) {
@@ -143,8 +143,8 @@ class ArchiveEntryFunctions {
 		};
 	}
 
-	private static DoubleInputFunction<String, Long, ArchiveEntryConfig> defaultZipConfigFunction() {
-		return new DoubleInputFunction<String, Long, ArchiveEntryConfig>() {
+	private static BiFunction<String, Long, ArchiveEntryConfig> defaultZipConfigFunction() {
+		return new BiFunction<String, Long, ArchiveEntryConfig>() {
 
 			@Override
 			public ArchiveEntryConfig apply(String entryName, Long fileLength) {

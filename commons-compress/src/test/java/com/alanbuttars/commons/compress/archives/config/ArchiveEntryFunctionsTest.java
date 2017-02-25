@@ -38,7 +38,7 @@ import org.junit.Test;
 
 import com.alanbuttars.commons.compress.archives.config.ArchiveEntryFunctions;
 import com.alanbuttars.commons.compress.archives.config.entry.ArchiveEntryConfig;
-import com.alanbuttars.commons.util.functions.DoubleInputFunction;
+import com.alanbuttars.commons.util.functions.BiFunction;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
@@ -51,7 +51,7 @@ public class ArchiveEntryFunctionsTest {
 
 	@Test
 	public void testAr() {
-		DoubleInputFunction<String, Long, ArchiveEntryConfig> configFunction = ArchiveEntryFunctions.defaultConfigFunctions().get(AR);
+		BiFunction<String, Long, ArchiveEntryConfig> configFunction = ArchiveEntryFunctions.defaultConfigFunctions().get(AR);
 		Function<ArchiveEntryConfig, ArchiveEntry> entryFunction = ArchiveEntryFunctions.defaultEntryFunctions().get(AR);
 
 		ArchiveEntryConfig config = configFunction.apply("entryName.txt", 123L);
@@ -71,7 +71,7 @@ public class ArchiveEntryFunctionsTest {
 
 	@Test
 	public void testArj() {
-		DoubleInputFunction<String, Long, ArchiveEntryConfig> configFunction = ArchiveEntryFunctions.defaultConfigFunctions().get(ARJ);
+		BiFunction<String, Long, ArchiveEntryConfig> configFunction = ArchiveEntryFunctions.defaultConfigFunctions().get(ARJ);
 		Function<ArchiveEntryConfig, ArchiveEntry> entryFunction = ArchiveEntryFunctions.defaultEntryFunctions().get(ARJ);
 
 		ArchiveEntryConfig config = configFunction.apply("entryName.txt", 123L);
@@ -85,7 +85,7 @@ public class ArchiveEntryFunctionsTest {
 
 	@Test
 	public void testCpio() {
-		DoubleInputFunction<String, Long, ArchiveEntryConfig> configFunction = ArchiveEntryFunctions.defaultConfigFunctions().get(CPIO);
+		BiFunction<String, Long, ArchiveEntryConfig> configFunction = ArchiveEntryFunctions.defaultConfigFunctions().get(CPIO);
 		Function<ArchiveEntryConfig, ArchiveEntry> entryFunction = ArchiveEntryFunctions.defaultEntryFunctions().get(CPIO);
 
 		ArchiveEntryConfig config = configFunction.apply("entryName.txt", 123L);
@@ -99,7 +99,7 @@ public class ArchiveEntryFunctionsTest {
 
 	@Test
 	public void testDump() {
-		DoubleInputFunction<String, Long, ArchiveEntryConfig> configFunction = ArchiveEntryFunctions.defaultConfigFunctions().get(DUMP);
+		BiFunction<String, Long, ArchiveEntryConfig> configFunction = ArchiveEntryFunctions.defaultConfigFunctions().get(DUMP);
 		Function<ArchiveEntryConfig, ArchiveEntry> entryFunction = ArchiveEntryFunctions.defaultEntryFunctions().get(DUMP);
 
 		ArchiveEntryConfig config = configFunction.apply("entryName.txt", 123L);
@@ -114,7 +114,7 @@ public class ArchiveEntryFunctionsTest {
 
 	@Test
 	public void testJar() {
-		DoubleInputFunction<String, Long, ArchiveEntryConfig> configFunction = ArchiveEntryFunctions.defaultConfigFunctions().get(JAR);
+		BiFunction<String, Long, ArchiveEntryConfig> configFunction = ArchiveEntryFunctions.defaultConfigFunctions().get(JAR);
 		Function<ArchiveEntryConfig, ArchiveEntry> entryFunction = ArchiveEntryFunctions.defaultEntryFunctions().get(JAR);
 
 		ArchiveEntryConfig config = configFunction.apply("entryName.txt", 123L);
@@ -128,7 +128,7 @@ public class ArchiveEntryFunctionsTest {
 
 	@Test
 	public void testTar() {
-		DoubleInputFunction<String, Long, ArchiveEntryConfig> configFunction = ArchiveEntryFunctions.defaultConfigFunctions().get(TAR);
+		BiFunction<String, Long, ArchiveEntryConfig> configFunction = ArchiveEntryFunctions.defaultConfigFunctions().get(TAR);
 		Function<ArchiveEntryConfig, ArchiveEntry> entryFunction = ArchiveEntryFunctions.defaultEntryFunctions().get(TAR);
 
 		ArchiveEntryConfig config = configFunction.apply("entryName.txt", 123L);
@@ -143,7 +143,7 @@ public class ArchiveEntryFunctionsTest {
 
 	@Test
 	public void testZip() {
-		DoubleInputFunction<String, Long, ArchiveEntryConfig> configFunction = ArchiveEntryFunctions.defaultConfigFunctions().get(ZIP);
+		BiFunction<String, Long, ArchiveEntryConfig> configFunction = ArchiveEntryFunctions.defaultConfigFunctions().get(ZIP);
 		Function<ArchiveEntryConfig, ArchiveEntry> entryFunction = ArchiveEntryFunctions.defaultEntryFunctions().get(ZIP);
 
 		ArchiveEntryConfig config = configFunction.apply("entryName.txt", 123L);

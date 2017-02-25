@@ -43,7 +43,7 @@ import com.alanbuttars.commons.compress.archives.config.output.ArchiveOutputStre
 import com.alanbuttars.commons.compress.archives.input.ArchiveInputStream;
 import com.alanbuttars.commons.compress.archives.output.ArchiveOutputStream;
 import com.alanbuttars.commons.compress.files.util.CompressedFiles;
-import com.alanbuttars.commons.util.functions.DoubleInputFunction;
+import com.alanbuttars.commons.util.functions.BiFunction;
 import com.alanbuttars.commons.util.functions.Function;
 import com.alanbuttars.commons.util.validators.Arguments;
 
@@ -234,7 +234,7 @@ public class Archives {
 			File destination, //
 			Function<File, ArchiveOutputStreamConfig> streamConfigFunction, //
 			Function<ArchiveOutputStreamConfig, ArchiveOutputStream> streamFunction, //
-			DoubleInputFunction<String, Long, ArchiveEntryConfig> entryConfigFunction, //
+			BiFunction<String, Long, ArchiveEntryConfig> entryConfigFunction, //
 			Function<ArchiveEntryConfig, ArchiveEntry> entryFunction) throws IOException {
 		validateArchiveArchiveType(archiveType);
 
@@ -292,7 +292,7 @@ public class Archives {
 			String archiveType, //
 			String entryName, //
 			long fileLength, //
-			DoubleInputFunction<String, Long, ArchiveEntryConfig> configFunction, //
+			BiFunction<String, Long, ArchiveEntryConfig> configFunction, //
 			Function<ArchiveEntryConfig, ArchiveEntry> entryFunction) {
 		if (configFunction == null) {
 			configFunction = ENTRY_CONFIG_FUNCTIONS.get(archiveType);
@@ -310,7 +310,7 @@ public class Archives {
 			File source, //
 			File currentFile, //
 			ArchiveOutputStream archiveOutputStream, //
-			DoubleInputFunction<String, Long, ArchiveEntryConfig> entryConfigFunction, //
+			BiFunction<String, Long, ArchiveEntryConfig> entryConfigFunction, //
 			Function<ArchiveEntryConfig, ArchiveEntry> entryFunction) throws IOException {
 		if (currentFile.isFile()) {
 			int index = source.getAbsolutePath().length() + 1;

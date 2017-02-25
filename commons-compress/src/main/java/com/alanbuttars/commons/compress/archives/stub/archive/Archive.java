@@ -28,11 +28,11 @@ public class Archive {
 	/**
 	 * Returns an intermediate archival stubbing object.
 	 * 
-	 * @param directory
+	 * @param source
 	 *            Non-null directory to be archived
 	 */
-	public static ArchiveFileStub directory(File directory) {
-		return new ArchiveFileStub(directory);
+	public static ArchiveFileStub directory(File source) {
+		return new ArchiveFileStub(source);
 	}
 
 }

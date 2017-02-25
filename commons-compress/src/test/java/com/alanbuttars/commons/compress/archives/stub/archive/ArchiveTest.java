@@ -52,21 +52,21 @@ public class ArchiveTest {
 	@Test
 	public void testAr() throws Exception {
 		PowerMockito.mockStatic(Archives.class);
-		Archive.directory(directory).asAr().withLongFileMode(2).toFile(file);
+		Archive.directory(directory).withAr().withLongFileMode(2).to(file);
 		PowerMockito.verifyStatic();
 	}
 
 	@Test
 	public void testCpio() throws Exception {
 		PowerMockito.mockStatic(Archives.class);
-		Archive.directory(directory).asCpio().withBlockSize((short) 2).withBlockSize(4).withEncoding("blah").toFile(file);
+		Archive.directory(directory).withCpio().withBlockSize((short) 2).withBlockSize(4).withEncoding("blah").to(file);
 		PowerMockito.verifyStatic();
 	}
 
 	@Test
 	public void testJar() throws Exception {
 		PowerMockito.mockStatic(Archives.class);
-		Archive.directory(directory).asJar()//
+		Archive.directory(directory).withJar()//
 				.withComment("comment")//
 				.withEncoding("blah")//
 				.withLevel(2)//
@@ -75,35 +75,35 @@ public class ArchiveTest {
 				.withZip64Mode(Zip64Mode.Always)//
 				.fallbackToUTF8(false)//
 				.useLanguageEncoding(true)//
-				.toFile(file);
+				.to(file);
 		PowerMockito.verifyStatic();
 	}
 
 	@Test
 	public void testSevenZ() throws Exception {
 		PowerMockito.mockStatic(Archives.class);
-		Archive.directory(directory).asSevenZ().withContentMethods(null).toFile(file);
+		Archive.directory(directory).withSevenZ().withContentMethods(null).to(file);
 		PowerMockito.verifyStatic();
 	}
 
 	@Test
 	public void testTar() throws Exception {
 		PowerMockito.mockStatic(Archives.class);
-		Archive.directory(directory).asTar()//
+		Archive.directory(directory).withTar()//
 				.withBigNumberMode(2)//
 				.withBlockSize(4)//
 				.withEncoding("blah")//
 				.withLongFileMode(6)//
 				.withRecordSize(8)//
 				.addPaxHeadersForNonAsciiNames(true)//
-				.toFile(file);
+				.to(file);
 		PowerMockito.verifyStatic();
 	}
 
 	@Test
 	public void testZip() throws Exception {
 		PowerMockito.mockStatic(Archives.class);
-		Archive.directory(directory).asZip()//
+		Archive.directory(directory).withZip()//
 				.withComment("comment")//
 				.withEncoding("blah")//
 				.withLevel(2)//
@@ -112,7 +112,7 @@ public class ArchiveTest {
 				.withZip64Mode(Zip64Mode.Always)//
 				.fallbackToUTF8(false)//
 				.useLanguageEncoding(true)//
-				.toFile(file);
+				.to(file);
 		PowerMockito.verifyStatic();
 	}
 

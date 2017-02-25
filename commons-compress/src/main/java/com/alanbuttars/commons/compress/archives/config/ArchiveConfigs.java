@@ -25,7 +25,7 @@ import com.alanbuttars.commons.compress.archives.config.input.ArchiveInputStream
 import com.alanbuttars.commons.compress.archives.config.output.ArchiveOutputStreamConfig;
 import com.alanbuttars.commons.compress.archives.input.ArchiveInputStream;
 import com.alanbuttars.commons.compress.archives.output.ArchiveOutputStream;
-import com.alanbuttars.commons.util.functions.DoubleInputFunction;
+import com.alanbuttars.commons.util.functions.BiFunction;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
@@ -42,7 +42,7 @@ public class ArchiveConfigs {
 	public static Map<String, Function<File, ArchiveOutputStreamConfig>> OUTPUT_CONFIG_FUNCTIONS = ArchiveOutputStreamFunctions.defaultConfigFunctions();
 	public static Map<String, Function<ArchiveOutputStreamConfig, ArchiveOutputStream>> OUTPUT_STREAM_FUNCTIONS = ArchiveOutputStreamFunctions.defaultStreamFunctions();
 
-	public static Map<String, DoubleInputFunction<String, Long, ArchiveEntryConfig>> ENTRY_CONFIG_FUNCTIONS = ArchiveEntryFunctions.defaultConfigFunctions();
+	public static Map<String, BiFunction<String, Long, ArchiveEntryConfig>> ENTRY_CONFIG_FUNCTIONS = ArchiveEntryFunctions.defaultConfigFunctions();
 	public static Map<String, Function<ArchiveEntryConfig, ArchiveEntry>> ENTRY_FUNCTIONS = ArchiveEntryFunctions.defaultEntryFunctions();
 
 }

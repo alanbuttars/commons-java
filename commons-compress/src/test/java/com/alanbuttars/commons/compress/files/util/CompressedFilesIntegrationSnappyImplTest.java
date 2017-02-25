@@ -16,18 +16,13 @@
 package com.alanbuttars.commons.compress.files.util;
 
 import static com.alanbuttars.commons.compress.files.util.CompressedFiles.SNAPPY;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.junit.Test;
 
-import com.alanbuttars.commons.compress.files.config.input.CompressedFileInputStreamConfig;
-import com.alanbuttars.commons.compress.files.config.input.CompressedFileInputStreamConfigSnappyImpl;
-import com.alanbuttars.commons.compress.files.config.input.CompressedFileInputStreamConfigSnappyImpl.Format;
-import com.alanbuttars.commons.util.functions.Function;
+import com.alanbuttars.commons.compress.util.FilesFunction;
 
 /**
  * Integration test class for {@link CompressedFiles} for {@link CompressedFiles#SNAPPY} files.
@@ -39,30 +34,16 @@ public class CompressedFilesIntegrationSnappyImplTest extends CompressedFilesInt
 
 	@Test
 	public void testDecompress() throws IOException {
-		testDecompress(SNAPPY, inputStreamConfigFunction());
+		testDecompress(SNAPPY, decompressFunction());
 	}
 
-	@Test
-	public void testCompress() throws IOException {
-		try {
-			testCompress(SNAPPY, inputStreamConfigFunction(), null);
-			fail();
-		}
-		catch (Exception e) {
-			assertEquals("File type snappy is not recognized", e.getMessage());
-		}
-	}
-
-	private Function<InputStream, CompressedFileInputStreamConfig> inputStreamConfigFunction() {
-		return new Function<InputStream, CompressedFileInputStreamConfig>() {
+	private FilesFunction decompressFunction() {
+		return new FilesFunction() {
 
 			@Override
-			public CompressedFileInputStreamConfig apply(InputStream input) {
-				CompressedFileInputStreamConfigSnappyImpl config = new CompressedFileInputStreamConfigSnappyImpl(input);
-				config.setFormat(Format.FRAMED);
-				return config;
+			public File act(File original) throws IOException {
+				return null;
 			}
-
 		};
 	}
 

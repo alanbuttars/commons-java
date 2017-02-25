@@ -24,7 +24,7 @@ import com.alanbuttars.commons.compress.archives.config.entry.ArchiveEntryConfig
 import com.alanbuttars.commons.compress.archives.config.output.ArchiveOutputStreamConfig;
 import com.alanbuttars.commons.compress.archives.output.ArchiveOutputStream;
 import com.alanbuttars.commons.compress.archives.util.Archives;
-import com.alanbuttars.commons.util.functions.DoubleInputFunction;
+import com.alanbuttars.commons.util.functions.BiFunction;
 import com.alanbuttars.commons.util.functions.Function;
 import com.alanbuttars.commons.util.validators.Arguments;
 
@@ -38,78 +38,96 @@ import com.alanbuttars.commons.util.validators.Arguments;
  * @author Alan Buttars
  *
  */
-public class ArchiveFileStub {
+class ArchiveFileStub {
 
-	protected final File directory;
+	protected final File source;
 
-	ArchiveFileStub(File directory) {
-		this.directory = directory;
+	ArchiveFileStub(File source) {
+		this.source = source;
 	}
 
 	/**
-	 * Indicates that the {@link #directory} will be treated as a {@link Archives#AR}.
+	 * Indicates that the {@link #source} will be treated as a {@link Archives#AR}.
 	 */
-	public ArchiveFileAsStubArImpl asAr() {
-		return new ArchiveFileAsStubArImpl(directory);
+	public ArchiveFileWithStubArImpl withAr() {
+		return new ArchiveFileWithStubArImpl(source);
 	}
 
 	/**
-	 * Indicates that the {@link #directory} will be treated as a {@link Archives#CPIO}.
+	 * Indicates that the {@link #source} will be treated as a {@link Archives#CPIO}.
 	 */
-	public ArchiveFileAsStubCpioImpl asCpio() {
-		return new ArchiveFileAsStubCpioImpl(directory);
+	public ArchiveFileWithStubCpioImpl withCpio() {
+		return new ArchiveFileWithStubCpioImpl(source);
 	}
 
 	/**
-	 * Indicates that the {@link #directory} will be treated as a {@link Archives#JAR}.
+	 * Indicates that the {@link #source} will be treated as a {@link Archives#JAR}.
 	 */
-	public ArchiveFileAsStubJarImpl asJar() {
-		return new ArchiveFileAsStubJarImpl(directory);
+	public ArchiveFileWithStubJarImpl withJar() {
+		return new ArchiveFileWithStubJarImpl(source);
 	}
 
 	/**
-	 * Indicates that the {@link #directory} will be treated as a {@link Archives#SEVENZ}.
+	 * Indicates that the {@link #source} will be treated as a {@link Archives#SEVENZ}.
 	 */
-	public ArchiveFileAsStubSevenZImpl asSevenZ() {
-		return new ArchiveFileAsStubSevenZImpl(directory);
+	public ArchiveFileWithStubSevenZImpl withSevenZ() {
+		return new ArchiveFileWithStubSevenZImpl(source);
 	}
 
 	/**
-	 * Indicates that the {@link #directory} will be treated as a {@link Archives#TAR}.
+	 * Indicates that the {@link #source} will be treated as a {@link Archives#TAR}.
 	 */
-	public ArchiveFileAsStubTarImpl asTar() {
-		return new ArchiveFileAsStubTarImpl(directory);
+	public ArchiveFileWithStubTarImpl withTar() {
+		return new ArchiveFileWithStubTarImpl(source);
 	}
 
 	/**
-	 * Indicates that the {@link #directory} will be treated as a {@link Archives#ZIP}.
+	 * Indicates that the {@link #source} will be treated as a {@link Archives#ZIP}.
 	 */
-	public ArchiveFileAsStubZipImpl asZip() {
-		return new ArchiveFileAsStubZipImpl(directory);
+	public ArchiveFileWithStubZipImpl withZip() {
+		return new ArchiveFileWithStubZipImpl(source);
 	}
 
 	/**
-	 * Indicates that the {@link #directory} will be treated as a new archive type already configured by the API user.
+	 * Indicates that the {@link #source} will be treated as a new archive type already configured by the API user.
 	 */
-	public ArchiveFileAsStub as(String archiveType) {
-		Arguments.verify(!Archives.ARCHIVE_TYPES.contains(archiveType));
-		return as(archiveType, //
-				ArchiveConfigs.OUTPUT_CONFIG_FUNCTIONS.get(archiveType), //
-				ArchiveConfigs.OUTPUT_STREAM_FUNCTIONS.get(archiveType), //
-				ArchiveConfigs.ENTRY_CONFIG_FUNCTIONS.get(archiveType), //
-				ArchiveConfigs.ENTRY_FUNCTIONS.get(archiveType));
+	public ArchiveFileWithStub with(String archiveType) {
+		Arguments.verify(archiveType != null, "Archive type must be non-null");
+		Arguments.verify(!archiveType.trim().isEmpty(), "Archive type must be non-empty");
+		
+		Function<File, ArchiveOutputStreamConfig> streamConfigFunction = ArchiveConfigs.OUTPUT_CONFIG_FUNCTIONS.get(archiveType);
+		Function<ArchiveOutputStreamConfig, ArchiveOutputStream> streamFunction = ArchiveConfigs.OUTPUT_STREAM_FUNCTIONS.get(archiveType);
+		BiFunction<String, Long, ArchiveEntryConfig> entryConfigFunction = ArchiveConfigs.ENTRY_CONFIG_FUNCTIONS.get(archiveType);
+		Function<ArchiveEntryConfig, ArchiveEntry> entryFunction = ArchiveConfigs.ENTRY_FUNCTIONS.get(archiveType);
+		
+		Arguments.verify(streamConfigFunction != null, "Stream config function is not configured for archive type " + archiveType);
+		Arguments.verify(streamFunction != null, "Stream function is not configured for archive type " + archiveType);
+		Arguments.verify(streamConfigFunction != null, "Stream config function is not configured for archive type " + archiveType);
+		Arguments.verify(streamFunction != null, "Stream function is not configured for archive type " + archiveType);
+
+		return with(archiveType, //
+				streamConfigFunction, //
+				streamFunction, //
+				entryConfigFunction, //
+				entryFunction);
 	}
 
 	/**
-	 * Indicates that the {@link #directory} will be treated as a new archive type with inline stream functions.
+	 * Indicates that the {@link #source} will be treated as a new archive type with inline stream functions.
 	 */
-	public ArchiveFileAsStub as(String archiveType, //
+	public ArchiveFileWithStub with(String archiveType, //
 			final Function<File, ArchiveOutputStreamConfig> streamConfigFunction, //
 			final Function<ArchiveOutputStreamConfig, ArchiveOutputStream> streamFunction, //
-			final DoubleInputFunction<String, Long, ArchiveEntryConfig> entryConfigFunction, //
+			final BiFunction<String, Long, ArchiveEntryConfig> entryConfigFunction, //
 			final Function<ArchiveEntryConfig, ArchiveEntry> entryFunction) {
-		Arguments.verify(!Archives.ARCHIVE_TYPES.contains(archiveType));
-		return new ArchiveFileAsStub(directory, archiveType) {
+		Arguments.verify(archiveType != null, "Archive type must be non-null");
+		Arguments.verify(!archiveType.trim().isEmpty(), "Archive type must be non-empty");
+		Arguments.verify(streamConfigFunction != null, "Stream config function must be non-null");
+		Arguments.verify(streamFunction != null, "Stream function must be non-null");
+		Arguments.verify(entryConfigFunction != null, "Entry config function must be non-null");
+		Arguments.verify(entryFunction != null, "Entry function must be non-null");
+		
+		return new ArchiveFileWithStub(source, archiveType) {
 
 			@Override
 			protected Function<File, ArchiveOutputStreamConfig> streamConfigFunction() {
@@ -122,7 +140,7 @@ public class ArchiveFileStub {
 			}
 
 			@Override
-			protected DoubleInputFunction<String, Long, ArchiveEntryConfig> entryConfigFunction() {
+			protected BiFunction<String, Long, ArchiveEntryConfig> entryConfigFunction() {
 				return entryConfigFunction;
 			}
 

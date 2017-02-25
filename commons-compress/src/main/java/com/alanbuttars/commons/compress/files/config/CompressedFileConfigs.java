@@ -16,13 +16,10 @@
 package com.alanbuttars.commons.compress.files.config;
 
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Map;
 
 import com.alanbuttars.commons.compress.files.config.input.CompressedFileInputStreamConfig;
-import com.alanbuttars.commons.compress.files.config.output.CompressedFileOutputStreamConfig;
 import com.alanbuttars.commons.compress.files.input.CompressedFileInputStream;
-import com.alanbuttars.commons.compress.files.output.CompressedFileOutputStream;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
@@ -35,8 +32,5 @@ public class CompressedFileConfigs {
 
 	public static Map<String, Function<InputStream, CompressedFileInputStreamConfig>> INPUT_CONFIG_FUNCTIONS = CompressedFileInputStreamFunctions.defaultConfigFunctions();
 	public static Map<String, Function<CompressedFileInputStreamConfig, CompressedFileInputStream>> INPUT_STREAM_FUNCTIONS = CompressedFileInputStreamFunctions.defaultStreamFunctions();
-
-	public static Map<String, Function<OutputStream, CompressedFileOutputStreamConfig>> OUTPUT_CONFIG_FUNCTIONS = CompressedFileOutputStreamFunctions.defaultConfigFunctions();
-	public static Map<String, Function<CompressedFileOutputStreamConfig, CompressedFileOutputStream>> OUTPUT_STREAM_FUNCTIONS = CompressedFileOutputStreamFunctions.defaultStreamFunctions();
 
 }

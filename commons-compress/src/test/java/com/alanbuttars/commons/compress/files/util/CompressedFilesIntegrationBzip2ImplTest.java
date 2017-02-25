@@ -17,9 +17,13 @@ package com.alanbuttars.commons.compress.files.util;
 
 import static com.alanbuttars.commons.compress.files.util.CompressedFiles.BZIP2;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
+
+import com.alanbuttars.commons.compress.stub.compress.Compress;
+import com.alanbuttars.commons.compress.util.FilesFunction;
 
 /**
  * Integration test class for {@link CompressedFiles} for {@link CompressedFiles#BZIP2} files.
@@ -31,11 +35,31 @@ public class CompressedFilesIntegrationBzip2ImplTest extends CompressedFilesInte
 
 	@Test
 	public void testDecompress() throws IOException {
-		testDecompress(BZIP2);
+		testDecompress(BZIP2, decompressFunction());
 	}
 
 	@Test
 	public void testCompress() throws IOException {
-		testCompress(BZIP2);
+		testCompress(BZIP2, compressFunction(), decompressFunction());
+	}
+
+	private FilesFunction decompressFunction() {
+		return new FilesFunction() {
+
+			@Override
+			public File act(File original) throws IOException {
+				return null;
+			}
+		};
+	}
+
+	private FilesFunction compressFunction() {
+		return new FilesFunction() {
+
+			@Override
+			public File act(File original) throws IOException {
+				return Compress.file(original).withBzip().toTempFile();
+			}
+		};
 	}
 }

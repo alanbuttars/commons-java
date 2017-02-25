@@ -17,9 +17,13 @@ package com.alanbuttars.commons.compress.files.util;
 
 import static com.alanbuttars.commons.compress.files.util.CompressedFiles.XZ;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
+
+import com.alanbuttars.commons.compress.stub.compress.Compress;
+import com.alanbuttars.commons.compress.util.FilesFunction;
 
 /**
  * Integration test class for {@link CompressedFiles} for {@link CompressedFiles#XZ} files.
@@ -31,11 +35,31 @@ public class CompressedFilesIntegrationXzImplTest extends CompressedFilesIntegra
 
 	@Test
 	public void testDecompress() throws IOException {
-		testDecompress(XZ);
+		testDecompress(XZ, decompressFunction());
 	}
 
 	@Test
 	public void testCompress() throws IOException {
-		testCompress(XZ);
+		testCompress(XZ, compressFunction(), decompressFunction());
+	}
+
+	private FilesFunction decompressFunction() {
+		return new FilesFunction() {
+
+			@Override
+			public File act(File original) throws IOException {
+				return null;
+			}
+		};
+	}
+
+	private FilesFunction compressFunction() {
+		return new FilesFunction() {
+
+			@Override
+			public File act(File original) throws IOException {
+				return Compress.file(original).withXz().toTempFile();
+			}
+		};
 	}
 }

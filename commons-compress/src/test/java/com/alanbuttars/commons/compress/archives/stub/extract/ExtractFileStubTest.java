@@ -46,19 +46,19 @@ public class ExtractFileStubTest {
 	@Test
 	public void testConstructor() {
 		ExtractFileStub stub = new ExtractFileStub(archive);
-		assertEquals(archive, stub.archive);
+		assertEquals(archive, stub.source);
 	}
 
 	@Test
-	public void testAs() {
-		ExtractFileAsStub stub = new ExtractFileStub(archive).as("blah");
+	public void testWith() {
+		ExtractFileWithStub stub = new ExtractFileStub(archive).with("blah");
 
 		assertNull(stub.streamConfigFunction());
 		assertNull(stub.streamFunction());
 	}
 
 	@Test
-	public void testAsInline() {
+	public void testWithInline() {
 		Function<File, ArchiveInputStreamConfig> streamConfigFunction = new Function<File, ArchiveInputStreamConfig>() {
 
 			@Override
@@ -75,7 +75,7 @@ public class ExtractFileStubTest {
 
 		};
 
-		ExtractFileAsStub stub = new ExtractFileStub(archive).as("blah", streamConfigFunction, streamFunction);
+		ExtractFileWithStub stub = new ExtractFileStub(archive).with("blah", streamConfigFunction, streamFunction);
 
 		assertEquals(streamConfigFunction, stub.streamConfigFunction());
 		assertEquals(streamFunction, stub.streamFunction());

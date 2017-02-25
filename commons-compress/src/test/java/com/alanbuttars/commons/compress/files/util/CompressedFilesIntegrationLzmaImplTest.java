@@ -17,9 +17,13 @@ package com.alanbuttars.commons.compress.files.util;
 
 import static com.alanbuttars.commons.compress.files.util.CompressedFiles.LZMA;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
+
+import com.alanbuttars.commons.compress.stub.compress.Compress;
+import com.alanbuttars.commons.compress.util.FilesFunction;
 
 /**
  * Integration test class for {@link CompressedFiles} for {@link CompressedFiles#LZMA} files.
@@ -31,11 +35,31 @@ public class CompressedFilesIntegrationLzmaImplTest extends CompressedFilesInteg
 
 	@Test
 	public void testDecompress() throws IOException {
-		testDecompress(LZMA);
+		testDecompress(LZMA, decompressFunction());
 	}
 
 	@Test
 	public void testCompress() throws IOException {
-		testCompress(LZMA);
+		testCompress(LZMA, compressFunction(), decompressFunction());
+	}
+
+	private FilesFunction decompressFunction() {
+		return new FilesFunction() {
+
+			@Override
+			public File act(File original) throws IOException {
+				return null;
+			}
+		};
+	}
+
+	private FilesFunction compressFunction() {
+		return new FilesFunction() {
+
+			@Override
+			public File act(File original) throws IOException {
+				return Compress.file(original).withLzma().toTempFile();
+			}
+		};
 	}
 }

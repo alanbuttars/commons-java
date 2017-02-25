@@ -36,86 +36,86 @@ import com.alanbuttars.commons.util.validators.Arguments;
  */
 class ExtractFileStub {
 
-	protected final File archive;
+	protected final File source;
 
 	ExtractFileStub(File archive) {
-		this.archive = archive;
+		this.source = archive;
 	}
 
 	/**
-	 * Indicates that the {@link #archive} will be treated as a {@link Archives#AR}.
+	 * Indicates that the {@link #source} will be treated as a {@link Archives#AR}.
 	 */
-	public ExtractFileAsStubArImpl asAr() {
-		return new ExtractFileAsStubArImpl(archive);
+	public ExtractFileWithStubArImpl withAr() {
+		return new ExtractFileWithStubArImpl(source);
 	}
 
 	/**
-	 * Indicates that the {@link #archive} will be treated as a {@link Archives#ARJ}.
+	 * Indicates that the {@link #source} will be treated as a {@link Archives#ARJ}.
 	 */
-	public ExtractFileAsStubArjImpl asArj() {
-		return new ExtractFileAsStubArjImpl(archive);
+	public ExtractFileWithStubArjImpl withArj() {
+		return new ExtractFileWithStubArjImpl(source);
 	}
 
 	/**
-	 * Indicates that the {@link #archive} will be treated as a {@link Archives#CPIO}.
+	 * Indicates that the {@link #source} will be treated as a {@link Archives#CPIO}.
 	 */
-	public ExtractFileAsStubCpioImpl asCpio() {
-		return new ExtractFileAsStubCpioImpl(archive);
+	public ExtractFileWithStubCpioImpl withCpio() {
+		return new ExtractFileWithStubCpioImpl(source);
 	}
 
 	/**
-	 * Indicates that the {@link #archive} will be treated as a {@link Archives#DUMP}.
+	 * Indicates that the {@link #source} will be treated as a {@link Archives#DUMP}.
 	 */
-	public ExtractFileAsStubDumpImpl asDump() {
-		return new ExtractFileAsStubDumpImpl(archive);
+	public ExtractFileWithStubDumpImpl withDump() {
+		return new ExtractFileWithStubDumpImpl(source);
 	}
 
 	/**
-	 * Indicates that the {@link #archive} will be treated as a {@link Archives#JAR}.
+	 * Indicates that the {@link #source} will be treated as a {@link Archives#JAR}.
 	 */
-	public ExtractFileAsStubJarImpl asJar() {
-		return new ExtractFileAsStubJarImpl(archive);
+	public ExtractFileWithStubJarImpl withJar() {
+		return new ExtractFileWithStubJarImpl(source);
 	}
 
 	/**
-	 * Indicates that the {@link #archive} will be treated as a {@link Archives#SEVENZ}.
+	 * Indicates that the {@link #source} will be treated as a {@link Archives#SEVENZ}.
 	 */
-	public ExtractFileAsStubSevenZImpl asSevenZ() {
-		return new ExtractFileAsStubSevenZImpl(archive);
+	public ExtractFileWithStubSevenZImpl withSevenZ() {
+		return new ExtractFileWithStubSevenZImpl(source);
 	}
 
 	/**
-	 * Indicates that the {@link #archive} will be treated as a {@link Archives#TAR}.
+	 * Indicates that the {@link #source} will be treated as a {@link Archives#TAR}.
 	 */
-	public ExtractFileAsStubTarImpl asTar() {
-		return new ExtractFileAsStubTarImpl(archive);
+	public ExtractFileWithStubTarImpl withTar() {
+		return new ExtractFileWithStubTarImpl(source);
 	}
 
 	/**
-	 * Indicates that the {@link #archive} will be treated as a {@link Archives#ZIP}.
+	 * Indicates that the {@link #source} will be treated as a {@link Archives#ZIP}.
 	 */
-	public ExtractFileAsStubZipImpl asZip() {
-		return new ExtractFileAsStubZipImpl(archive);
+	public ExtractFileWithStubZipImpl withZip() {
+		return new ExtractFileWithStubZipImpl(source);
 	}
 
 	/**
-	 * Indicates that the {@link #archive} will be treated as a new archive type already configured by the API user.
+	 * Indicates that the {@link #source} will be treated as a new archive type already configured by the API user.
 	 */
-	public ExtractFileAsStub as(String archiveType) {
+	public ExtractFileWithStub with(String archiveType) {
 		Arguments.verify(!Archives.ARCHIVE_TYPES.contains(archiveType));
-		return as(archiveType, //
+		return with(archiveType, //
 				ArchiveConfigs.INPUT_CONFIG_FUNCTIONS.get(archiveType), //
 				ArchiveConfigs.INPUT_STREAM_FUNCTIONS.get(archiveType));
 	}
 
 	/**
-	 * Indicates that the {@link #archive} will be treated as a new archive type with inline stream functions.
+	 * Indicates that the {@link #source} will be treated as a new archive type with inline stream functions.
 	 */
-	public ExtractFileAsStub as(String archiveType, //
+	public ExtractFileWithStub with(String archiveType, //
 			final Function<File, ArchiveInputStreamConfig> streamConfigFunction, //
 			final Function<ArchiveInputStreamConfig, ArchiveInputStream> streamFunction) {
 		Arguments.verify(!Archives.ARCHIVE_TYPES.contains(archiveType));
-		return new ExtractFileAsStub(archive, archiveType) {
+		return new ExtractFileWithStub(source, archiveType) {
 
 			@Override
 			protected Function<File, ArchiveInputStreamConfig> streamConfigFunction() {

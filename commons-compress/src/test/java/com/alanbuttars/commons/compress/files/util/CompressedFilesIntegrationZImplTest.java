@@ -16,12 +16,13 @@
 package com.alanbuttars.commons.compress.files.util;
 
 import static com.alanbuttars.commons.compress.files.util.CompressedFiles.Z;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
+
+import com.alanbuttars.commons.compress.util.FilesFunction;
 
 /**
  * Integration test class for {@link CompressedFiles} for {@link CompressedFiles#Z} files.
@@ -33,17 +34,17 @@ public class CompressedFilesIntegrationZImplTest extends CompressedFilesIntegrat
 
 	@Test
 	public void testDecompress() throws IOException {
-		testDecompress(Z);
+		testDecompress(Z, decompressFunction());
 	}
 
-	@Test
-	public void testCompress() throws IOException {
-		try {
-			testCompress(Z);
-			fail();
-		}
-		catch (IllegalArgumentException e) {
-			assertEquals("File type z is not recognized", e.getMessage());
-		}
+	private FilesFunction decompressFunction() {
+		return new FilesFunction() {
+
+			@Override
+			public File act(File original) throws IOException {
+				return null;
+			}
+		};
 	}
+
 }
