@@ -23,6 +23,7 @@ import java.io.IOException;
 import org.junit.Test;
 
 import com.alanbuttars.commons.compress.stub.compress.Compress;
+import com.alanbuttars.commons.compress.stub.decompress.Decompress;
 import com.alanbuttars.commons.compress.util.FilesFunction;
 
 /**
@@ -48,7 +49,7 @@ public class CompressedFilesIntegrationBzip2ImplTest extends CompressedFilesInte
 
 			@Override
 			public File act(File original) throws IOException {
-				return null;
+				return Decompress.file(original).withBzip().toTempFile();
 			}
 		};
 	}

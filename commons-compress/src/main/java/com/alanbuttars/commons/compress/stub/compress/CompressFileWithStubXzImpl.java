@@ -15,7 +15,7 @@
  */
 package com.alanbuttars.commons.compress.stub.compress;
 
-import static com.alanbuttars.commons.compress.files.util.CompressedFiles.BZIP2;
+import static com.alanbuttars.commons.compress.files.util.CompressedFiles.XZ;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +31,7 @@ import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Extension of {@link CompressFileWithStub} for {@link CompressedFiles#BZIP2} files.
+ * Extension of {@link CompressFileWithStub} for {@link CompressedFiles#XZ} files.
  * 
  * @author Alan Buttars
  *
@@ -41,7 +41,7 @@ public class CompressFileWithStubXzImpl extends CompressFileWithStub {
 	private int preset;
 
 	CompressFileWithStubXzImpl(File source) {
-		super(source, BZIP2);
+		super(source, XZ);
 		this.preset = LZMA2Options.PRESET_DEFAULT;
 	}
 

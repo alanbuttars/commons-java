@@ -13,39 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alanbuttars.commons.compress.stub.compress;
+package com.alanbuttars.commons.compress.stub.decompress;
 
 import static com.alanbuttars.commons.util.validators.Arguments.verify;
 import static com.alanbuttars.commons.util.validators.Arguments.verifyNonNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
 
-import com.alanbuttars.commons.compress.files.output.CompressedFileOutputStream;
+import com.alanbuttars.commons.compress.files.input.CompressedFileInputStream;
 import com.alanbuttars.commons.compress.files.util.CompressedFiles;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Abstraction of the final compressed file creation stub. Extensions of this class should offer file-type-specific
- * configuration functions with the builder pattern. For example, in the compressed file creation stub:
+ * Abstraction of the final decompressed file creation stub. Extensions of this class should offer file-type-specific
+ * configuration functions with the builder pattern. For example, in the decompressed file creation stub:
  * 
  * <pre>
- * Compress.file(source).withBzip().andBlockSize(1024).to(destination);
+ * Deompress.file(source).withBzip().andBlockSize(1024).to(destination);
  * </pre>
  * 
  * <p>
- * <code>andBlockSize()</code> is a builder function supported by {@link CompressFileWithStubBzipImpl}.
+ * <code>andBlockSize()</code> is a builder function supported by {@link DecompressFileWithStubBzipImpl}.
  * 
  * @author Alan Buttars
  *
  */
-abstract class CompressFileWithStub {
+abstract class DecompressFileWithStub {
 
 	protected final File source;
 	protected final String fileType;
 
-	CompressFileWithStub(File source, String fileType) {
+	DecompressFileWithStub(File source, String fileType) {
 		this.source = source;
 		this.fileType = fileType;
 	}
@@ -54,21 +54,21 @@ abstract class CompressFileWithStub {
 	 * Concludes this stub by invoking the creation logic configured by the complete stub.
 	 * 
 	 * @param destination
-	 *            Non-null compressed file destination
+	 *            Non-null decompressed file destination
 	 */
 	public void to(File destination) throws IOException {
 		verifyNonNull(destination, "Destination must be non-null");
 		verify(!destination.isDirectory(), "Destination " + destination.getAbsolutePath() + " must not be a directory");
 		verify(destination.canWrite(), "Destination " + destination.getAbsolutePath() + " is not writeable");
 
-		CompressedFiles.compress(fileType, source, destination, compressionFunction());
+		CompressedFiles.decompress(fileType, source, destination, decompressionFunction());
 	}
 
 	/**
 	 * Concludes this stub by invoking the creation logic configured by the complete stub and storing the resulting
-	 * compressed file in a temporary file.
+	 * decompressed file in a temporary file.
 	 * 
-	 * @return The compressed file
+	 * @return The decompressed file
 	 */
 	public File toTempFile() throws IOException {
 		File tempFile = File.createTempFile(source.getName(), "." + fileType);
@@ -79,6 +79,5 @@ abstract class CompressFileWithStub {
 	/**
 	 * Function used to transform the file output stream to a compressed file output stream.
 	 */
-	protected abstract Function<OutputStream, CompressedFileOutputStream> compressionFunction();
-
+	protected abstract Function<InputStream, CompressedFileInputStream> decompressionFunction();
 }

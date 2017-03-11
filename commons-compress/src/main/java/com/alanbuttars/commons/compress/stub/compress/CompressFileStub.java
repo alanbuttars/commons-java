@@ -80,17 +80,15 @@ public class CompressFileStub {
 	 * 
 	 * @param fileType
 	 *            Non-null file type
-	 * @param streamConfigFunction
-	 *            Function used to transform the file output stream to a compressed file config object
-	 * @param streamFunction
-	 *            Function used to transform compressed file config object to a compressed file output stream
+	 * @param compressionFunction
+	 *            Function used to transform the {@link #source} file stream to a compressed output stream
 	 */
 	public CompressFileWithStub with(String fileType, //
 			final Function<OutputStream, CompressedFileOutputStream> compressionFunction) {
 		verifyNonNull(fileType, "File type must be non-null");
 		verify(!fileType.trim().isEmpty(), "File type must be non-empty");
 		verifyNonNull(compressionFunction, "Compression function must be non-null");
-		
+
 		return new CompressFileWithStub(source, fileType) {
 
 			@Override

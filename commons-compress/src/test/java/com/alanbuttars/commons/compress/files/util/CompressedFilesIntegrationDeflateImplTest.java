@@ -24,6 +24,7 @@ import org.apache.commons.compress.compressors.deflate.DeflateParameters;
 import org.junit.Test;
 
 import com.alanbuttars.commons.compress.stub.compress.Compress;
+import com.alanbuttars.commons.compress.stub.decompress.Decompress;
 import com.alanbuttars.commons.compress.util.FilesFunction;
 
 /**
@@ -49,7 +50,9 @@ public class CompressedFilesIntegrationDeflateImplTest extends CompressedFilesIn
 
 			@Override
 			public File act(File original) throws IOException {
-				return null;
+				DeflateParameters parameters = new DeflateParameters();
+				parameters.setWithZlibHeader(false);
+				return Decompress.file(original).withDeflate().andParameters(parameters).toTempFile();
 			}
 
 		};

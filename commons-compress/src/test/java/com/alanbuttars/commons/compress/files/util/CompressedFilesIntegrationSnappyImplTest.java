@@ -20,8 +20,10 @@ import static com.alanbuttars.commons.compress.files.util.CompressedFiles.SNAPPY
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.compress.compressors.snappy.FramedSnappyDialect;
 import org.junit.Test;
 
+import com.alanbuttars.commons.compress.stub.decompress.Decompress;
 import com.alanbuttars.commons.compress.util.FilesFunction;
 
 /**
@@ -42,7 +44,7 @@ public class CompressedFilesIntegrationSnappyImplTest extends CompressedFilesInt
 
 			@Override
 			public File act(File original) throws IOException {
-				return null;
+				return Decompress.file(original).withSnappy().andFramedDialect(FramedSnappyDialect.STANDARD).toTempFile();
 			}
 		};
 	}

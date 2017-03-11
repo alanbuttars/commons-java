@@ -15,9 +15,6 @@
  */
 package com.alanbuttars.commons.compress.files.util;
 
-import static com.alanbuttars.commons.compress.files.config.CompressedFileConfigs.INPUT_CONFIG_FUNCTIONS;
-import static com.alanbuttars.commons.compress.files.config.CompressedFileConfigs.INPUT_STREAM_FUNCTIONS;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -30,13 +27,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.alanbuttars.commons.compress.archives.util.Archives;
-import com.alanbuttars.commons.compress.files.config.CompressedFileConfigs;
-import com.alanbuttars.commons.compress.files.config.input.CompressedFileInputStreamConfig;
 import com.alanbuttars.commons.compress.files.input.CompressedFileInputStream;
 import com.alanbuttars.commons.compress.files.output.CompressedFileOutputStream;
 import com.alanbuttars.commons.util.functions.Function;
-import com.alanbuttars.commons.util.validators.Arguments;
 
 /**
  * Utility functions class for compressed files.
@@ -70,50 +63,12 @@ public class CompressedFiles {
 	 * 
 	 * @param fileType
 	 *            non-null file type
-	 * @param sourceFilePath
-	 *            non-null file path pointing to a file which is to be decompressed
-	 * @param destinationFilePath
-	 *            non-null file path
-	 * @throws IOException
-	 *             on any IO exception
-	 */
-	public static void decompress(String fileType, String sourceFilePath, String destinationFilePath) throws IOException {
-		decompress(fileType, new File(sourceFilePath), new File(destinationFilePath));
-	}
-
-	/**
-	 * Decompresses a file to a file destination.
-	 * 
-	 * @param fileType
-	 *            non-null file type
 	 * @param source
 	 *            non-null file which is to be decompressed
 	 * @param destination
 	 *            non-null file
-	 * @throws IOException
-	 *             on any IO exception
-	 */
-	public static void decompress(String fileType, File source, File destination) throws IOException {
-		decompress(fileType, source, destination, null, null);
-	}
-
-	/**
-	 * Decompresses a file to a file destination.
-	 * 
-	 * @param fileType
-	 *            non-null file type
-	 * @param source
-	 *            non-null file which is to be decompressed
-	 * @param destination
-	 *            non-null file
-	 * @param streamConfigFunction
-	 *            nullable function which maps the <code>source</code>'s input stream to a stream config. If null, the
-	 *            default function associated with <code>fileType</code> in
-	 *            {@link CompressedFileConfigs#INPUT_CONFIG_FUNCTIONS} is used
-	 * @param streamFunction
-	 *            nullable function which maps the <code>source</code>'s stream config to a compressor stream. If null,
-	 *            the default function associated with <code>fileType</code> in
-	 *            {@link CompressedFileConfigs#INPUT_STREAM_FUNCTIONS} is used
+	 * @param decompressionFunction
+	 *            non-null function which maps the <code>source</code>'s input stream to a compressed input stream
 	 * @throws IOException
 	 *             on any IO exception
 	 */
@@ -121,12 +76,11 @@ public class CompressedFiles {
 			String fileType, //
 			File source, //
 			File destination, //
-			Function<InputStream, CompressedFileInputStreamConfig> streamConfigFunction, //
-			Function<CompressedFileInputStreamConfig, CompressedFileInputStream> streamFunction) throws IOException {
+			Function<InputStream, CompressedFileInputStream> decompressionFunction) throws IOException {
 		try (InputStream inputStream = new FileInputStream(source);
 				BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
 				FileOutputStream outputStream = new FileOutputStream(destination);
-				CompressedFileInputStream compressorInputStream = createCompressorInputStream(fileType, inputStream, streamConfigFunction, streamFunction)) {
+				CompressedFileInputStream compressorInputStream = decompressionFunction.apply(bufferedInputStream)) {
 			byte[] content = new byte[1024];
 			int length = 0;
 			while ((length = compressorInputStream.read(content)) > 0) {
@@ -145,7 +99,7 @@ public class CompressedFiles {
 	 * @param destination
 	 *            non-null file
 	 * @param compressionFunction
-	 *            nullable function which maps the <code>source</code>'s output stream to a compressed output stream
+	 *            non-null function which maps the <code>source</code>'s output stream to a compressed output stream
 	 * @throws IOException
 	 *             on any IO exception
 	 */
@@ -164,23 +118,4 @@ public class CompressedFiles {
 			}
 		}
 	}
-
-	private static CompressedFileInputStream createCompressorInputStream(//
-			String fileType, //
-			InputStream inputStream, //
-			Function<InputStream, CompressedFileInputStreamConfig> configFunction, //
-			Function<CompressedFileInputStreamConfig, CompressedFileInputStream> streamFunction) {
-		if (configFunction == null) {
-			configFunction = INPUT_CONFIG_FUNCTIONS.get(fileType);
-			Arguments.verify(configFunction != null, "File type " + fileType + " is not recognized");
-		}
-		if (streamFunction == null) {
-			streamFunction = INPUT_STREAM_FUNCTIONS.get(fileType);
-			Arguments.verify(streamFunction != null, "File	 type " + fileType + " is not recognized");
-		}
-		CompressedFileInputStreamConfig config = configFunction.apply(inputStream);
-		CompressedFileInputStream stream = streamFunction.apply(config);
-		return stream;
-	}
-
 }
