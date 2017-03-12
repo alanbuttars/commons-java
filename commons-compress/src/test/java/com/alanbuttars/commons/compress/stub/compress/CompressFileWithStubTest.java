@@ -84,7 +84,7 @@ public class CompressFileWithStubTest {
 	}
 
 	@Test
-	public void testToDestinationIsNotwriteable() throws IOException {
+	public void testToDestinationIsNotWriteable() throws IOException {
 		destination.setWritable(false);
 		try {
 			stub.to(destination);

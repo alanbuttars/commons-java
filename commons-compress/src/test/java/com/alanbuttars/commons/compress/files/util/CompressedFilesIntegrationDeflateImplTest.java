@@ -52,7 +52,7 @@ public class CompressedFilesIntegrationDeflateImplTest extends CompressedFilesIn
 			public File act(File original) throws IOException {
 				DeflateParameters parameters = new DeflateParameters();
 				parameters.setWithZlibHeader(false);
-				return Decompress.file(original).withDeflate().andParameters(parameters).toTempFile();
+				return Decompress.compressedFile(original).withDeflate().andParameters(parameters).toTempFile();
 			}
 
 		};

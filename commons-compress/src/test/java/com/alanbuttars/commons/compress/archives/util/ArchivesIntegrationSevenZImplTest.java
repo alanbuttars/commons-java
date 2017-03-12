@@ -17,9 +17,14 @@ package com.alanbuttars.commons.compress.archives.util;
 
 import static com.alanbuttars.commons.compress.archives.util.Archives.SEVENZ;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
+
+import com.alanbuttars.commons.compress.stub.compress.Compress;
+import com.alanbuttars.commons.compress.stub.decompress.Decompress;
+import com.alanbuttars.commons.compress.util.FilesFunction;
 
 /**
  * Integration test class for {@link Archives} for {@link Archives#SEVENZ} archives.
@@ -31,11 +36,31 @@ public class ArchivesIntegrationSevenZImplTest extends ArchivesIntegrationAbstra
 
 	@Test
 	public void testExtract() throws IOException {
-		testExtract(SEVENZ);
+		testExtract(SEVENZ, decompressFunction());
 	}
 
 	@Test
 	public void testArchive() throws IOException {
-		testArchive(SEVENZ);
+		testArchive(SEVENZ, compressFunction(), decompressFunction());
+	}
+
+	private FilesFunction decompressFunction() {
+		return new FilesFunction() {
+
+			@Override
+			public File act(File original) throws IOException {
+				return Decompress.archive(original).with7z().toTempDirectory();
+			}
+		};
+	}
+
+	private FilesFunction compressFunction() {
+		return new FilesFunction() {
+
+			@Override
+			public File act(File original) throws IOException {
+				return Compress.directory(original).with7z().toTempFile();
+			}
+		};
 	}
 }

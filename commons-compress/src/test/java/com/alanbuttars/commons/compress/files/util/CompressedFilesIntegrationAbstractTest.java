@@ -38,13 +38,13 @@ import com.google.gson.reflect.TypeToken;
 public class CompressedFilesIntegrationAbstractTest {
 
 	protected void testDecompress(String fileType, //
-			FilesFunction decompressFunction) throws IOException {
+			FilesFunction decompressionFunction) throws IOException {
 		try (Reader reader = new FileReader(getConfig(fileType))) {
 			List<ArchiveFile> testFiles = new Gson().fromJson(reader, new TypeToken<List<ArchiveFile>>() {
 			}.getType());
 			for (ArchiveFile testFile : testFiles) {
 				File source = getFile(fileType, testFile.getFileName());
-				File destination = decompressFunction.act(source);
+				File destination = decompressionFunction.act(source);
 				assertTrue(destination.exists());
 				assertFile(testFile, destination);
 			}

@@ -27,7 +27,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alanbuttars.commons.compress.archives.util.Archives;
+import com.alanbuttars.commons.compress.util.FilesFunction;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -39,42 +39,38 @@ import com.google.gson.reflect.TypeToken;
  */
 public class ArchivesIntegrationAbstractTest {
 
-	protected void testExtract(String archiveType) throws IOException {
+	protected void testExtract(String archiveType, //
+			FilesFunction decompressFunction) throws IOException {
 		try (Reader reader = new FileReader(getConfig(archiveType))) {
 			List<Archive> archives = new Gson().fromJson(reader, new TypeToken<List<Archive>>() {
 			}.getType());
 			for (Archive archive : archives) {
 				File source = getArchive(archiveType, archive.getFileName());
-				File destination = Files.createTempDirectory(archiveType).toFile();
-				Archives.extract(archiveType, source, destination);
-
+				File destination = decompressFunction.act(source);
 				assertTrue(destination.exists());
 				assertFiles(archive, destination);
 			}
 		}
 	}
 
-	protected void testArchive(String archiveType) throws IOException {
+	protected void testArchive(String archiveType, //
+			FilesFunction compressFunction, //
+			FilesFunction decompressFunction) throws IOException {
 		try (Reader reader = new FileReader(getConfig(archiveType))) {
 			List<Archive> archives = new Gson().fromJson(reader, new TypeToken<List<Archive>>() {
 			}.getType());
 			for (Archive archive : archives) {
-				File extractSource = getArchive(archiveType, archive.getFileName());
-				File extractDestination = Files.createTempDirectory(archiveType).toFile();
-				Archives.extract(archiveType, extractSource, extractDestination);
+				File decompressSource = getArchive(archiveType, archive.getFileName());
+				File decompressDestination = decompressFunction.act(decompressSource);
 
-				File archiveDestination = Files.createTempFile(archiveType, "." + archiveType.toLowerCase()).toFile();
-				Archives.archive(archiveType, extractDestination, archiveDestination);
+				File compressDestination = compressFunction.act(decompressDestination);
+				assertTrue(compressDestination.exists());
+				assertTrue(compressDestination.isFile());
+				assertTrue(compressDestination.length() > 0);
 
-				assertTrue(archiveDestination.exists());
-				assertTrue(archiveDestination.isFile());
-				assertTrue(archiveDestination.length() > 0);
-
-				File extractSecondDestination = Files.createTempDirectory(archiveType).toFile();
-				Archives.extract(archiveType, archiveDestination, extractSecondDestination);
-
-				assertTrue(extractSecondDestination.exists());
-				assertFiles(archive, extractSecondDestination);
+				File decompressSecondDestination = decompressFunction.act(compressDestination);
+				assertTrue(decompressSecondDestination.exists());
+				assertFiles(archive, decompressSecondDestination);
 			}
 		}
 	}

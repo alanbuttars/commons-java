@@ -49,7 +49,7 @@ public class CompressedFilesIntegrationXzImplTest extends CompressedFilesIntegra
 
 			@Override
 			public File act(File original) throws IOException {
-				return Decompress.file(original).withXz().toTempFile();
+				return Decompress.compressedFile(original).withXz().toTempFile();
 			}
 		};
 	}

@@ -16,14 +16,14 @@
 package com.alanbuttars.commons.compress.archives.util;
 
 import static com.alanbuttars.commons.compress.archives.util.Archives.ARJ;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
 
-import com.alanbuttars.commons.compress.archives.util.Archives;
+import com.alanbuttars.commons.compress.stub.decompress.Decompress;
+import com.alanbuttars.commons.compress.util.FilesFunction;
 
 /**
  * Integration test class for {@link Archives} for {@link Archives#ARJ} archives.
@@ -35,17 +35,17 @@ public class ArchivesIntegrationArjImplTest extends ArchivesIntegrationAbstractT
 
 	@Test
 	public void testExtract() throws IOException {
-		testExtract(ARJ);
+		testExtract(ARJ, decompressFunction());
 	}
 
-	@Test
-	public void testArchive() throws IOException {
-		try {
-			testArchive(ARJ);
-			fail();
-		}
-		catch (IllegalArgumentException e) {
-			assertEquals("Archive type arj is not recognized", e.getMessage());
-		}
+	private FilesFunction decompressFunction() {
+		return new FilesFunction() {
+
+			@Override
+			public File act(File original) throws IOException {
+				return Decompress.archive(original).withArj().toTempDirectory();
+			}
+		};
 	}
+
 }

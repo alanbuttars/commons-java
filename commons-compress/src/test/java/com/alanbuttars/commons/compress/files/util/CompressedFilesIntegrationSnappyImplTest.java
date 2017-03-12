@@ -44,7 +44,7 @@ public class CompressedFilesIntegrationSnappyImplTest extends CompressedFilesInt
 
 			@Override
 			public File act(File original) throws IOException {
-				return Decompress.file(original).withSnappy().andFramedDialect(FramedSnappyDialect.STANDARD).toTempFile();
+				return Decompress.compressedFile(original).withSnappy().andFramedDialect(FramedSnappyDialect.STANDARD).toTempFile();
 			}
 		};
 	}

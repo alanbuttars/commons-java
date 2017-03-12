@@ -76,7 +76,7 @@ public class CompressFileStub {
 	}
 
 	/**
-	 * Indicates that the {@link #source} will be compressed with the given stream functions.
+	 * Indicates that the {@link #source} will be compressed with the given functions.
 	 * 
 	 * @param fileType
 	 *            Non-null file type

@@ -49,7 +49,7 @@ public class CompressedFilesIntegrationLzmaImplTest extends CompressedFilesInteg
 
 			@Override
 			public File act(File original) throws IOException {
-				return Decompress.file(original).withLzma().toTempFile();
+				return Decompress.compressedFile(original).withLzma().toTempFile();
 			}
 		};
 	}

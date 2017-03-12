@@ -17,11 +17,14 @@ package com.alanbuttars.commons.compress.archives.util;
 
 import static com.alanbuttars.commons.compress.archives.util.Archives.CPIO;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
 
-import com.alanbuttars.commons.compress.archives.util.Archives;
+import com.alanbuttars.commons.compress.stub.compress.Compress;
+import com.alanbuttars.commons.compress.stub.decompress.Decompress;
+import com.alanbuttars.commons.compress.util.FilesFunction;
 
 /**
  * Integration test class for {@link Archives} for {@link Archives#CPIO} archives.
@@ -30,14 +33,34 @@ import com.alanbuttars.commons.compress.archives.util.Archives;
  *
  */
 public class ArchivesIntegrationCpioImplTest extends ArchivesIntegrationAbstractTest {
-	
+
 	@Test
 	public void testExtract() throws IOException {
-		testExtract(CPIO);
+		testExtract(CPIO, decompressFunction());
 	}
 
 	@Test
 	public void testArchive() throws IOException {
-		testArchive(CPIO);
+		testArchive(CPIO, compressFunction(), decompressFunction());
+	}
+
+	private FilesFunction decompressFunction() {
+		return new FilesFunction() {
+
+			@Override
+			public File act(File original) throws IOException {
+				return Decompress.archive(original).withCpio().toTempDirectory();
+			}
+		};
+	}
+
+	private FilesFunction compressFunction() {
+		return new FilesFunction() {
+
+			@Override
+			public File act(File original) throws IOException {
+				return Compress.directory(original).withCpio().toTempFile();
+			}
+		};
 	}
 }

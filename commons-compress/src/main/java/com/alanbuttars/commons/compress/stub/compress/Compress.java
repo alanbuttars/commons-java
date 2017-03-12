@@ -34,4 +34,13 @@ public class Compress {
 		return new CompressFileStub(source);
 	}
 
+	public static CompressDirectoryStub directory(File source) {
+		verifyNonNull(source, "Source must be non-null");
+		verify(source.exists(), "Source " + source.getAbsolutePath() + " does not exist");
+		verify(source.isDirectory(), "Source " + source.getAbsolutePath() + " must be a directory; to compress a file use Compress.file()");
+		verify(source.canRead(), "Source " + source.getAbsolutePath() + " is not readable");
+
+		return new CompressDirectoryStub(source);
+	}
+
 }

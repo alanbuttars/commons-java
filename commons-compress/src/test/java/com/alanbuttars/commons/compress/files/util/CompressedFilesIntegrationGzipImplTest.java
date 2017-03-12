@@ -49,7 +49,7 @@ public class CompressedFilesIntegrationGzipImplTest extends CompressedFilesInteg
 
 			@Override
 			public File act(File original) throws IOException {
-				return Decompress.file(original).withGzip().toTempFile();
+				return Decompress.compressedFile(original).withGzip().toTempFile();
 			}
 		};
 	}

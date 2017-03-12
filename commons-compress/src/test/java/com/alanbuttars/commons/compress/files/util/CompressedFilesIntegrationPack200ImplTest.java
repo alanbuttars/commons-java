@@ -49,7 +49,7 @@ public class CompressedFilesIntegrationPack200ImplTest extends CompressedFilesIn
 
 			@Override
 			public File act(File original) throws IOException {
-				return Decompress.file(original).withPack200().toTempFile();
+				return Decompress.compressedFile(original).withPack200().toTempFile();
 			}
 		};
 	}

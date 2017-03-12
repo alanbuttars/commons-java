@@ -17,11 +17,14 @@ package com.alanbuttars.commons.compress.archives.util;
 
 import static com.alanbuttars.commons.compress.archives.util.Archives.TAR;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
 
-import com.alanbuttars.commons.compress.archives.util.Archives;
+import com.alanbuttars.commons.compress.stub.compress.Compress;
+import com.alanbuttars.commons.compress.stub.decompress.Decompress;
+import com.alanbuttars.commons.compress.util.FilesFunction;
 
 /**
  * Integration test class for {@link Archives} for {@link Archives#TAR} archives.
@@ -33,11 +36,31 @@ public class ArchivesIntegrationTarImplTest extends ArchivesIntegrationAbstractT
 
 	@Test
 	public void testExtract() throws IOException {
-		testExtract(TAR);
+		testExtract(TAR, decompressFunction());
 	}
 
 	@Test
 	public void testArchive() throws IOException {
-		testArchive(TAR);
+		testArchive(TAR, compressFunction(), decompressFunction());
+	}
+
+	private FilesFunction decompressFunction() {
+		return new FilesFunction() {
+
+			@Override
+			public File act(File original) throws IOException {
+				return Decompress.archive(original).withTar().toTempDirectory();
+			}
+		};
+	}
+
+	private FilesFunction compressFunction() {
+		return new FilesFunction() {
+
+			@Override
+			public File act(File original) throws IOException {
+				return Compress.directory(original).withTar().toTempFile();
+			}
+		};
 	}
 }

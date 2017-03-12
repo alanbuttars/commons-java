@@ -43,7 +43,7 @@ public class CompressedFilesIntegrationZImplTest extends CompressedFilesIntegrat
 
 			@Override
 			public File act(File original) throws IOException {
-				return Decompress.file(original).withZ().toTempFile();
+				return Decompress.compressedFile(original).withZ().toTempFile();
 			}
 		};
 	}
