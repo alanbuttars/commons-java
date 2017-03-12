@@ -32,6 +32,7 @@ import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.sevenz.SevenZArchiveEntry;
 import org.apache.commons.compress.archivers.sevenz.SevenZMethod;
 import org.apache.commons.compress.archivers.sevenz.SevenZMethodConfiguration;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -52,6 +53,12 @@ public class CompressDirectoryWithStub7zImplTest {
 		source = Files.createTempDirectory(getClass().getName()).toFile();
 		destination = File.createTempFile(getClass().getName(), ".tmp");
 		stub = spy(new CompressDirectoryWithStub7zImpl(source));
+	}
+	
+	@After
+	public void teardown() {
+		source.deleteOnExit();
+		destination.deleteOnExit();
 	}
 
 	@Test

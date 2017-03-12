@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 import org.apache.commons.compress.archivers.tar.TarConstants;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,6 +56,12 @@ public class DecompressArchiveWithStubTarImplTest {
 		source = File.createTempFile(getClass().getName(), ".tmp");
 		destination = Files.createTempDirectory(getClass().getName()).toFile();
 		stub = spy(new DecompressArchiveWithStubTarImpl(source));
+	}
+	
+	@After
+	public void teardown() {
+		source.deleteOnExit();
+		destination.deleteOnExit();
 	}
 
 	@Test

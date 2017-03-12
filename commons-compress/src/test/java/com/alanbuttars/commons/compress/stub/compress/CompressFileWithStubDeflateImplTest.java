@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.apache.commons.compress.compressors.deflate.DeflateParameters;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,6 +50,12 @@ public class CompressFileWithStubDeflateImplTest {
 		source = File.createTempFile(getClass().getName(), ".tmp");
 		destination = File.createTempFile(getClass().getName(), ".tmp");
 		stub = spy(new CompressFileWithStubDeflateImpl(source));
+	}
+	
+	@After
+	public void teardown() {
+		source.deleteOnExit();
+		destination.deleteOnExit();
 	}
 
 	@Test

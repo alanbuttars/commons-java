@@ -26,6 +26,7 @@ import java.util.HashMap;
 import org.apache.commons.compress.compressors.deflate.DeflateParameters;
 import org.apache.commons.compress.compressors.gzip.GzipParameters;
 import org.apache.commons.compress.compressors.pack200.Pack200Strategy;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,6 +53,12 @@ public class CompressFileTest {
 	public void setup() throws IOException {
 		this.source = File.createTempFile(getClass().getName(), ".tmp");
 		this.destination = File.createTempFile(getClass().getName(), ".tmp");
+	}
+	
+	@After
+	public void teardown() {
+		source.deleteOnExit();
+		destination.deleteOnExit();
 	}
 
 	@Test

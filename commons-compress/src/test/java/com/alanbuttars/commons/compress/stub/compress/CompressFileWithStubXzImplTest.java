@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.tukaani.xz.LZMA2Options;
@@ -48,6 +49,12 @@ public class CompressFileWithStubXzImplTest {
 		source = File.createTempFile(getClass().getName(), ".tmp");
 		destination = File.createTempFile(getClass().getName(), ".tmp");
 		stub = spy(new CompressFileWithStubXzImpl(source));
+	}
+	
+	@After
+	public void teardown() {
+		source.deleteOnExit();
+		destination.deleteOnExit();
 	}
 
 	@Test

@@ -24,6 +24,7 @@ import java.nio.file.Files;
 
 import org.apache.commons.compress.archivers.zip.Zip64Mode;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream.UnicodeExtraFieldPolicy;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,6 +51,12 @@ public class CompressDirectoryTest {
 	public void setup() throws IOException {
 		this.source = Files.createTempDirectory(getClass().getName()).toFile();
 		this.destination = File.createTempFile(getClass().getName(), ".tmp");
+	}
+	
+	@After
+	public void teardown() {
+		source.deleteOnExit();
+		destination.deleteOnExit();
 	}
 
 	@Test

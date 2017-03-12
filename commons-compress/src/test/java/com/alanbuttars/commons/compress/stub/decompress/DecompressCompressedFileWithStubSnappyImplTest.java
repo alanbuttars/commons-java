@@ -30,6 +30,7 @@ import java.io.InputStream;
 
 import org.apache.commons.compress.compressors.snappy.FramedSnappyDialect;
 import org.apache.commons.compress.compressors.snappy.SnappyCompressorInputStream;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,6 +54,12 @@ public class DecompressCompressedFileWithStubSnappyImplTest {
 		source = File.createTempFile(getClass().getName(), ".tmp");
 		destination = File.createTempFile(getClass().getName(), ".tmp");
 		stub = spy(new DecompressCompressedFileWithStubSnappyImpl(source));
+	}
+	
+	@After
+	public void teardown() {
+		source.deleteOnExit();
+		destination.deleteOnExit();
 	}
 
 	@Test

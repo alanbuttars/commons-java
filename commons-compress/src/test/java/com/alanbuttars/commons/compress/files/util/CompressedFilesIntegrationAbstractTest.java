@@ -44,7 +44,10 @@ public class CompressedFilesIntegrationAbstractTest {
 			}.getType());
 			for (ArchiveFile testFile : testFiles) {
 				File source = getFile(fileType, testFile.getFileName());
+				source.deleteOnExit();
+				
 				File destination = decompressionFunction.act(source);
+				destination.deleteOnExit();
 				assertTrue(destination.exists());
 				assertFile(testFile, destination);
 			}
@@ -59,13 +62,19 @@ public class CompressedFilesIntegrationAbstractTest {
 			}.getType());
 			for (ArchiveFile testFile : testFiles) {
 				File decompressSource = getFile(fileType, testFile.getFileName());
+				decompressSource.deleteOnExit();
+				
 				File decompressDestination = decompressionFunction.act(decompressSource);
+				decompressDestination.deleteOnExit();
+				
 				File compressDestination = compressionFunction.act(decompressDestination);
+				compressDestination.deleteOnExit();
 				assertTrue(compressDestination.exists());
 				assertTrue(compressDestination.isFile());
 				assertTrue(compressDestination.length() > 0);
 
 				File decompressSecondDestination = decompressionFunction.act(compressDestination);
+				decompressSecondDestination.deleteOnExit();
 				assertTrue(decompressSecondDestination.exists());
 				assertFile(testFile, decompressSecondDestination);
 			}

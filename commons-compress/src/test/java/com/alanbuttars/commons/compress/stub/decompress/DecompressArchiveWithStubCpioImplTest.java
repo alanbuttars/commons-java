@@ -29,6 +29,7 @@ import java.nio.file.Files;
 
 import org.apache.commons.compress.archivers.cpio.CpioConstants;
 import org.apache.commons.compress.utils.CharsetNames;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,6 +57,12 @@ public class DecompressArchiveWithStubCpioImplTest {
 		source = File.createTempFile(getClass().getName(), ".tmp");
 		destination = Files.createTempDirectory(getClass().getName()).toFile();
 		stub = spy(new DecompressArchiveWithStubCpioImpl(source));
+	}
+	
+	@After
+	public void teardown() {
+		source.deleteOnExit();
+		destination.deleteOnExit();
 	}
 
 	@Test

@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -50,6 +51,11 @@ public class CompressFileStubTest {
 			}
 
 		};
+	}
+	
+	@After
+	public void teardown() {
+		source.deleteOnExit();
 	}
 
 	@Test

@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.apache.commons.compress.compressors.gzip.GzipParameters;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,6 +52,12 @@ public class CompressFileWithStubGzipImplTest {
 		stub = spy(new CompressFileWithStubGzipImpl(source));
 	}
 
+	@After
+	public void teardown() {
+		source.deleteOnExit();
+		destination.deleteOnExit();
+	}
+	
 	@Test
 	public void testConstructor() {
 		assertEquals(source, stub.source);

@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 import org.apache.commons.compress.archivers.ArchiveException;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,6 +55,12 @@ public class DecompressArchiveWithStubDumpImplTest {
 		source = File.createTempFile(getClass().getName(), ".tmp");
 		destination = Files.createTempDirectory(getClass().getName()).toFile();
 		stub = spy(new DecompressArchiveWithStubDumpImpl(source));
+	}
+	
+	@After
+	public void teardown() {
+		source.deleteOnExit();
+		destination.deleteOnExit();
 	}
 
 	@Test

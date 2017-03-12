@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,6 +56,12 @@ public class DecompressArchiveWithStubJarImplTest {
 		stub = spy(new DecompressArchiveWithStubJarImpl(source));
 	}
 
+	@After
+	public void teardown() {
+		source.deleteOnExit();
+		destination.deleteOnExit();
+	}
+	
 	@Test
 	public void testConstructor() {
 		assertEquals(source, stub.source);

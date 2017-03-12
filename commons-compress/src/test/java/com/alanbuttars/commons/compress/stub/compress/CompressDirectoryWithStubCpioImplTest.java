@@ -30,6 +30,7 @@ import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.cpio.CpioArchiveEntry;
 import org.apache.commons.compress.archivers.cpio.CpioConstants;
 import org.apache.commons.compress.utils.CharsetNames;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -50,6 +51,12 @@ public class CompressDirectoryWithStubCpioImplTest {
 		source = Files.createTempDirectory(getClass().getName()).toFile();
 		destination = File.createTempFile(getClass().getName(), ".tmp");
 		stub = spy(new CompressDirectoryWithStubCpioImpl(source));
+	}
+	
+	@After
+	public void teardown() {
+		source.deleteOnExit();
+		destination.deleteOnExit();
 	}
 
 	@Test

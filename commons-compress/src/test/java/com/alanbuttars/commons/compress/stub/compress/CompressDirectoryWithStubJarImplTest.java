@@ -32,6 +32,7 @@ import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.compress.archivers.zip.Zip64Mode;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream.UnicodeExtraFieldPolicy;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -54,6 +55,12 @@ public class CompressDirectoryWithStubJarImplTest {
 		stub = spy(new CompressDirectoryWithStubJarImpl(source));
 	}
 
+	@After
+	public void teardown() {
+		source.deleteOnExit();
+		destination.deleteOnExit();
+	}
+	
 	@Test
 	public void testConstructor() {
 		assertEquals(source, stub.source);

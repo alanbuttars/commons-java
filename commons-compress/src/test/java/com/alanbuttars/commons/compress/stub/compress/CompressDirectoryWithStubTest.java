@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -58,6 +59,12 @@ public class CompressDirectoryWithStubTest {
 				return null;
 			}
 		};
+	}
+	
+	@After
+	public void teardown() {
+		source.deleteOnExit();
+		destination.deleteOnExit();
 	}
 
 	@Test

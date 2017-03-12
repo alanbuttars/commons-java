@@ -30,6 +30,7 @@ import java.nio.file.Files;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ar.ArArchiveEntry;
 import org.apache.commons.compress.archivers.ar.ArArchiveOutputStream;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -50,6 +51,12 @@ public class CompressDirectoryWithStubArImplTest {
 		source = Files.createTempDirectory(getClass().getName()).toFile();
 		destination = File.createTempFile(getClass().getName(), ".tmp");
 		stub = spy(new CompressDirectoryWithStubArImpl(source));
+	}
+	
+	@After
+	public void teardown() {
+		source.deleteOnExit();
+		destination.deleteOnExit();
 	}
 
 	@Test

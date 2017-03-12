@@ -46,7 +46,10 @@ public class ArchivesIntegrationAbstractTest {
 			}.getType());
 			for (Archive archive : archives) {
 				File source = getArchive(archiveType, archive.getFileName());
+				source.deleteOnExit();
+				
 				File destination = decompressFunction.act(source);
+				destination.deleteOnExit();
 				assertTrue(destination.exists());
 				assertFiles(archive, destination);
 			}
@@ -61,14 +64,19 @@ public class ArchivesIntegrationAbstractTest {
 			}.getType());
 			for (Archive archive : archives) {
 				File decompressSource = getArchive(archiveType, archive.getFileName());
+				decompressSource.deleteOnExit();
+				
 				File decompressDestination = decompressFunction.act(decompressSource);
+				decompressDestination.deleteOnExit();
 
 				File compressDestination = compressFunction.act(decompressDestination);
+				compressDestination.deleteOnExit();
 				assertTrue(compressDestination.exists());
 				assertTrue(compressDestination.isFile());
 				assertTrue(compressDestination.length() > 0);
 
 				File decompressSecondDestination = decompressFunction.act(compressDestination);
+				decompressSecondDestination.deleteOnExit();
 				assertTrue(decompressSecondDestination.exists());
 				assertFiles(archive, decompressSecondDestination);
 			}

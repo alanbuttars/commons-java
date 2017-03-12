@@ -32,6 +32,7 @@ import org.apache.commons.compress.archivers.zip.Zip64Mode;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream.UnicodeExtraFieldPolicy;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -52,6 +53,12 @@ public class CompressDirectoryWithStubZipImplTest {
 		source = Files.createTempDirectory(getClass().getName()).toFile();
 		destination = File.createTempFile(getClass().getName(), ".tmp");
 		stub = spy(new CompressDirectoryWithStubZipImpl(source));
+	}
+	
+	@After
+	public void teardown() {
+		source.deleteOnExit();
+		destination.deleteOnExit();
 	}
 
 	@Test

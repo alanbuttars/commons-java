@@ -31,6 +31,7 @@ import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.archivers.tar.TarConstants;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,6 +52,12 @@ public class CompressDirectoryWithStubTarImplTest {
 		source = Files.createTempDirectory(getClass().getName()).toFile();
 		destination = File.createTempFile(getClass().getName(), ".tmp");
 		stub = spy(new CompressDirectoryWithStubTarImpl(source));
+	}
+	
+	@After
+	public void teardown() {
+		source.deleteOnExit();
+		destination.deleteOnExit();
 	}
 
 	@Test

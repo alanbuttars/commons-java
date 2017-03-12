@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.compress.compressors.pack200.Pack200Strategy;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,6 +52,12 @@ public class CompressFileWithStubPack200ImplTest {
 		source = File.createTempFile(getClass().getName(), ".tmp");
 		destination = File.createTempFile(getClass().getName(), ".tmp");
 		stub = spy(new CompressFileWithStubPack200Impl(source));
+	}
+	
+	@After
+	public void teardown() {
+		source.deleteOnExit();
+		destination.deleteOnExit();
 	}
 
 	@Test
