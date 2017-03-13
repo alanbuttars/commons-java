@@ -13,30 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alanbuttars.commons.compress.files.util;
+package com.alanbuttars.commons.compress.archives.util;
 
-import static com.alanbuttars.commons.compress.files.util.CompressedFiles.SNAPPY;
+import static com.alanbuttars.commons.compress.archives.util.Archives.SEVENZ;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.compress.compressors.snappy.FramedSnappyDialect;
 import org.junit.Test;
 
+import com.alanbuttars.commons.compress.stub.compress.Compress;
 import com.alanbuttars.commons.compress.stub.decompress.Decompress;
 import com.alanbuttars.commons.compress.util.FilesFunction;
 
 /**
- * Integration test class for {@link CompressedFiles} for {@link CompressedFiles#SNAPPY} files.
+ * Integration test class for {@link Archives} for {@link Archives#SEVENZ} archives.
  * 
  * @author Alan Buttars
  *
  */
-public class CompressedFilesIntegrationSnappyImplTest extends CompressedFilesIntegrationAbstractTest {
+public class ArchivesIntegration7zImplTest extends ArchivesIntegrationAbstractTest {
 
 	@Test
-	public void testDecompress() throws IOException {
-		testDecompress(SNAPPY, decompressFunction());
+	public void testExtract() throws IOException {
+		testExtract(SEVENZ, decompressFunction());
+	}
+
+	@Test
+	public void testArchive() throws IOException {
+		testArchive(SEVENZ, compressFunction(), decompressFunction());
 	}
 
 	private FilesFunction decompressFunction() {
@@ -44,9 +49,18 @@ public class CompressedFilesIntegrationSnappyImplTest extends CompressedFilesInt
 
 			@Override
 			public File act(File original) throws IOException {
-				return Decompress.compressedFile(original).withSnappy().andFramedDialect(FramedSnappyDialect.STANDARD).toTempFile();
+				return Decompress.archive(original).with7z().toTempDirectory();
 			}
 		};
 	}
 
+	private FilesFunction compressFunction() {
+		return new FilesFunction() {
+
+			@Override
+			public File act(File original) throws IOException {
+				return Compress.directory(original).with7z().toTempFile();
+			}
+		};
+	}
 }

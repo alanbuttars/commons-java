@@ -23,9 +23,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
 
@@ -50,16 +47,6 @@ public class Archives {
 	public static String JAR = "jar";
 	public static String TAR = "tar";
 	public static String ZIP = "zip";
-
-	public static Set<String> ARCHIVE_TYPES = new HashSet<>(Arrays.asList(//
-			SEVENZ, //
-			AR, //
-			ARJ, //
-			CPIO, //
-			DUMP, //
-			JAR, //
-			TAR, //
-			ZIP));
 
 	/**
 	 * Decompresses an archive to a directory destination.

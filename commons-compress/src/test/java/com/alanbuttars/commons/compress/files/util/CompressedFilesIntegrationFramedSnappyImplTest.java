@@ -13,35 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alanbuttars.commons.compress.archives.util;
+package com.alanbuttars.commons.compress.files.util;
 
-import static com.alanbuttars.commons.compress.archives.util.Archives.SEVENZ;
+import static com.alanbuttars.commons.compress.files.util.CompressedFiles.SNAPPY;
 
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.compress.compressors.snappy.FramedSnappyDialect;
 import org.junit.Test;
 
-import com.alanbuttars.commons.compress.stub.compress.Compress;
 import com.alanbuttars.commons.compress.stub.decompress.Decompress;
 import com.alanbuttars.commons.compress.util.FilesFunction;
 
 /**
- * Integration test class for {@link Archives} for {@link Archives#SEVENZ} archives.
+ * Integration test class for {@link CompressedFiles} for {@link CompressedFiles#SNAPPY} files.
  * 
  * @author Alan Buttars
  *
  */
-public class ArchivesIntegrationSevenZImplTest extends ArchivesIntegrationAbstractTest {
+public class CompressedFilesIntegrationFramedSnappyImplTest extends CompressedFilesIntegrationAbstractTest {
 
 	@Test
-	public void testExtract() throws IOException {
-		testExtract(SEVENZ, decompressFunction());
-	}
-
-	@Test
-	public void testArchive() throws IOException {
-		testArchive(SEVENZ, compressFunction(), decompressFunction());
+	public void testDecompress() throws IOException {
+		testDecompress(SNAPPY, decompressFunction());
 	}
 
 	private FilesFunction decompressFunction() {
@@ -49,18 +44,9 @@ public class ArchivesIntegrationSevenZImplTest extends ArchivesIntegrationAbstra
 
 			@Override
 			public File act(File original) throws IOException {
-				return Decompress.archive(original).with7z().toTempDirectory();
+				return Decompress.compressedFile(original).withFramedSnappy().toTempFile();
 			}
 		};
 	}
 
-	private FilesFunction compressFunction() {
-		return new FilesFunction() {
-
-			@Override
-			public File act(File original) throws IOException {
-				return Compress.directory(original).with7z().toTempFile();
-			}
-		};
-	}
 }

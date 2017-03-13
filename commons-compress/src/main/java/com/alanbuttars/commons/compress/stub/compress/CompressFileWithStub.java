@@ -31,11 +31,11 @@ import com.alanbuttars.commons.util.functions.Function;
  * configuration functions with the builder pattern. For example, in the compressed file creation stub:
  * 
  * <pre>
- * Compress.file(source).withBzip().andBlockSize(1024).to(destination);
+ * Compress.file(source).withBzip2().andBlockSize(1024).to(destination);
  * </pre>
  * 
  * <p>
- * <code>andBlockSize()</code> is a builder function supported by {@link CompressFileWithStubBzipImpl}.
+ * <code>andBlockSize()</code> is a builder function supported by {@link CompressFileWithStubBzip2Impl}.
  * 
  * @author Alan Buttars
  *

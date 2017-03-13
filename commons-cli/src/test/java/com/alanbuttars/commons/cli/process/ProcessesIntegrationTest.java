@@ -20,6 +20,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import org.junit.Test;
@@ -164,11 +165,17 @@ public class ProcessesIntegrationTest extends ProcessesIntegrationAbstractTest {
 		CommandLineResponse response = Processes.execute(request);
 		assertEquals(CommandLineResponse.INTERRUPTED_BEFORE_COMPLETION_EXIT_CODE, response.getExitCode());
 		assertTrue(response.failed());
-		assertEquals("info 1\n", response.getInfoStream());
+		String infoStream = response.getInfoStream();
+		assertEquals("info 1\n", infoStream);
 		assertEquals("", response.getErrorStream());
 		assertNull(response.getException());
 		assertFalse(response.exceptionThrown());
 		assertTrue(response.interrupted());
+
+	}
+
+	@Test
+	public void test() throws InterruptedException, IOException {
 	}
 
 	@Test
@@ -197,6 +204,7 @@ public class ProcessesIntegrationTest extends ProcessesIntegrationAbstractTest {
 		assertNull(response.getException());
 		assertFalse(response.exceptionThrown());
 		assertTrue(response.interrupted());
+
 	}
 
 }

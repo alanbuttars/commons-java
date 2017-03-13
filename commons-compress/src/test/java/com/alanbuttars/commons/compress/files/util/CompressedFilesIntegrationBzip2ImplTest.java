@@ -49,7 +49,7 @@ public class CompressedFilesIntegrationBzip2ImplTest extends CompressedFilesInte
 
 			@Override
 			public File act(File original) throws IOException {
-				return Decompress.compressedFile(original).withBzip().toTempFile();
+				return Decompress.compressedFile(original).withBzip2().toTempFile();
 			}
 		};
 	}
@@ -59,7 +59,7 @@ public class CompressedFilesIntegrationBzip2ImplTest extends CompressedFilesInte
 
 			@Override
 			public File act(File original) throws IOException {
-				return Compress.file(original).withBzip().toTempFile();
+				return Compress.file(original).withBzip2().toTempFile();
 			}
 		};
 	}

@@ -54,7 +54,7 @@ public class DecompressCompressedFileTest {
 		this.source = File.createTempFile(getClass().getName(), ".tmp");
 		this.destination = File.createTempFile(getClass().getName(), ".tmp");
 	}
-	
+
 	@After
 	public void teardown() {
 		source.deleteOnExit();
@@ -115,9 +115,9 @@ public class DecompressCompressedFileTest {
 	}
 
 	@Test
-	public void testBzip() throws IOException {
+	public void testBzip2() throws IOException {
 		PowerMockito.mockStatic(CompressedFiles.class);
-		Decompress.compressedFile(source).withBzip().andDecompressConcatenated(true).to(destination);
+		Decompress.compressedFile(source).withBzip2().andDecompressConcatenated(true).to(destination);
 		PowerMockito.verifyStatic();
 	}
 
@@ -125,6 +125,13 @@ public class DecompressCompressedFileTest {
 	public void testDeflate() throws IOException {
 		PowerMockito.mockStatic(CompressedFiles.class);
 		Decompress.compressedFile(source).withDeflate().andParameters(new DeflateParameters()).to(destination);
+		PowerMockito.verifyStatic();
+	}
+
+	@Test
+	public void testFramedSnappy() throws IOException {
+		PowerMockito.mockStatic(CompressedFiles.class);
+		Decompress.compressedFile(source).withFramedSnappy().andDialect(FramedSnappyDialect.IWORK_ARCHIVE).to(destination);
 		PowerMockito.verifyStatic();
 	}
 
@@ -152,7 +159,7 @@ public class DecompressCompressedFileTest {
 	@Test
 	public void testSnappy() throws IOException {
 		PowerMockito.mockStatic(CompressedFiles.class);
-		Decompress.compressedFile(source).withSnappy().andBlockSize(2).andFramedDialect(FramedSnappyDialect.IWORK_ARCHIVE).to(destination);
+		Decompress.compressedFile(source).withSnappy().andBlockSize(2).to(destination);
 		PowerMockito.verifyStatic();
 	}
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alanbuttars.commons.compress.stub.compress;
+package com.alanbuttars.commons.compress.stub.decompress;
 
 import static com.alanbuttars.commons.compress.files.util.CompressedFiles.BZIP2;
 import static org.junit.Assert.assertEquals;
@@ -25,53 +25,59 @@ import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
 
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+import com.alanbuttars.commons.compress.files.util.CompressedFiles;
 
 /**
- * Test class for {@link CompressFileWithStubBzipImpl}.
+ * Test class for {@link DecompressCompressedFileWithStubBzip2Impl}.
  * 
  * @author Alan Buttars
  *
  */
-public class CompressFileWithStubBzipImplTest {
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ CompressedFiles.class })
+public class DecompressCompressedFileWithStubBzip2ImplTest {
 
 	private File source;
 	private File destination;
-	private CompressFileWithStubBzipImpl stub;
+	private DecompressCompressedFileWithStubBzip2Impl stub;
 
 	@Before
 	public void setup() throws IOException {
 		source = File.createTempFile(getClass().getName(), ".tmp");
 		destination = File.createTempFile(getClass().getName(), ".tmp");
-		stub = spy(new CompressFileWithStubBzipImpl(source));
+		stub = spy(new DecompressCompressedFileWithStubBzip2Impl(source));
 	}
-
+	
 	@After
 	public void teardown() {
 		source.deleteOnExit();
 		destination.deleteOnExit();
 	}
-	
+
 	@Test
 	public void testConstructor() {
 		assertEquals(source, stub.source);
 		assertEquals(BZIP2, stub.fileType);
 	}
 
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void testCompressionFunction() throws IOException {
 		stub.to(destination);
-		verify(stub, times(1)).createCompressedFileOutputStream(any(OutputStream.class), eq(BZip2CompressorOutputStream.MAX_BLOCKSIZE));
+		verify(stub, times(1)).createCompressedFileInputStream(any(InputStream.class), eq(false));
 	}
 
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void testCustomCompressionFunction() throws IOException {
-		stub.andBlockSize(2).to(destination);
-		verify(stub, times(1)).createCompressedFileOutputStream(any(OutputStream.class), eq(2));
+		stub.andDecompressConcatenated(true).to(destination);
+		verify(stub, times(1)).createCompressedFileInputStream(any(InputStream.class), eq(true));
 	}
 }

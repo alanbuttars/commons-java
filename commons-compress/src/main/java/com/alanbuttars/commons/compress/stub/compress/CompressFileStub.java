@@ -36,8 +36,8 @@ public class CompressFileStub {
 	/**
 	 * Indicates that the {@link #source} will be compressed with {@link CompressedFiles#BZIP2}.
 	 */
-	public CompressFileWithStubBzipImpl withBzip() {
-		return new CompressFileWithStubBzipImpl(source);
+	public CompressFileWithStubBzip2Impl withBzip2() {
+		return new CompressFileWithStubBzip2Impl(source);
 	}
 
 	/**

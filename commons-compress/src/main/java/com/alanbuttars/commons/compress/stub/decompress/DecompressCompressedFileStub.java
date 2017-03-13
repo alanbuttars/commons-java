@@ -36,8 +36,8 @@ public class DecompressCompressedFileStub {
 	/**
 	 * Indicates that the {@link #source} will be decompressed with {@link CompressedFiles#BZIP2}.
 	 */
-	public DecompressCompressedFileWithStubBzipImpl withBzip() {
-		return new DecompressCompressedFileWithStubBzipImpl(source);
+	public DecompressCompressedFileWithStubBzip2Impl withBzip2() {
+		return new DecompressCompressedFileWithStubBzip2Impl(source);
 	}
 
 	/**
@@ -45,6 +45,13 @@ public class DecompressCompressedFileStub {
 	 */
 	public DecompressCompressedFileWithStubDeflateImpl withDeflate() {
 		return new DecompressCompressedFileWithStubDeflateImpl(source);
+	}
+
+	/**
+	 * Indicates that the {@link #source} will be decompressed with framed {@link CompressedFiles#SNAPPY}.
+	 */
+	public DecompressCompressedFileWithStubFramedSnappyImpl withFramedSnappy() {
+		return new DecompressCompressedFileWithStubFramedSnappyImpl(source);
 	}
 
 	/**

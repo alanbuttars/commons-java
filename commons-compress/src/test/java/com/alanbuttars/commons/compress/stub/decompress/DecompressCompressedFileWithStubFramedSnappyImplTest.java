@@ -15,7 +15,7 @@
  */
 package com.alanbuttars.commons.compress.stub.decompress;
 
-import static com.alanbuttars.commons.compress.files.util.CompressedFiles.BZIP2;
+import static com.alanbuttars.commons.compress.files.util.CompressedFiles.SNAPPY;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -27,36 +27,33 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.compress.compressors.snappy.FramedSnappyDialect;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.alanbuttars.commons.compress.files.util.CompressedFiles;
-
 /**
- * Test class for {@link DecompressCompressedFileWithStubBzipImpl}.
+ * Test class for {@link DecompressCompressedFileWithStubFramedSnappyImpl}.
  * 
  * @author Alan Buttars
  *
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ CompressedFiles.class })
-public class DecompressCompressedFileWithStubBzipImplTest {
+public class DecompressCompressedFileWithStubFramedSnappyImplTest {
 
 	private File source;
 	private File destination;
-	private DecompressCompressedFileWithStubBzipImpl stub;
+	private DecompressCompressedFileWithStubFramedSnappyImpl stub;
 
 	@Before
 	public void setup() throws IOException {
 		source = File.createTempFile(getClass().getName(), ".tmp");
 		destination = File.createTempFile(getClass().getName(), ".tmp");
-		stub = spy(new DecompressCompressedFileWithStubBzipImpl(source));
+		stub = spy(new DecompressCompressedFileWithStubFramedSnappyImpl(source));
 	}
-	
+
 	@After
 	public void teardown() {
 		source.deleteOnExit();
@@ -66,18 +63,18 @@ public class DecompressCompressedFileWithStubBzipImplTest {
 	@Test
 	public void testConstructor() {
 		assertEquals(source, stub.source);
-		assertEquals(BZIP2, stub.fileType);
+		assertEquals(SNAPPY, stub.fileType);
 	}
 
 	@Test(expected = RuntimeException.class)
 	public void testCompressionFunction() throws IOException {
 		stub.to(destination);
-		verify(stub, times(1)).createCompressedFileInputStream(any(InputStream.class), eq(false));
+		verify(stub, times(1)).createCompressedFileInputStream(any(InputStream.class), eq(FramedSnappyDialect.STANDARD));
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void testCustomCompressionFunction() throws IOException {
-		stub.andDecompressConcatenated(true).to(destination);
-		verify(stub, times(1)).createCompressedFileInputStream(any(InputStream.class), eq(true));
+		stub.andDialect(FramedSnappyDialect.IWORK_ARCHIVE).to(destination);
+		verify(stub, times(1)).createCompressedFileInputStream(any(InputStream.class), eq(FramedSnappyDialect.IWORK_ARCHIVE));
 	}
 }

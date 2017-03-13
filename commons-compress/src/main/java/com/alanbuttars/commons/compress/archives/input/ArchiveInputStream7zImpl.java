@@ -13,26 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alanbuttars.commons.compress.archives.output;
+package com.alanbuttars.commons.compress.archives.input;
 
 import java.io.Closeable;
 import java.io.IOException;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
-import org.apache.commons.compress.archivers.sevenz.SevenZOutputFile;
+import org.apache.commons.compress.archivers.sevenz.SevenZFile;
 
 /**
- * Extension of {@link ArchiveOutputStreamImpl} which wraps {@link SevenZOutputFile}s.
+ * Extension of {@link ArchiveInputStream} which wraps {@link SevenZFile}s.
  * 
  * @author Alan Buttars
  *
  */
-public class ArchiveOutputStreamSevenZImpl implements ArchiveOutputStream {
+public class ArchiveInputStream7zImpl implements ArchiveInputStream {
 
-	private final SevenZOutputFile sevenZFile;
+	private final SevenZFile sevenZFile;
 
-	public ArchiveOutputStreamSevenZImpl(SevenZOutputFile sevenZFile) {
+	public ArchiveInputStream7zImpl(SevenZFile sevenZFile) {
 		this.sevenZFile = sevenZFile;
+	}
+
+	@Override
+	public int read(byte[] content) throws IOException {
+		return sevenZFile.read(content);
+	}
+
+	@Override
+	public ArchiveEntry getNextEntry() throws IOException {
+		return sevenZFile.getNextEntry();
 	}
 
 	@Override
@@ -41,26 +51,8 @@ public class ArchiveOutputStreamSevenZImpl implements ArchiveOutputStream {
 	}
 
 	@Override
-	public void putArchiveEntry(ArchiveEntry entry) throws IOException {
-		sevenZFile.putArchiveEntry(entry);
-	}
-
-	@Override
-	public void closeArchiveEntry() throws IOException {
-		sevenZFile.closeArchiveEntry();
-	}
-
-	@Override
-	public void write(byte[] content, int offset, int length) throws IOException {
-		sevenZFile.write(content, offset, length);
-	}
-
-	@Override
-	public void flush() throws IOException {
-	}
-
-	@Override
 	public Closeable getStream() {
 		return sevenZFile;
 	}
+
 }

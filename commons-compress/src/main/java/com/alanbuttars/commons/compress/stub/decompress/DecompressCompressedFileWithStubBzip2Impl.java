@@ -35,16 +35,16 @@ import com.alanbuttars.commons.util.functions.Function;
  * @author Alan Buttars
  *
  */
-public class DecompressCompressedFileWithStubBzipImpl extends DecompressCompressedFileWithStub {
+public class DecompressCompressedFileWithStubBzip2Impl extends DecompressCompressedFileWithStub {
 
 	private boolean decompressConcatenated;
 
-	DecompressCompressedFileWithStubBzipImpl(File source) {
+	DecompressCompressedFileWithStubBzip2Impl(File source) {
 		super(source, BZIP2);
 		this.decompressConcatenated = false;
 	}
 
-	public DecompressCompressedFileWithStubBzipImpl andDecompressConcatenated(boolean decompressConcatenated) {
+	public DecompressCompressedFileWithStubBzip2Impl andDecompressConcatenated(boolean decompressConcatenated) {
 		this.decompressConcatenated = decompressConcatenated;
 		return this;
 	}

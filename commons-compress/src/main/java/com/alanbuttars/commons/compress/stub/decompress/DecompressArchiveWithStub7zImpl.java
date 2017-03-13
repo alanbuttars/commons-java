@@ -23,7 +23,7 @@ import java.io.IOException;
 import org.apache.commons.compress.archivers.sevenz.SevenZFile;
 
 import com.alanbuttars.commons.compress.archives.input.ArchiveInputStream;
-import com.alanbuttars.commons.compress.archives.input.ArchiveInputStreamSevenZImpl;
+import com.alanbuttars.commons.compress.archives.input.ArchiveInputStream7zImpl;
 import com.alanbuttars.commons.compress.archives.util.Archives;
 import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 import com.alanbuttars.commons.util.functions.Function;
@@ -68,7 +68,7 @@ public class DecompressArchiveWithStub7zImpl extends DecompressArchiveWithStub {
 	@VisibleForTesting
 	protected ArchiveInputStream createArchiveInputStream(File file, byte[] password) throws IOException {
 		SevenZFile sevenZFile = new SevenZFile(file, password);
-		return new ArchiveInputStreamSevenZImpl(sevenZFile);
+		return new ArchiveInputStream7zImpl(sevenZFile);
 	}
 
 }

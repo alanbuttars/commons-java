@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,6 +54,12 @@ public class DecompressArchiveWithStubArImplTest {
 		source = File.createTempFile(getClass().getName(), ".tmp");
 		destination = Files.createTempDirectory(getClass().getName()).toFile();
 		stub = spy(new DecompressArchiveWithStubArImpl(source));
+	}
+	
+	@After
+	public void teardown() {
+		source.deleteOnExit();
+		destination.deleteOnExit();
 	}
 
 	@Test

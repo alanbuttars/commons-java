@@ -31,11 +31,11 @@ import com.alanbuttars.commons.util.functions.Function;
  * configuration functions with the builder pattern. For example, in the decompressed file creation stub:
  * 
  * <pre>
- * Deompress.file(source).withBzip().andBlockSize(1024).to(destination);
+ * Deompress.file(source).withBzip2().andBlockSize(1024).to(destination);
  * </pre>
  * 
  * <p>
- * <code>andBlockSize()</code> is a builder function supported by {@link DecompressCompressedFileWithStubBzipImpl}.
+ * <code>andBlockSize()</code> is a builder function supported by {@link DecompressCompressedFileWithStubBzip2Impl}.
  * 
  * @author Alan Buttars
  *

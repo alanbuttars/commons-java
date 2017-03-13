@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alanbuttars.commons.compress.stub.decompress;
+package com.alanbuttars.commons.compress.stub.compress;
 
-import static com.alanbuttars.commons.compress.files.util.CompressedFiles.SNAPPY;
+import static com.alanbuttars.commons.compress.files.util.CompressedFiles.BZIP2;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -25,33 +25,30 @@ import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.OutputStream;
 
-import org.apache.commons.compress.compressors.snappy.SnappyCompressorInputStream;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 /**
- * Test class for {@link DecompressCompressedFileWithStubSnappyImpl}.
+ * Test class for {@link CompressFileWithStubBzip2Impl}.
  * 
  * @author Alan Buttars
  *
  */
-@RunWith(PowerMockRunner.class)
-public class DecompressCompressedFileWithStubSnappyImplTest {
+public class CompressFileWithStubBzip2ImplTest {
 
 	private File source;
 	private File destination;
-	private DecompressCompressedFileWithStubSnappyImpl stub;
+	private CompressFileWithStubBzip2Impl stub;
 
 	@Before
 	public void setup() throws IOException {
 		source = File.createTempFile(getClass().getName(), ".tmp");
 		destination = File.createTempFile(getClass().getName(), ".tmp");
-		stub = spy(new DecompressCompressedFileWithStubSnappyImpl(source));
+		stub = spy(new CompressFileWithStubBzip2Impl(source));
 	}
 
 	@After
@@ -59,22 +56,22 @@ public class DecompressCompressedFileWithStubSnappyImplTest {
 		source.deleteOnExit();
 		destination.deleteOnExit();
 	}
-
+	
 	@Test
 	public void testConstructor() {
 		assertEquals(source, stub.source);
-		assertEquals(SNAPPY, stub.fileType);
+		assertEquals(BZIP2, stub.fileType);
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void testCompressionFunction() throws IOException {
 		stub.to(destination);
-		verify(stub, times(1)).createCompressedFileInputStream(any(InputStream.class), eq(SnappyCompressorInputStream.DEFAULT_BLOCK_SIZE));
+		verify(stub, times(1)).createCompressedFileOutputStream(any(OutputStream.class), eq(BZip2CompressorOutputStream.MAX_BLOCKSIZE));
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void testCustomCompressionFunction() throws IOException {
 		stub.andBlockSize(2).to(destination);
-		verify(stub, times(1)).createCompressedFileInputStream(any(InputStream.class), eq(2));
+		verify(stub, times(1)).createCompressedFileOutputStream(any(OutputStream.class), eq(2));
 	}
 }

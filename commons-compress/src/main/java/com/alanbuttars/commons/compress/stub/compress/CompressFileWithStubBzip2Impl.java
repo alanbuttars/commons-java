@@ -35,16 +35,16 @@ import com.alanbuttars.commons.util.functions.Function;
  * @author Alan Buttars
  *
  */
-public class CompressFileWithStubBzipImpl extends CompressFileWithStub {
+public class CompressFileWithStubBzip2Impl extends CompressFileWithStub {
 
 	private int blockSize;
 
-	CompressFileWithStubBzipImpl(File source) {
+	CompressFileWithStubBzip2Impl(File source) {
 		super(source, BZIP2);
 		this.blockSize = BZip2CompressorOutputStream.MAX_BLOCKSIZE;
 	}
 
-	public CompressFileWithStubBzipImpl andBlockSize(int blockSize) {
+	public CompressFileWithStubBzip2Impl andBlockSize(int blockSize) {
 		this.blockSize = blockSize;
 		return this;
 	}

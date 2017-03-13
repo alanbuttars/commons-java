@@ -23,9 +23,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 import com.alanbuttars.commons.compress.files.input.CompressedFileInputStream;
 import com.alanbuttars.commons.compress.files.output.CompressedFileOutputStream;
@@ -47,16 +44,6 @@ public class CompressedFiles {
 	public static String SNAPPY = "snappy";
 	public static String XZ = "xz";
 	public static String Z = "z";
-
-	public static Set<String> COMPRESS_TYPES = new HashSet<>(Arrays.asList(//
-			BZIP2, //
-			DEFLATE, //
-			GZIP, //
-			LZMA, //
-			PACK200, //
-			SNAPPY, //
-			XZ, //
-			Z));
 
 	/**
 	 * Decompresses a file to a file destination.

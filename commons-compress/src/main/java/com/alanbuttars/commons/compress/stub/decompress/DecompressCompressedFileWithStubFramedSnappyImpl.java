@@ -21,7 +21,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.compress.compressors.snappy.SnappyCompressorInputStream;
+import org.apache.commons.compress.compressors.snappy.FramedSnappyCompressorInputStream;
+import org.apache.commons.compress.compressors.snappy.FramedSnappyDialect;
 
 import com.alanbuttars.commons.compress.files.input.CompressedFileInputStream;
 import com.alanbuttars.commons.compress.files.input.CompressedFileInputStreamImpl;
@@ -35,17 +36,17 @@ import com.alanbuttars.commons.util.functions.Function;
  * @author Alan Buttars
  *
  */
-public class DecompressCompressedFileWithStubSnappyImpl extends DecompressCompressedFileWithStub {
+public class DecompressCompressedFileWithStubFramedSnappyImpl extends DecompressCompressedFileWithStub {
 
-	private int blockSize;
+	private FramedSnappyDialect dialect;
 
-	DecompressCompressedFileWithStubSnappyImpl(File source) {
+	DecompressCompressedFileWithStubFramedSnappyImpl(File source) {
 		super(source, SNAPPY);
-		this.blockSize = SnappyCompressorInputStream.DEFAULT_BLOCK_SIZE;
+		this.dialect = FramedSnappyDialect.STANDARD;
 	}
 
-	public DecompressCompressedFileWithStubSnappyImpl andBlockSize(int blockSize) {
-		this.blockSize = blockSize;
+	public DecompressCompressedFileWithStubFramedSnappyImpl andDialect(FramedSnappyDialect dialect) {
+		this.dialect = dialect;
 		return this;
 	}
 
@@ -56,7 +57,7 @@ public class DecompressCompressedFileWithStubSnappyImpl extends DecompressCompre
 			@Override
 			public CompressedFileInputStream apply(InputStream inputStream) {
 				try {
-					return createCompressedFileInputStream(inputStream, blockSize);
+					return createCompressedFileInputStream(inputStream, dialect);
 				}
 				catch (IOException e) {
 					throw new RuntimeException(e);
@@ -67,8 +68,8 @@ public class DecompressCompressedFileWithStubSnappyImpl extends DecompressCompre
 	}
 
 	@VisibleForTesting
-	protected CompressedFileInputStream createCompressedFileInputStream(InputStream inputStream, int blockSize) throws IOException {
-		return new CompressedFileInputStreamImpl(new SnappyCompressorInputStream(inputStream, blockSize));
+	protected CompressedFileInputStream createCompressedFileInputStream(InputStream inputStream, FramedSnappyDialect dialect) throws IOException {
+		return new CompressedFileInputStreamImpl(new FramedSnappyCompressorInputStream(inputStream, dialect));
 	}
 
 }

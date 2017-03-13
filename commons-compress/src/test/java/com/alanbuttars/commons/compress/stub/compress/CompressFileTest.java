@@ -115,9 +115,9 @@ public class CompressFileTest {
 	}
 
 	@Test
-	public void testBzip() throws IOException {
+	public void testBzip2() throws IOException {
 		PowerMockito.mockStatic(CompressedFiles.class);
-		Compress.file(source).withBzip().andBlockSize(2).to(destination);
+		Compress.file(source).withBzip2().andBlockSize(2).to(destination);
 		PowerMockito.verifyStatic();
 	}
 

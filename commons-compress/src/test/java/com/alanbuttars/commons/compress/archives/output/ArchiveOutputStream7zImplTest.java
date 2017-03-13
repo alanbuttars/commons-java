@@ -28,20 +28,20 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test class for {@link ArchiveOutputStreamSevenZImpl}.
+ * Test class for {@link ArchiveOutputStream7zImpl}.
  * 
  * @author Alan Buttars
  *
  */
-public class ArchiveOutputStreamSevenZImplTest {
+public class ArchiveOutputStream7zImplTest {
 
-	private ArchiveOutputStreamSevenZImpl stream;
+	private ArchiveOutputStream7zImpl stream;
 	private SevenZOutputFile mockOutput;
 
 	@Before
 	public void setup() {
 		this.mockOutput = mock(SevenZOutputFile.class);
-		this.stream = new ArchiveOutputStreamSevenZImpl(mockOutput);
+		this.stream = new ArchiveOutputStream7zImpl(mockOutput);
 	}
 
 	@Test

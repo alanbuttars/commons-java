@@ -28,7 +28,7 @@ import org.apache.commons.compress.archivers.sevenz.SevenZMethodConfiguration;
 import org.apache.commons.compress.archivers.sevenz.SevenZOutputFile;
 
 import com.alanbuttars.commons.compress.archives.output.ArchiveOutputStream;
-import com.alanbuttars.commons.compress.archives.output.ArchiveOutputStreamSevenZImpl;
+import com.alanbuttars.commons.compress.archives.output.ArchiveOutputStream7zImpl;
 import com.alanbuttars.commons.compress.archives.util.Archives;
 import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 import com.alanbuttars.commons.util.functions.BiFunction;
@@ -75,7 +75,7 @@ public class CompressDirectoryWithStub7zImpl extends CompressDirectoryWithStub {
 	protected ArchiveOutputStream createArchiveOutputStream(File file, Iterable<? extends SevenZMethodConfiguration> contentMethods) throws IOException {
 		SevenZOutputFile sevenZFile = new SevenZOutputFile(file);
 		sevenZFile.setContentMethods(contentMethods);
-		return new ArchiveOutputStreamSevenZImpl(sevenZFile);
+		return new ArchiveOutputStream7zImpl(sevenZFile);
 	}
 
 	@Override
