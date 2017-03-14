@@ -23,13 +23,22 @@ import com.alanbuttars.commons.cli.evaluator.CommandLineEvaluator;
 import com.alanbuttars.commons.cli.evaluator.evaluation.ConclusiveEvaluation;
 import com.alanbuttars.commons.cli.evaluator.evaluation.Evaluation;
 import com.alanbuttars.commons.cli.request.CommandLineRequest;
+import com.alanbuttars.commons.cli.request.CommandLineRequestBuilder;
 import com.alanbuttars.commons.cli.response.CommandLineResponse;
 import com.alanbuttars.commons.cli.util.Argument;
 import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Utility function class for {@link Process}es.
+ * Utility function class for {@link Process}es. This class is the entrypoint to the <code>commons-cli</code> library:
+ * 
+ * <pre>
+ * CommandLineRequest request = new CommandLineRequestBuilder().build("/path/to/script --key1 val1 --key2 val2");
+ * CommandLineResponse response = Processes.execute(request);
+ * </pre>
+ * 
+ * For more details on how to construct a {@link CommandLineRequest}, see {@link CommandLineRequestBuilder}.<br/>
+ * To see how to interpret a {@link CommandLineResponse}, see that class.
  *
  * @author Alan Buttars
  *

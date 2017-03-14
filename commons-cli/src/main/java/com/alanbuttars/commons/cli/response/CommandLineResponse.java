@@ -21,15 +21,36 @@ import com.alanbuttars.commons.cli.util.EvaluationResult;
  * Models a command line {@link Process} result. This object may be evaluated in the following manner: <br/>
  *
  * <pre>
- * CommandLineResponse response = getResponse();
+ * CommandLineResponse response = Processes.execute(request);
  * if (response.succeeded()) {
- * 	logger.info(response.getInfoStream());
+ * 	String infoStream = response.getInfoStream();
+ * 	String[] infoStreamLines = infoStream.split("\n");
+ * 	// examine info stream lines however you like
  * }
- * else if (response.getExitCode() == CommandLineResponse.EXCEPTION_THROWN_EXIT_CODE) {
- * 	throw response.getException();
+ * else if (response.failed()) {
+ * 	if (response.interrupted()) {
+ * 		InterruptedException exception = (InterruptedException) response.getException();
+ * 		throw exception;
+ * 	}
+ * 	else if (response.exceptionThrown()) {
+ * 		IOException exception = (IOException) response.getException();
+ * 		throw exception;
+ * 	}
+ * 	else {
+ * 		int exitCode = response.getExitCode();
+ * 		String errorStream = response.getErrorStream();
+ * 		String[] errorStreamLines = errorStream.split("\n");
+ * 		// examine error stream lines however you like
+ * 	}
  * }
- * else {
- * 	logger.error(response.getErrorStream());
+ * else { // non-conclusive
+ * 	String infoStream = response.getInfoStream();
+ * 	String[] infoStreamLines = infoStream.split("\n");
+ * 	// examine info stream lines however you like
+ * 
+ * 	String errorStream = response.getErrorStream();
+ * 	String[] errorStreamLines = errorStream.split("\n");
+ * 	// examine error stream lines however you like
  * }
  * </pre>
  *

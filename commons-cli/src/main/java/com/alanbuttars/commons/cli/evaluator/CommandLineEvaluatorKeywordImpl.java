@@ -28,8 +28,8 @@ import com.alanbuttars.commons.cli.evaluator.evaluation.Evaluation;
  * of keywords of three types:
  * <ul>
  * <li><strong>ignorable</strong> - indicates that the line may be ignored entirely</li>
- * <li><strong>failure</strong> - indicates that the line indicates an {@link ConclusiveEvaluation#FAILURE}</li>
- * <li><strong>success</strong> - indicates that the line indicates an {@link ConclusiveEvaluation#SUCCESS}</li>
+ * <li><strong>failure</strong> - indicates that the line proves a {@link ConclusiveEvaluation#FAILURE}</li>
+ * <li><strong>success</strong> - indicates that the line proves a {@link ConclusiveEvaluation#SUCCESS}</li>
  * </ul>
  * 
  * <p>

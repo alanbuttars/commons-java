@@ -17,7 +17,6 @@ package com.alanbuttars.commons.cli.process;
 
 import java.io.InputStream;
 
-import com.alanbuttars.commons.cli.evaluator.evaluation.Evaluation;
 import com.alanbuttars.commons.cli.util.EvaluationResult;
 
 /**
@@ -62,16 +61,6 @@ class ProcessStreamResult extends EvaluationResult {
 
 	public boolean failedWithoutException() {
 		return failed() && exception == null;
-	}
-
-	@Override
-	public String toString() {
-		return new StringBuilder()//
-				.append("stream=").append(stream).append("&")//
-				.append("evaluation=").append(evaluation).append("&")//
-				.append("interrupted=").append(interrupted).append("&")//
-				.append("exception=").append(exception)//
-				.toString();
 	}
 
 }
