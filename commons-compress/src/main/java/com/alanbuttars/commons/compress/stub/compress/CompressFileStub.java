@@ -25,6 +25,12 @@ import com.alanbuttars.commons.compress.files.output.CompressedFileOutputStream;
 import com.alanbuttars.commons.compress.files.util.CompressedFiles;
 import com.alanbuttars.commons.util.functions.Function;
 
+/**
+ * Directory compression stub which simply contains the source file as a context.
+ * 
+ * @author Alan Buttars
+ *
+ */
 public class CompressFileStub {
 
 	protected final File source;

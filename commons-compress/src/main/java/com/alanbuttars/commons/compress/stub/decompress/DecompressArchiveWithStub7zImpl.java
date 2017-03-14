@@ -29,7 +29,8 @@ import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Extension of {@link DecompressArchiveWithStub} for {@link Archives#SEVENZ}.
+ * Extension of {@link DecompressArchiveWithStub} for {@link Archives#SEVENZ}. For details on the file format, see
+ * <a href="https://en.wikipedia.org/wiki/7z">https://en.wikipedia.org/wiki/7z</a>.
  * 
  * @author Alan Buttars
  *
@@ -43,7 +44,7 @@ public class DecompressArchiveWithStub7zImpl extends DecompressArchiveWithStub {
 		this.password = null;
 	}
 
-	public DecompressArchiveWithStub7zImpl andEncryptWithPassword(byte[] password) {
+	public DecompressArchiveWithStub7zImpl andDecryptWithPassword(byte[] password) {
 		this.password = password;
 		return this;
 	}

@@ -31,25 +31,41 @@ public class ArchiveInputStream7zImpl implements ArchiveInputStream {
 
 	private final SevenZFile sevenZFile;
 
+	/**
+	 * @param sevenZFile
+	 *            Non-null Apache 7z file object
+	 */
 	public ArchiveInputStream7zImpl(SevenZFile sevenZFile) {
 		this.sevenZFile = sevenZFile;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int read(byte[] content) throws IOException {
 		return sevenZFile.read(content);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ArchiveEntry getNextEntry() throws IOException {
 		return sevenZFile.getNextEntry();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void close() throws IOException {
 		sevenZFile.close();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Closeable getStream() {
 		return sevenZFile;

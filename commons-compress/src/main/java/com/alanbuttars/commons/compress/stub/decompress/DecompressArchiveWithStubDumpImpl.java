@@ -31,7 +31,8 @@ import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Extension of {@link DecompressArchiveWithStub} for {@link Archives#DUMP}.
+ * Extension of {@link DecompressArchiveWithStub} for {@link Archives#DUMP}. For details on the file format, see
+ * <a href="https://en.wikipedia.org/wiki/Dump_(program)">https://en.wikipedia.org/wiki/Dump_(program)</a>.
  * 
  * @author Alan Buttars
  *

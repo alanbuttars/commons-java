@@ -15,19 +15,18 @@
  */
 package com.alanbuttars.commons.compress.files.util;
 
-import static com.alanbuttars.commons.compress.files.util.CompressedFiles.SNAPPY;
+import static com.alanbuttars.commons.compress.files.util.CompressedFiles.FRAMEDSNAPPY;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.compress.compressors.snappy.FramedSnappyDialect;
 import org.junit.Test;
 
 import com.alanbuttars.commons.compress.stub.decompress.Decompress;
 import com.alanbuttars.commons.compress.util.FilesFunction;
 
 /**
- * Integration test class for {@link CompressedFiles} for {@link CompressedFiles#SNAPPY} files.
+ * Integration test class for {@link CompressedFiles} for {@link CompressedFiles#FRAMEDSNAPPY} files.
  * 
  * @author Alan Buttars
  *
@@ -36,7 +35,7 @@ public class CompressedFilesIntegrationFramedSnappyImplTest extends CompressedFi
 
 	@Test
 	public void testDecompress() throws IOException {
-		testDecompress(SNAPPY, decompressFunction());
+		testDecompress(FRAMEDSNAPPY, decompressFunction());
 	}
 
 	private FilesFunction decompressFunction() {

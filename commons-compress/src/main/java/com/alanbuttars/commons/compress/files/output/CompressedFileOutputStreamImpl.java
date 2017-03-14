@@ -30,20 +30,33 @@ public class CompressedFileOutputStreamImpl implements CompressedFileOutputStrea
 
 	private final CompressorOutputStream compressorOutputStream;
 
+	/**
+	 * @param compressorOutputStream
+	 *            Non-null Apache compressor output stream.
+	 */
 	public CompressedFileOutputStreamImpl(CompressorOutputStream compressorOutputStream) {
 		this.compressorOutputStream = compressorOutputStream;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void close() throws IOException {
 		compressorOutputStream.close();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void write(byte[] content, int offset, int length) throws IOException {
 		compressorOutputStream.write(content, offset, length);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Closeable getStream() {
 		return compressorOutputStream;

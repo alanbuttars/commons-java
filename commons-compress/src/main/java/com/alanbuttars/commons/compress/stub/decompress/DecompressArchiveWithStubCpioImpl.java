@@ -32,7 +32,8 @@ import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Extension of {@link DecompressArchiveWithStub} for {@link Archives#CPIO}.
+ * Extension of {@link DecompressArchiveWithStub} for {@link Archives#CPIO}. For details on the file format, see
+ * <a href="https://en.wikipedia.org/wiki/Cpio">https://en.wikipedia.org/wiki/Cpio</a>.
  * 
  * @author Alan Buttars
  *

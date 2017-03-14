@@ -36,7 +36,8 @@ import com.alanbuttars.commons.util.functions.BiFunction;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Extension of {@link CompressDirectoryWithStub} for {@link Archives#ZIP} files.
+ * Extension of {@link CompressDirectoryWithStub} for {@link Archives#ZIP} files. For details on the file format, see
+ * <a href="https://en.wikipedia.org/wiki/Zip_(file_format)">https://en.wikipedia.org/wiki/Zip_(file_format)</a>.
  * 
  * @author Alan Buttars
  *

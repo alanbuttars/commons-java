@@ -31,30 +31,49 @@ public class ArchiveOutputStream7zImpl implements ArchiveOutputStream {
 
 	private final SevenZOutputFile sevenZFile;
 
+	/**
+	 * @param sevenZFile
+	 *            Non-null Apache 7z object
+	 */
 	public ArchiveOutputStream7zImpl(SevenZOutputFile sevenZFile) {
 		this.sevenZFile = sevenZFile;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void close() throws IOException {
 		sevenZFile.close();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void putArchiveEntry(ArchiveEntry entry) throws IOException {
 		sevenZFile.putArchiveEntry(entry);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void closeArchiveEntry() throws IOException {
 		sevenZFile.closeArchiveEntry();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void write(byte[] content, int offset, int length) throws IOException {
 		sevenZFile.write(content, offset, length);
 	}
 
+	/**
+	 * {@inheritDoc} This implementation does nothing.
+	 */
 	@Override
 	public void flush() throws IOException {
 	}

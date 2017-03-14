@@ -24,6 +24,12 @@ import com.alanbuttars.commons.compress.archives.input.ArchiveInputStream;
 import com.alanbuttars.commons.compress.archives.util.Archives;
 import com.alanbuttars.commons.util.functions.Function;
 
+/**
+ * Directory decompression stub which simply contains the source archive as a context.
+ * 
+ * @author Alan Buttars
+ *
+ */
 public class DecompressArchiveStub {
 
 	protected final File source;

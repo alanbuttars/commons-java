@@ -36,15 +36,25 @@ public class ArchiveInputStreamImpl implements ArchiveInputStream {
 
 	private final org.apache.commons.compress.archivers.ArchiveInputStream archiveInputStream;
 
+	/**
+	 * @param archiveInputStream
+	 *            Non-null Apache archive input stream
+	 */
 	public ArchiveInputStreamImpl(org.apache.commons.compress.archivers.ArchiveInputStream archiveInputStream) {
 		this.archiveInputStream = archiveInputStream;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int read(byte[] content) throws IOException {
 		return archiveInputStream.read(content);
 	}
 
+	/**
+	 * {@inheritDoc} Returns the archive entry type specific to the {@link #archiveInputStream}.
+	 */
 	@Override
 	public ArchiveEntry getNextEntry() throws IOException {
 		if (archiveInputStream instanceof ArArchiveInputStream) {
@@ -68,11 +78,17 @@ public class ArchiveInputStreamImpl implements ArchiveInputStream {
 		return archiveInputStream.getNextEntry();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void close() throws IOException {
 		archiveInputStream.close();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Closeable getStream() {
 		return archiveInputStream;

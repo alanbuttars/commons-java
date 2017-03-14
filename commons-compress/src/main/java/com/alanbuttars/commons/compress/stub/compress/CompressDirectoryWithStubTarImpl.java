@@ -35,7 +35,8 @@ import com.alanbuttars.commons.util.functions.BiFunction;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Extension of {@link CompressDirectoryWithStub} for {@link Archives#TAR} files.
+ * Extension of {@link CompressDirectoryWithStub} for {@link Archives#TAR} files. For details on the file format, see
+ * <a href="https://en.wikipedia.org/wiki/Tar_(computing)">https://en.wikipedia.org/wiki/Tar_(computing)</a>.
  * 
  * @author Alan Buttars
  *

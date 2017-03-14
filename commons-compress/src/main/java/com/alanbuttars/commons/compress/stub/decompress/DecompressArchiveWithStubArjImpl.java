@@ -31,7 +31,8 @@ import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Extension of {@link DecompressArchiveWithStub} for {@link Archives#ARJ}.
+ * Extension of {@link DecompressArchiveWithStub} for {@link Archives#ARJ}. For details on the file format, see
+ * <a href="https://en.wikipedia.org/wiki/ARJ">https://en.wikipedia.org/wiki/ARJ</a>.
  * 
  * @author Alan Buttars
  *

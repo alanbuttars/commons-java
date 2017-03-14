@@ -15,7 +15,7 @@
  */
 package com.alanbuttars.commons.compress.stub.decompress;
 
-import static com.alanbuttars.commons.compress.files.util.CompressedFiles.SNAPPY;
+import static com.alanbuttars.commons.compress.files.util.CompressedFiles.FRAMEDSNAPPY;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +31,8 @@ import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Extension of {@link DecompressCompressedFileWithStub} for {@link CompressedFiles#SNAPPY} files.
+ * Extension of {@link DecompressCompressedFileWithStub} for {@link CompressedFiles#FRAMEDSNAPPY} files. For details on the
+ * file format, see <a href="https://en.wikipedia.org/wiki/Snappy_(compression)">https://en.wikipedia.org/wiki/Snappy_(compression)</a>.
  * 
  * @author Alan Buttars
  *
@@ -41,7 +42,7 @@ public class DecompressCompressedFileWithStubFramedSnappyImpl extends Decompress
 	private FramedSnappyDialect dialect;
 
 	DecompressCompressedFileWithStubFramedSnappyImpl(File source) {
-		super(source, SNAPPY);
+		super(source, FRAMEDSNAPPY);
 		this.dialect = FramedSnappyDialect.STANDARD;
 	}
 

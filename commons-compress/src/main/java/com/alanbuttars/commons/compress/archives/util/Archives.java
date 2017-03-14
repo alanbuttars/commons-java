@@ -28,11 +28,15 @@ import org.apache.commons.compress.archivers.ArchiveEntry;
 
 import com.alanbuttars.commons.compress.archives.input.ArchiveInputStream;
 import com.alanbuttars.commons.compress.archives.output.ArchiveOutputStream;
+import com.alanbuttars.commons.compress.stub.compress.Compress;
+import com.alanbuttars.commons.compress.stub.decompress.Decompress;
 import com.alanbuttars.commons.util.functions.BiFunction;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Utility functions class for file archives.
+ * Utility functions class for file archives. While users of this API may directly use this class for compression and
+ * decompression, it is advised to use the stubbing classes: {@link Compress#directory(File)} and
+ * {@link Decompress#archive(File)}.
  * 
  * @author Alan Buttars
  *

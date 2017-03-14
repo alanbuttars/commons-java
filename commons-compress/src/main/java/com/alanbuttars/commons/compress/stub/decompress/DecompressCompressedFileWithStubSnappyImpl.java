@@ -30,7 +30,8 @@ import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Extension of {@link DecompressCompressedFileWithStub} for {@link CompressedFiles#SNAPPY} files.
+ * Extension of {@link DecompressCompressedFileWithStub} for {@link CompressedFiles#SNAPPY} files. For details on the file format, see
+ * <a href="https://en.wikipedia.org/wiki/Snappy_(compression)">https://en.wikipedia.org/wiki/Snappy_(compression)</a>.
  * 
  * @author Alan Buttars
  *

@@ -32,7 +32,8 @@ import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Extension of {@link DecompressCompressedFileWithStub} for {@link CompressedFiles#PACK200} files.
+ * Extension of {@link DecompressCompressedFileWithStub} for {@link CompressedFiles#PACK200} files. For details on the file format, see
+ * <a href="https://en.wikipedia.org/wiki/Pack200">https://en.wikipedia.org/wiki/Pack200</a>.
  * 
  * @author Alan Buttars
  *

@@ -30,20 +30,33 @@ public class CompressedFileInputStreamImpl implements CompressedFileInputStream 
 
 	private final CompressorInputStream compressorInputStream;
 
+	/**
+	 * @param compressorInputStream
+	 *            Non-null Apache compressor input stream
+	 */
 	public CompressedFileInputStreamImpl(CompressorInputStream compressorInputStream) {
 		this.compressorInputStream = compressorInputStream;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void close() throws IOException {
 		compressorInputStream.close();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int read(byte[] content) throws IOException {
 		return compressorInputStream.read(content);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Closeable getStream() {
 		return compressorInputStream;

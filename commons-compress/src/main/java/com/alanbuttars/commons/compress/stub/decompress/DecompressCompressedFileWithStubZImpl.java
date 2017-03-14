@@ -30,7 +30,8 @@ import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Extension of {@link DecompressCompressedFileWithStub} for {@link CompressedFiles#Z} files.
+ * Extension of {@link DecompressCompressedFileWithStub} for {@link CompressedFiles#Z} files. For details on the file format, see
+ * <a href="https://en.wikipedia.org/wiki/Compress">https://en.wikipedia.org/wiki/Compress</a>.
  * 
  * @author Alan Buttars
  *

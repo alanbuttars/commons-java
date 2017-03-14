@@ -25,6 +25,12 @@ import com.alanbuttars.commons.compress.files.input.CompressedFileInputStream;
 import com.alanbuttars.commons.compress.files.util.CompressedFiles;
 import com.alanbuttars.commons.util.functions.Function;
 
+/**
+ * Directory decompression stub which simply contains the source compressed file as a context.
+ * 
+ * @author Alan Buttars
+ *
+ */
 public class DecompressCompressedFileStub {
 
 	protected final File source;
@@ -48,7 +54,7 @@ public class DecompressCompressedFileStub {
 	}
 
 	/**
-	 * Indicates that the {@link #source} will be decompressed with framed {@link CompressedFiles#SNAPPY}.
+	 * Indicates that the {@link #source} will be decompressed with framed {@link CompressedFiles#FRAMEDSNAPPY}.
 	 */
 	public DecompressCompressedFileWithStubFramedSnappyImpl withFramedSnappy() {
 		return new DecompressCompressedFileWithStubFramedSnappyImpl(source);

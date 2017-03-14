@@ -77,7 +77,7 @@ public class DecompressArchiveWithStub7zImplTest {
 
 	@Test(expected = RuntimeException.class)
 	public void testCustomDecompressionFunction() throws IOException {
-		stub.andEncryptWithPassword("password".getBytes()).to(destination);
+		stub.andDecryptWithPassword("password".getBytes()).to(destination);
 		verify(stub, times(1)).createArchiveInputStream(eq(source), eq("password".getBytes()));
 	}
 }

@@ -28,6 +28,20 @@ import com.alanbuttars.commons.compress.archives.util.Archives;
 import com.alanbuttars.commons.util.functions.BiFunction;
 import com.alanbuttars.commons.util.functions.Function;
 
+/**
+ * Abstraction of the final compressed directory creation stub. Extensions of this class should offer file-type-specific
+ * configuration functions with a builder pattern. For example:
+ * 
+ * <pre>
+ * Compress.directory(source).withCpio().andFormat(CpioConstants.FORMAT_NEW_CRC).to(destination);
+ * </pre>
+ * 
+ * <p>
+ * <code>andFormat()</code> is a builder function supported by {@link CompressDirectoryWithStubCpioImpl}.
+ * 
+ * @author Alan Buttars
+ *
+ */
 abstract class CompressDirectoryWithStub {
 
 	protected final File source;

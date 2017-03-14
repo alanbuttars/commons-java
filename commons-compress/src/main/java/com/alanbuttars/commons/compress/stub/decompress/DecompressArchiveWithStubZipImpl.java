@@ -30,7 +30,8 @@ import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Extension of {@link DecompressArchiveWithStub} for {@link Archives#ZIP}.
+ * Extension of {@link DecompressArchiveWithStub} for {@link Archives#ZIP}. For details on the file format, see
+ * <a href="https://en.wikipedia.org/wiki/Zip_(file_format)">https://en.wikipedia.org/wiki/Zip_(file_format)</a>.
  * 
  * @author Alan Buttars
  *

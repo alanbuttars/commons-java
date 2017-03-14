@@ -27,15 +27,16 @@ import com.alanbuttars.commons.compress.files.util.CompressedFiles;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Abstraction of the final decompressed file creation stub. Extensions of this class should offer file-type-specific
- * configuration functions with the builder pattern. For example, in the decompressed file creation stub:
+ * Abstraction of the final decompressed compressed file creation stub. Extensions of this class should offer
+ * file-type-specific configuration functions with a builder pattern. For example:
  * 
  * <pre>
- * Deompress.file(source).withBzip2().andBlockSize(1024).to(destination);
+ * Decompress.compressedFile(source).withBzip2().andDecompressConcatenated(true).to(destination);
  * </pre>
  * 
  * <p>
- * <code>andBlockSize()</code> is a builder function supported by {@link DecompressCompressedFileWithStubBzip2Impl}.
+ * <code>andDecompressConcatenated()</code> is a builder function supported by
+ * {@link DecompressCompressedFileWithStubBzip2Impl}.
  * 
  * @author Alan Buttars
  *

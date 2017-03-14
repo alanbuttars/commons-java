@@ -33,7 +33,8 @@ import com.alanbuttars.commons.util.functions.BiFunction;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Extension of {@link CompressDirectoryWithStub} for {@link Archives#AR} files.
+ * Extension of {@link CompressDirectoryWithStub} for {@link Archives#AR} files. For details on the file format, see
+ * <a href="https://en.wikipedia.org/wiki/Ar_(Unix)">https://en.wikipedia.org/wiki/Ar_(Unix)</a>.
  * 
  * @author Alan Buttars
  *

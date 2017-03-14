@@ -27,6 +27,12 @@ import com.alanbuttars.commons.compress.archives.util.Archives;
 import com.alanbuttars.commons.util.functions.BiFunction;
 import com.alanbuttars.commons.util.functions.Function;
 
+/**
+ * Directory compression stub which simply contains the source directory as a context.
+ * 
+ * @author Alan Buttars
+ *
+ */
 public class CompressDirectoryStub {
 
 	protected final File source;

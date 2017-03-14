@@ -30,7 +30,8 @@ import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Extension of {@link DecompressArchiveWithStub} for {@link Archives#AR}.
+ * Extension of {@link DecompressArchiveWithStub} for {@link Archives#AR}. For details on the file format, see
+ * <a href="https://en.wikipedia.org/wiki/Ar_(Unix)">https://en.wikipedia.org/wiki/Ar_(Unix)</a>.
  * 
  * @author Alan Buttars
  *

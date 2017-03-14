@@ -28,10 +28,10 @@ import com.alanbuttars.commons.util.functions.Function;
 
 /**
  * Abstraction of the final compressed file creation stub. Extensions of this class should offer file-type-specific
- * configuration functions with the builder pattern. For example, in the compressed file creation stub:
+ * configuration functions with a builder pattern. For example:
  * 
  * <pre>
- * Compress.file(source).withBzip2().andBlockSize(1024).to(destination);
+ * Compress.file(source).withBzip2().andBlockSize(BZip2CompressorOutputStream.MIN_BLOCKSIZE).to(destination);
  * </pre>
  * 
  * <p>

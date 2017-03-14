@@ -31,7 +31,8 @@ import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Extension of {@link DecompressArchiveWithStub} for {@link Archives#TAR}.
+ * Extension of {@link DecompressArchiveWithStub} for {@link Archives#TAR}. For details on the file format, see
+ * <a href="https://en.wikipedia.org/wiki/Tar_(computing)">https://en.wikipedia.org/wiki/Tar_(computing)</a>.
  * 
  * @author Alan Buttars
  *

@@ -26,10 +26,14 @@ import java.io.OutputStream;
 
 import com.alanbuttars.commons.compress.files.input.CompressedFileInputStream;
 import com.alanbuttars.commons.compress.files.output.CompressedFileOutputStream;
+import com.alanbuttars.commons.compress.stub.compress.Compress;
+import com.alanbuttars.commons.compress.stub.decompress.Decompress;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Utility functions class for compressed files.
+ * Utility functions class for compressed files. While users of this API may directly use this class for compression and
+ * decompression, it is advised to use the stubbing classes: {@link Compress#file(File)} and
+ * {@link Decompress#compressedFile(File)}.
  * 
  * @author Alan Buttars
  *
@@ -38,6 +42,7 @@ public class CompressedFiles {
 
 	public static String BZIP2 = "bzip2";
 	public static String DEFLATE = "deflate";
+	public static String FRAMEDSNAPPY = "framedsnappy";
 	public static String GZIP = "gzip";
 	public static String LZMA = "lzma";
 	public static String PACK200 = "pack200";

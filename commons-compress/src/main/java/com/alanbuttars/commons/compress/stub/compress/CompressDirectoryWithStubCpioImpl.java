@@ -35,7 +35,8 @@ import com.alanbuttars.commons.util.functions.BiFunction;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Extension of {@link CompressDirectoryWithStub} for {@link Archives#CPIO} files.
+ * Extension of {@link CompressDirectoryWithStub} for {@link Archives#CPIO} files. For details on the file format, see
+ * <a href="https://en.wikipedia.org/wiki/Cpio">https://en.wikipedia.org/wiki/Cpio</a>.
  * 
  * @author Alan Buttars
  *

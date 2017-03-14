@@ -30,7 +30,8 @@ import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Extension of {@link DecompressCompressedFileWithStub} for {@link CompressedFiles#BZIP2} files.
+ * Extension of {@link DecompressCompressedFileWithStub} for {@link CompressedFiles#BZIP2} files. For details on the file format,
+ * see <a href="https://en.wikipedia.org/wiki/Bzip2">https://en.wikipedia.org/wiki/Bzip2</a>.
  * 
  * @author Alan Buttars
  *

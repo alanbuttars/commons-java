@@ -26,6 +26,20 @@ import com.alanbuttars.commons.compress.archives.input.ArchiveInputStream;
 import com.alanbuttars.commons.compress.archives.util.Archives;
 import com.alanbuttars.commons.util.functions.Function;
 
+/**
+ * Abstraction of the final decompressed archive creation stub. Extensions of this class should offer file-type-specific
+ * configuration functions with a builder pattern. For example:
+ * 
+ * <pre>
+ * Decompress.archive(source).withJar().andEncoding("UTF16").to(destination);
+ * </pre>
+ * 
+ * <p>
+ * <code>andEncoding()</code> is a builder function supported by {@link DecompressArchiveWithStubZipImpl}.
+ * 
+ * @author Alan Buttars
+ *
+ */
 abstract class DecompressArchiveWithStub {
 
 	protected final File source;

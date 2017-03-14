@@ -35,7 +35,8 @@ import com.alanbuttars.commons.util.functions.BiFunction;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Extension of {@link CompressDirectoryWithStub} for {@link Archives#SEVENZ} files.
+ * Extension of {@link CompressDirectoryWithStub} for {@link Archives#SEVENZ} files. For details on the file format, see
+ * <a href="https://en.wikipedia.org/wiki/7z">https://en.wikipedia.org/wiki/7z</a>.
  * 
  * @author Alan Buttars
  *

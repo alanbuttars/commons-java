@@ -113,7 +113,7 @@ public class DecompressArchiveTest {
 	@Test
 	public void test7z() throws IOException {
 		PowerMockito.mockStatic(Archives.class);
-		Decompress.archive(source).with7z().andEncryptWithPassword("password".getBytes()).to(destination);
+		Decompress.archive(source).with7z().andDecryptWithPassword("password".getBytes()).to(destination);
 		PowerMockito.verifyStatic();
 	}
 

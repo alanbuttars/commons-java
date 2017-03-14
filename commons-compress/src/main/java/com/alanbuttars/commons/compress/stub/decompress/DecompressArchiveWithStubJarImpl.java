@@ -30,7 +30,8 @@ import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Extension of {@link DecompressArchiveWithStub} for {@link Archives#JAR}.
+ * Extension of {@link DecompressArchiveWithStub} for {@link Archives#JAR}. For details on the file format, see
+ * <a href="https://en.wikipedia.org/wiki/JAR_(file_format)">https://en.wikipedia.org/wiki/JAR_(file_format)</a>.
  * 
  * @author Alan Buttars
  *

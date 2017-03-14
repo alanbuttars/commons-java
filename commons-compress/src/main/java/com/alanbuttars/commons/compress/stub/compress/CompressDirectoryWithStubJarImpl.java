@@ -37,7 +37,8 @@ import com.alanbuttars.commons.util.functions.BiFunction;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Extension of {@link CompressDirectoryWithStub} for {@link Archives#JAR} files.
+ * Extension of {@link CompressDirectoryWithStub} for {@link Archives#JAR} files. For details on the file format, see
+ * <a href="https://en.wikipedia.org/wiki/JAR_(file_format)">https://en.wikipedia.org/wiki/JAR_(file_format)</a>.
  * 
  * @author Alan Buttars
  *

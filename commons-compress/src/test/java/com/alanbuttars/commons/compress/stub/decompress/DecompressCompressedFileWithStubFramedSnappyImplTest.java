@@ -15,7 +15,7 @@
  */
 package com.alanbuttars.commons.compress.stub.decompress;
 
-import static com.alanbuttars.commons.compress.files.util.CompressedFiles.SNAPPY;
+import static com.alanbuttars.commons.compress.files.util.CompressedFiles.FRAMEDSNAPPY;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -63,7 +63,7 @@ public class DecompressCompressedFileWithStubFramedSnappyImplTest {
 	@Test
 	public void testConstructor() {
 		assertEquals(source, stub.source);
-		assertEquals(SNAPPY, stub.fileType);
+		assertEquals(FRAMEDSNAPPY, stub.fileType);
 	}
 
 	@Test(expected = RuntimeException.class)
