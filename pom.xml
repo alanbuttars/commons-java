@@ -62,6 +62,7 @@
 	<modules>
 		<module>commons-cli</module>
 		<module>commons-compress</module>
+		<module>commons-config</module>
 		<module>commons-util</module>
 	</modules>
 
