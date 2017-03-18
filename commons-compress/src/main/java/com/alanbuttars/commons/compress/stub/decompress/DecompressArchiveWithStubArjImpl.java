@@ -46,6 +46,10 @@ public class DecompressArchiveWithStubArjImpl extends DecompressArchiveWithStub 
 		this.encoding = "CP437";
 	}
 
+	/**
+	 * Sets the file encoding used for file names and comments in the archive. By default, it is set to
+	 * <code>"CP437"</code>.
+	 */
 	public DecompressArchiveWithStubArjImpl andEncoding(String encoding) {
 		this.encoding = encoding;
 		return this;

@@ -54,16 +54,26 @@ public class CompressDirectoryWithStubCpioImpl extends CompressDirectoryWithStub
 		this.format = CpioConstants.FORMAT_NEW;
 	}
 
+	/**
+	 * Sets the block size of the archive. By default, it is set to {@link CpioConstants#BLOCK_SIZE}.
+	 */
 	public CompressDirectoryWithStubCpioImpl andBlockSize(int blockSize) {
 		this.blockSize = blockSize;
 		return this;
 	}
 
+	/**
+	 * Sets the encoding of file names within the archive. By default, it is set to {@link CharsetNames#US_ASCII}. Pass
+	 * <code>null</code> to use the platform's default.
+	 */
 	public CompressDirectoryWithStubCpioImpl andEncoding(String encoding) {
 		this.encoding = encoding;
 		return this;
 	}
 
+	/**
+	 * Sets the format of the archive stream. By default, it is set to {@link CpioConstants#FORMAT_NEW}.
+	 */
 	public CompressDirectoryWithStubCpioImpl andFormat(short format) {
 		this.format = format;
 		return this;

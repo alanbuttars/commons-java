@@ -50,32 +50,49 @@ public class CompressDirectoryWithStubArImpl extends CompressDirectoryWithStub {
 	CompressDirectoryWithStubArImpl(File source) {
 		super(source, AR);
 		this.groupId = 0;
-		this.lastModified = System.currentTimeMillis() / 1000;
+		this.lastModified = Long.MAX_VALUE;
 		this.longFileMode = ArArchiveOutputStream.LONGFILE_ERROR;
 		this.mode = 33188;
 		this.userId = 0;
 	}
 
+	/**
+	 * Sets the numeric group ID for each file entry in the archive. By default, it is set to 0.
+	 */
 	public CompressDirectoryWithStubArImpl andGroupId(int groupId) {
 		this.groupId = groupId;
 		return this;
 	}
 
+	/**
+	 * Sets the timestamp, in millis, of each file entry's last modified property. By default, this timestamp is
+	 * calculated at the time the file entry is created.
+	 */
 	public CompressDirectoryWithStubArImpl andLastModified(long lastModified) {
 		this.lastModified = lastModified;
 		return this;
 	}
 
+	/**
+	 * Sets the long file mode of the archive. See {@link ArArchiveOutputStream#setLongFileMode(int)}.
+	 */
 	public CompressDirectoryWithStubArImpl andLongFileMode(int longFileMode) {
 		this.longFileMode = longFileMode;
 		return this;
 	}
 
+	/**
+	 * Sets the mode for each file entry in the archive. By default, it is set to
+	 * {@link ArArchiveOutputStream#LONGFILE_ERROR}.
+	 */
 	public CompressDirectoryWithStubArImpl andMode(int mode) {
 		this.mode = mode;
 		return this;
 	}
 
+	/**
+	 * Sets the numeric user ID for each file entry in the archive. By default, it is set to 0.
+	 */
 	public CompressDirectoryWithStubArImpl andUserId(int userId) {
 		this.userId = userId;
 		return this;
@@ -112,6 +129,9 @@ public class CompressDirectoryWithStubArImpl extends CompressDirectoryWithStub {
 
 			@Override
 			public ArchiveEntry apply(String entryName, Long fileSize) {
+				if (lastModified == Long.MAX_VALUE) {
+					return new ArArchiveEntry(entryName, fileSize, userId, groupId, mode, System.currentTimeMillis() / 1000);
+				}
 				return new ArArchiveEntry(entryName, fileSize, userId, groupId, mode, lastModified);
 			}
 

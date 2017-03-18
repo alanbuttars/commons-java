@@ -32,8 +32,8 @@ import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Extension of {@link DecompressCompressedFileWithStub} for {@link CompressedFiles#PACK200} files. For details on the file format, see
- * <a href="https://en.wikipedia.org/wiki/Pack200">https://en.wikipedia.org/wiki/Pack200</a>.
+ * Extension of {@link DecompressCompressedFileWithStub} for {@link CompressedFiles#PACK200} files. For details on the
+ * file format, see <a href="https://en.wikipedia.org/wiki/Pack200">https://en.wikipedia.org/wiki/Pack200</a>.
  * 
  * @author Alan Buttars
  *
@@ -49,11 +49,17 @@ public class DecompressCompressedFileWithStubPack200Impl extends DecompressCompr
 		this.properties = null;
 	}
 
+	/**
+	 * Sets the mode on the compressed file. By default, it is set to {@link Pack200Strategy#IN_MEMORY}.
+	 */
 	public DecompressCompressedFileWithStubPack200Impl andMode(Pack200Strategy mode) {
 		this.mode = mode;
 		return this;
 	}
 
+	/**
+	 * Sets the string properties on the compressed file. By default, it is set to an empty <code>Map</code>.
+	 */
 	public DecompressCompressedFileWithStubPack200Impl andProperties(Map<String, String> properties) {
 		this.properties = properties;
 		return this;

@@ -30,7 +30,8 @@ import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Extension of {@link DecompressCompressedFileWithStub} for {@link CompressedFiles#SNAPPY} files. For details on the file format, see
+ * Extension of {@link DecompressCompressedFileWithStub} for {@link CompressedFiles#SNAPPY} files. For details on the
+ * file format, see
  * <a href="https://en.wikipedia.org/wiki/Snappy_(compression)">https://en.wikipedia.org/wiki/Snappy_(compression)</a>.
  * 
  * @author Alan Buttars
@@ -45,6 +46,10 @@ public class DecompressCompressedFileWithStubSnappyImpl extends DecompressCompre
 		this.blockSize = SnappyCompressorInputStream.DEFAULT_BLOCK_SIZE;
 	}
 
+	/**
+	 * Sets the block size on the compressed file. By default, it is set to
+	 * {@link SnappyCompressorInputStream#DEFAULT_BLOCK_SIZE}.
+	 */
 	public DecompressCompressedFileWithStubSnappyImpl andBlockSize(int blockSize) {
 		this.blockSize = blockSize;
 		return this;

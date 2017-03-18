@@ -46,6 +46,10 @@ public class DecompressArchiveWithStubDumpImpl extends DecompressArchiveWithStub
 		this.encoding = "UTF8";
 	}
 
+	/**
+	 * Sets the file encoding for the archive. Pass <code>null</code> to use the platform default. By default, it is set
+	 * to <code>"UTF8"</code>.
+	 */
 	public DecompressArchiveWithStubDumpImpl andEncoding(String encoding) {
 		this.encoding = encoding;
 		return this;

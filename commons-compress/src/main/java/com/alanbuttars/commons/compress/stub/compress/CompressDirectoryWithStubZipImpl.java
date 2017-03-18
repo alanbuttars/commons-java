@@ -65,41 +65,76 @@ public class CompressDirectoryWithStubZipImpl extends CompressDirectoryWithStub 
 		this.zip64Mode = Zip64Mode.AsNeeded;
 	}
 
+	/**
+	 * Sets the comment for the archive. By default, it is set to an empty <code>String</code>. See
+	 * {@link ZipArchiveOutputStream#setComment(String)}.
+	 */
 	public CompressDirectoryWithStubZipImpl andComment(String comment) {
 		this.comment = comment;
 		return this;
 	}
 
+	/**
+	 * Sets the file encoding for the archive. By default, it is set to <code>"UTF8"</code>. Pass <code>null</code> to
+	 * use the platform's default.
+	 */
 	public CompressDirectoryWithStubZipImpl andEncoding(String encoding) {
 		this.encoding = encoding;
 		return this;
 	}
 
+	/**
+	 * If {@link #andUseLanguageEncoding(boolean)} has been set to <code>true</code> and the encoding specified in
+	 * {@link #andEncoding(String)} is not supported, enabling this flag will allow falling back to <code>"UTF8"</code>.
+	 * By default, it is set to <code>false</code>. See {@link ZipArchiveOutputStream#setFallbackToUTF8(boolean)}.
+	 */
 	public CompressDirectoryWithStubZipImpl andFallbackToUTF8(boolean fallbackToUTF8) {
 		this.fallbackToUTF8 = fallbackToUTF8;
 		return this;
 	}
 
+	/**
+	 * Sets the compression level for the archive. By default, it is set to
+	 * {@link ZipArchiveOutputStream#DEFAULT_COMPRESSION}. See {@link ZipArchiveOutputStream#setLevel(int)}.
+	 */
 	public CompressDirectoryWithStubZipImpl andLevel(int level) {
 		this.level = level;
 		return this;
 	}
 
+	/**
+	 * Sets the compression method for the archive. By default, it is set to {@link ZipEntry#DEFLATED}. See
+	 * {@link ZipArchiveOutputStream#setMethod(int)}.
+	 */
 	public CompressDirectoryWithStubZipImpl andMethod(int method) {
 		this.method = method;
 		return this;
 	}
 
+	/**
+	 * Sets the policy for creating unicode extra fields. By default, it is set to
+	 * {@link UnicodeExtraFieldPolicy#NEVER}. See
+	 * {@link ZipArchiveOutputStream#setCreateUnicodeExtraFields(UnicodeExtraFieldPolicy)}.
+	 */
 	public CompressDirectoryWithStubZipImpl andUnicodeExtraFieldPolicy(UnicodeExtraFieldPolicy unicodeExtraFieldPolicy) {
 		this.unicodeExtraFieldPolicy = unicodeExtraFieldPolicy;
 		return this;
 	}
 
+	/**
+	 * If the archive's file name is encoding with <code>"UTF-8"</code> but the encoding specified at
+	 * {@link #andEncoding(String)} is set to another encoding, this flag specifies whether to use that encoding. By
+	 * default, it is set to <code>true</code>. See {@link ZipArchiveOutputStream#setUseLanguageEncodingFlag(boolean)}.
+	 */
 	public CompressDirectoryWithStubZipImpl andUseLanguageEncoding(boolean useLanguageEncoding) {
 		this.useLanguageEncoding = useLanguageEncoding;
 		return this;
 	}
 
+	/**
+	 * Sets the policy for Zip64 extensions. By default, it is set to {@link Zip64Mode#AsNeeded}. See
+	 * {@link ZipArchiveOutputStream#setUseZip64(Zip64Mode)}.
+	 */
 	public CompressDirectoryWithStubZipImpl andZip64Mode(Zip64Mode zip64Mode) {
 		this.zip64Mode = zip64Mode;
 		return this;

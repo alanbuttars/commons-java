@@ -50,16 +50,25 @@ public class DecompressArchiveWithStubTarImpl extends DecompressArchiveWithStub 
 		this.recordSize = TarConstants.DEFAULT_RCDSIZE;
 	}
 
+	/**
+	 * Sets the block size for the archive. By default, it is set to {@link TarConstants#DEFAULT_BLKSIZE}.
+	 */
 	public DecompressArchiveWithStubTarImpl andBlockSize(int blockSize) {
 		this.blockSize = blockSize;
 		return this;
 	}
 
+	/**
+	 * Sets the file encoding for the archive. By default, it is set to <code>null</code>.
+	 */
 	public DecompressArchiveWithStubTarImpl andEncoding(String encoding) {
 		this.encoding = encoding;
 		return this;
 	}
 
+	/**
+	 * Sets the record size for the archive. By default, it is set to {@link TarConstants#DEFAULT_RCDSIZE}.
+	 */
 	public DecompressArchiveWithStubTarImpl andRecordSize(int recordSize) {
 		this.recordSize = recordSize;
 		return this;

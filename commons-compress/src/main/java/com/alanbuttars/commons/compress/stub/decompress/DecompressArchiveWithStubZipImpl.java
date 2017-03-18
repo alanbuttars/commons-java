@@ -49,16 +49,28 @@ public class DecompressArchiveWithStubZipImpl extends DecompressArchiveWithStub 
 		this.useUnicodeExtraFields = true;
 	}
 
+	/**
+	 * Sets whether the stream will try to read stored entries that use a data descriptor. By default, it is set to
+	 * <code>false</code>.
+	 */
 	public DecompressArchiveWithStubZipImpl andAllowStoredEntriesWithDataDescriptor(boolean allowStoredEntriesWithDataDescriptor) {
 		this.allowStoredEntriesWithDataDescriptor = allowStoredEntriesWithDataDescriptor;
 		return this;
 	}
 
+	/**
+	 * Sets the file encoding for the archive. Pass <code>null</code> to use the platform default. By default, it is set
+	 * to <code>"UTF8"</code>.
+	 */
 	public DecompressArchiveWithStubZipImpl andEncoding(String encoding) {
 		this.encoding = encoding;
 		return this;
 	}
 
+	/**
+	 * Sets whether to use InfoZIP unicode extra fields, if present, to set the file names. By default, it is set to
+	 * <code>true</code>.
+	 */
 	public DecompressArchiveWithStubZipImpl andUseUnicodeExtraFields(boolean useUnicodeExtraFields) {
 		this.useUnicodeExtraFields = useUnicodeExtraFields;
 		return this;

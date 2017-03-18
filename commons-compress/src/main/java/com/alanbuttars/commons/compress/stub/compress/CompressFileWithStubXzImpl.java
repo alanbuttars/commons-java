@@ -46,6 +46,10 @@ public class CompressFileWithStubXzImpl extends CompressFileWithStub {
 		this.preset = LZMA2Options.PRESET_DEFAULT;
 	}
 
+	/**
+	 * Sets the specified LZMA2 preset level. By default it is set to {@link LZMA2Options#PRESET_DEFAULT}. See
+	 * {@link XZCompressorOutputStream#XZCompressorOutputStream(OutputStream, int)}.
+	 */
 	public CompressFileWithStubXzImpl andPreset(int preset) {
 		this.preset = preset;
 		return this;

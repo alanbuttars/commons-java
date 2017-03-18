@@ -30,8 +30,8 @@ import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Extension of {@link DecompressCompressedFileWithStub} for {@link CompressedFiles#BZIP2} files. For details on the file format,
- * see <a href="https://en.wikipedia.org/wiki/Bzip2">https://en.wikipedia.org/wiki/Bzip2</a>.
+ * Extension of {@link DecompressCompressedFileWithStub} for {@link CompressedFiles#BZIP2} files. For details on the
+ * file format, see <a href="https://en.wikipedia.org/wiki/Bzip2">https://en.wikipedia.org/wiki/Bzip2</a>.
  * 
  * @author Alan Buttars
  *
@@ -45,6 +45,10 @@ public class DecompressCompressedFileWithStubBzip2Impl extends DecompressCompres
 		this.decompressConcatenated = false;
 	}
 
+	/**
+	 * If set to <code>true</code>, decompresses the stream until the end of the input. By default, it is set to
+	 * <code>false</code>. See {@link BZip2CompressorInputStream#BZip2CompressorInputStream(InputStream, boolean)}.
+	 */
 	public DecompressCompressedFileWithStubBzip2Impl andDecompressConcatenated(boolean decompressConcatenated) {
 		this.decompressConcatenated = decompressConcatenated;
 		return this;

@@ -44,6 +44,10 @@ public class DecompressArchiveWithStub7zImpl extends DecompressArchiveWithStub {
 		this.password = null;
 	}
 
+	/**
+	 * Sets a password to decrypt the archive. By default, the archive is assumed to be unencrypted and the password is
+	 * set to <code>null</code>.
+	 */
 	public DecompressArchiveWithStub7zImpl andDecryptWithPassword(byte[] password) {
 		this.password = password;
 		return this;

@@ -31,8 +31,9 @@ import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Extension of {@link DecompressCompressedFileWithStub} for {@link CompressedFiles#FRAMEDSNAPPY} files. For details on the
- * file format, see <a href="https://en.wikipedia.org/wiki/Snappy_(compression)">https://en.wikipedia.org/wiki/Snappy_(compression)</a>.
+ * Extension of {@link DecompressCompressedFileWithStub} for {@link CompressedFiles#FRAMEDSNAPPY} files. For details on
+ * the file format, see
+ * <a href="https://en.wikipedia.org/wiki/Snappy_(compression)">https://en.wikipedia.org/wiki/Snappy_(compression)</a>.
  * 
  * @author Alan Buttars
  *
@@ -46,6 +47,9 @@ public class DecompressCompressedFileWithStubFramedSnappyImpl extends Decompress
 		this.dialect = FramedSnappyDialect.STANDARD;
 	}
 
+	/**
+	 * Sets the dialect on the compressed file. By default, it is set to {@link FramedSnappyDialect#STANDARD}.
+	 */
 	public DecompressCompressedFileWithStubFramedSnappyImpl andDialect(FramedSnappyDialect dialect) {
 		this.dialect = dialect;
 		return this;

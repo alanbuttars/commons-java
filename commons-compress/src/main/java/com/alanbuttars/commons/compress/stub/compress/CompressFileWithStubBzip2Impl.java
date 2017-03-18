@@ -45,6 +45,10 @@ public class CompressFileWithStubBzip2Impl extends CompressFileWithStub {
 		this.blockSize = BZip2CompressorOutputStream.MAX_BLOCKSIZE;
 	}
 
+	/**
+	 * Sets the block size for the compressed file. By default, it is set to
+	 * {@link BZip2CompressorOutputStream#MAX_BLOCKSIZE}.
+	 */
 	public CompressFileWithStubBzip2Impl andBlockSize(int blockSize) {
 		this.blockSize = blockSize;
 		return this;

@@ -50,6 +50,10 @@ public class CompressDirectoryWithStub7zImpl extends CompressDirectoryWithStub {
 		this.contentMethods = Collections.singletonList(new SevenZMethodConfiguration(SevenZMethod.LZMA2));
 	}
 
+	/**
+	 * Sets the content methods for each file entry in the archive. See
+	 * {@link SevenZOutputFile#setContentMethods(Iterable)}.
+	 */
 	public CompressDirectoryWithStub7zImpl andContentMethods(Iterable<? extends SevenZMethodConfiguration> contentMethods) {
 		this.contentMethods = contentMethods;
 		return this;

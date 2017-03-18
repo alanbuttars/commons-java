@@ -49,11 +49,18 @@ public class DecompressArchiveWithStubCpioImpl extends DecompressArchiveWithStub
 		this.encoding = CharsetNames.US_ASCII;
 	}
 
+	/**
+	 * Sets the block size used to read the archive. By default, it is set to {@link CpioConstants#BLOCK_SIZE}.
+	 */
 	public DecompressArchiveWithStubCpioImpl andBlockSize(int blockSize) {
 		this.blockSize = blockSize;
 		return this;
 	}
 
+	/**
+	 * Sets the file encoding for the archive. Pass <code>null</code> to use the platform default. By default, it is set
+	 * to {@link CharsetNames#US_ASCII}.
+	 */
 	public DecompressArchiveWithStubCpioImpl andEncoding(String encoding) {
 		this.encoding = encoding;
 		return this;

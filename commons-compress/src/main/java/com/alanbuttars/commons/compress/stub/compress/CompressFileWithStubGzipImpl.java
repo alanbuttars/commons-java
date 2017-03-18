@@ -46,6 +46,9 @@ public class CompressFileWithStubGzipImpl extends CompressFileWithStub {
 		this.parameters = new GzipParameters();
 	}
 
+	/**
+	 * Sets the parameters for the compressed file. See {@link GzipParameters} to see the defaults.
+	 */
 	public CompressFileWithStubGzipImpl andParameters(GzipParameters parameters) {
 		this.parameters = parameters;
 		return this;

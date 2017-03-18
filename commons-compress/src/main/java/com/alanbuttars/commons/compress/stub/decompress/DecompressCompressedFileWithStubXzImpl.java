@@ -30,8 +30,8 @@ import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * Extension of {@link DecompressCompressedFileWithStub} for {@link CompressedFiles#XZ} files. For details on the file format, see
- * <a href="https://en.wikipedia.org/wiki/Xz">https://en.wikipedia.org/wiki/Xz</a>.
+ * Extension of {@link DecompressCompressedFileWithStub} for {@link CompressedFiles#XZ} files. For details on the file
+ * format, see <a href="https://en.wikipedia.org/wiki/Xz">https://en.wikipedia.org/wiki/Xz</a>.
  * 
  * @author Alan Buttars
  *
@@ -45,6 +45,10 @@ public class DecompressCompressedFileWithStubXzImpl extends DecompressCompressed
 		this.decompressConcatenated = false;
 	}
 
+	/**
+	 * If set to <code>true</code>, decompresses the stream until the end of the input. By default, it is set to
+	 * <code>false</code>. See {@link XZCompressorInputStream#XZCompressorInputStream(InputStream, boolean)}.
+	 */
 	public DecompressCompressedFileWithStubXzImpl andDecompressConcatenated(boolean decompressConcatenated) {
 		this.decompressConcatenated = decompressConcatenated;
 		return this;

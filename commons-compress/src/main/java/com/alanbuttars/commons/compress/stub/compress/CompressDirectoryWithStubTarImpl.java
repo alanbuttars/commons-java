@@ -62,36 +62,61 @@ public class CompressDirectoryWithStubTarImpl extends CompressDirectoryWithStub 
 		this.recordSize = TarConstants.DEFAULT_RCDSIZE;
 	}
 
+	/**
+	 * Sets whether to add a PAX extension header for non-ASCII file names. By default, it is set to <code>false</code>.
+	 * See {@link TarArchiveOutputStream#setAddPaxHeadersForNonAsciiNames(boolean)}.
+	 */
 	public CompressDirectoryWithStubTarImpl andAddPaxHeadersForNonAsciiNames(boolean addPaxHeadersForNonAsciiNames) {
 		this.addPaxHeadersForNonAsciiNames = addPaxHeadersForNonAsciiNames;
 		return this;
 	}
 
+	/**
+	 * Sets the big number mode for the archive. By default, it is set to
+	 * {@link TarArchiveOutputStream#BIGNUMBER_ERROR}. See {@link TarArchiveOutputStream#setBigNumberMode(int)}.
+	 */
 	public CompressDirectoryWithStubTarImpl andBigNumberMode(int bigNumberMode) {
 		this.bigNumberMode = bigNumberMode;
 		return this;
 	}
 
+	/**
+	 * Sets the block size for the archive. By default, it is set to {@link TarConstants#DEFAULT_BLKSIZE}.
+	 */
 	public CompressDirectoryWithStubTarImpl andBlockSize(int blockSize) {
 		this.blockSize = blockSize;
 		return this;
 	}
 
+	/**
+	 * Sets the file encoding for the archive. By default, it is set to <code>null</code>.
+	 */
 	public CompressDirectoryWithStubTarImpl andEncoding(String encoding) {
 		this.encoding = encoding;
 		return this;
 	}
 
+	/**
+	 * Sets the long file mode for the archive. By default, it is set to {@link TarArchiveOutputStream#LONGFILE_ERROR}.
+	 * See {@link TarArchiveOutputStream#setLongFileMode(int)}.
+	 */
 	public CompressDirectoryWithStubTarImpl andLongFileMode(int longFileMode) {
 		this.longFileMode = longFileMode;
 		return this;
 	}
 
+	/**
+	 * If set to <code>true</code>, file entries will keep leading slashes (/) in the name..By default, it is set to
+	 * <code>false</code>.
+	 */
 	public CompressDirectoryWithStubTarImpl andPreserveLeadingSlashes(boolean preserveLeadingSlashes) {
 		this.preserveLeadingSlashes = preserveLeadingSlashes;
 		return this;
 	}
 
+	/**
+	 * Sets the record size for the archive. By default, it is set to {@link TarConstants#DEFAULT_RCDSIZE}.
+	 */
 	public CompressDirectoryWithStubTarImpl andRecordSize(int recordSize) {
 		this.recordSize = recordSize;
 		return this;
