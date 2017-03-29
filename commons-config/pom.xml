@@ -13,6 +13,10 @@
 	<url>https://github.com/alanbuttars/commons-java/commons-config</url>
 	<description>Commons Config is an API which provides elegant interaction with configuration files.</description>
 
+	<properties>
+		<jackson.dataformat.version>2.8.7</jackson.dataformat.version>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.alanbuttars.commons</groupId>
@@ -23,6 +27,16 @@
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>20.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-yaml</artifactId>
+			<version>${jackson.dataformat.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.dataformat.version}</version>
 		</dependency>
 	</dependencies>
 </project>

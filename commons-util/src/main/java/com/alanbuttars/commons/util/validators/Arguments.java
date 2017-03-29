@@ -16,8 +16,9 @@
 package com.alanbuttars.commons.util.validators;
 
 public class Arguments {
-	
-	private Arguments() {}
+
+	private Arguments() {
+	}
 
 	public static void verify(boolean expression) {
 		verify(expression, null);
@@ -45,6 +46,6 @@ public class Arguments {
 	}
 
 	public static void verifyNonEmpty(String argument, String message) {
-		verify(argument != null && !argument.isEmpty(), message);
+		verify(argument != null && !argument.trim().isEmpty(), message);
 	}
 }

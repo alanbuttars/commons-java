@@ -1,0 +1,31 @@
+poll-every: 60                  # how often to query this file for changes
+
+poll-every-unit: 'seconds'      # time unit corresponding to above property
+                                # e.g., 'millseconds', 'seconds', 'minutes', 'hours'
+
+configurations:                 # list of configuration files to watch
+
+  - file: '/path/to/database.properties'        # Java .properties file
+    type: 'properties'
+    poll-every: 30
+    poll-every-unit: 'seconds'
+
+  - file: '/path/to/users.json'                 # JSON file
+    type: 'json'
+    poll-every: 5
+    poll-every-unit: 'minutes'
+
+  - file: '/path/to/page-permissions.xml'       # XML file
+    type: 'xml'
+    poll-every: 10
+    poll-every-unit: 'minutes'
+
+  - file: '/path/to/custom.csv'                 # custom file
+    type: 'com.yourdomain.subdomain.ConfigurationCustomImpl'
+    poll-every: 5
+    poll-every-unit: 'minutes'
+
+  - file: '/path/to/client-properties/'         # watch an entire directory
+    type: 'directory'
+    poll-every: 6
+    poll-every-unit: 'hours'

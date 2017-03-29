@@ -132,4 +132,26 @@ public class ArgumentsTest {
 		}
 	}
 
+	@Test
+	public void testVerifyBlankFailsOnEmpty() {
+		try {
+			verifyNonEmpty(" ");
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertNull(e.getMessage());
+		}
+	}
+
+	@Test
+	public void testVerifyBlankFailsOnEmptyWithMessage() {
+		try {
+			verifyNonEmpty(" ", "message");
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("message", e.getMessage());
+		}
+	}
+
 }
