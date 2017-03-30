@@ -2,23 +2,28 @@ poll-every: 60
 poll-every-unit: 'seconds'
 
 files:
-  database:
-    file: 'src/test/resources/com/alanbuttars/commons/config/stub/database.properties'
+  users-properties:
+    file: 'src/test/resources/com/alanbuttars/commons/config/stub/users.properties'
     poll-every: 30
     poll-every-unit: 'seconds'
 
-  users:
-    file: '/path/to/users.json'
+  users-json:
+    file: 'src/test/resources/com/alanbuttars/commons/config/stub/users.json'
     poll-every: 5
     poll-every-unit: 'minutes'
 
-  page-permissions:
-    file: '/path/to/page-permissions.xml'
+  users-xml:
+    file: 'src/test/resources/com/alanbuttars/commons/config/stub/users.xml'
+    poll-every: 10
+    poll-every-unit: 'minutes'
+    
+  users-yaml:
+    file: 'src/test/resources/com/alanbuttars/commons/config/stub/users.yml'
     poll-every: 10
     poll-every-unit: 'minutes'
 
-  custom:
-    file: '/path/to/custom.csv'
+  users-custom:
+    file: 'src/test/resources/com/alanbuttars/commons/config/stub/users.csv'
     poll-every: 5
     poll-every-unit: 'minutes'
 

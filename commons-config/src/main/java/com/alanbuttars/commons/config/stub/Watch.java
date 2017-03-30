@@ -27,6 +27,7 @@ import com.alanbuttars.commons.config.ConfigurationDirectoryImpl;
 import com.alanbuttars.commons.config.ConfigurationJsonImpl;
 import com.alanbuttars.commons.config.ConfigurationPropertiesImpl;
 import com.alanbuttars.commons.config.ConfigurationXmlImpl;
+import com.alanbuttars.commons.config.ConfigurationYamlImpl;
 import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -53,7 +54,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
  * <pre>
  * public class MyApplication {
  * 	public static void main(String[] args) {
- * 		Watch watch = Watch.yaml();
+ * 		Watch watch = Watch.config();
  * 	}
  * }
  * </pre>
@@ -65,7 +66,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
  * <pre>
  * public class MyApplication {
  * 	public static void main(String[] args) {
- * 		Watch watch = Watch.yaml("/path/to/commons.config.yml");
+ * 		Watch watch = Watch.config("/path/to/commons.config.yml");
  * 	}
  * }
  * </pre>
@@ -99,9 +100,9 @@ public class Watch {
 	 * @throws IllegalArgumentException
 	 *             If the system property points to an invalid file
 	 */
-	public static Watch yaml() throws IOException {
+	public static Watch config() throws IOException {
 		String yamlFilePath = System.getProperty("commons.config");
-		return yaml(yamlFilePath, "System property for commons.config");
+		return config(yamlFilePath, "System property for commons.config");
 	}
 
 	/**
@@ -114,11 +115,11 @@ public class Watch {
 	 * @throws IllegalArgumentException
 	 *             If the file path points to an invalid file
 	 */
-	public static Watch yaml(String yamlFilePath) throws IOException {
-		return yaml(yamlFilePath, "YAML file path");
+	public static Watch config(String yamlFilePath) throws IOException {
+		return config(yamlFilePath, "YAML file path");
 	}
 
-	private static Watch yaml(String yamlFilePath, String paramName) throws IOException {
+	private static Watch config(String yamlFilePath, String paramName) throws IOException {
 		verifyNonNull(yamlFilePath, paramName + " must be non-null");
 		verifyNonEmpty(yamlFilePath, paramName + " must be non-empty");
 		File yamlFile = new File(yamlFilePath);
@@ -141,6 +142,10 @@ public class Watch {
 		return new ConfigurationXmlImpl(getFile(sourceId));
 	}
 
+	public <T> ConfigurationYamlImpl<T> yaml(String sourceId, Class<T> clazz) throws IOException {
+		return new ConfigurationYamlImpl<T>(getFile(sourceId), clazz);
+	}
+
 	public ConfigurationDirectoryImpl directory(String sourceId) throws IOException {
 		return new ConfigurationDirectoryImpl(getFile(sourceId));
 	}
@@ -161,7 +166,6 @@ public class Watch {
 		verifyNonEmpty(filePath, "Configuration for source ID '" + sourceId + "' is missing the file attribute");
 
 		File file = new File(filePath);
-		System.out.println(file.getAbsolutePath());
 		verify(file.exists(), "Configuration for source ID '" + sourceId + "' has file attribute '" + filePath + "', which does not exist");
 		verify(file.canRead(), "Configuration for source ID '" + sourceId + "' has file attribute '" + filePath + "', which is unreadable");
 

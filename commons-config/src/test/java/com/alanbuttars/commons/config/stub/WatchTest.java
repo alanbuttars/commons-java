@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 
 import com.alanbuttars.commons.config.ConfigurationPropertiesImpl;
+import com.alanbuttars.commons.config.ConfigurationYamlImpl;
 
 /**
  * Test class for {@link Watch}.
@@ -38,22 +39,22 @@ public class WatchTest {
 	private static final String YAML_FILE_PATH = WatchTest.class.getResource("commons.config.1.yml").getFile();
 
 	@Test
-	public void testYaml() throws IOException {
+	public void testConfig() throws IOException {
 		System.setProperty("commons.config", YAML_FILE_PATH);
-		YamlConfig config = Watch.yaml().getConfig();
+		YamlConfig config = Watch.config().getConfig();
 		verifyConfig(config);
 	}
 
 	@Test
-	public void testYamlFilePath() throws IOException {
-		YamlConfig config = Watch.yaml(YAML_FILE_PATH).getConfig();
+	public void testConfigFilePath() throws IOException {
+		YamlConfig config = Watch.config(YAML_FILE_PATH).getConfig();
 		verifyConfig(config);
 	}
 
 	@Test
 	public void testNullSourceId() throws IOException {
 		try {
-			Watch.yaml(YAML_FILE_PATH).properties(null);
+			Watch.config(YAML_FILE_PATH).properties(null);
 			fail();
 		}
 		catch (IllegalArgumentException e) {
@@ -64,7 +65,7 @@ public class WatchTest {
 	@Test
 	public void testEmptySourceId() throws IOException {
 		try {
-			Watch.yaml(YAML_FILE_PATH).properties("");
+			Watch.config(YAML_FILE_PATH).properties("");
 			fail();
 		}
 		catch (IllegalArgumentException e) {
@@ -75,7 +76,7 @@ public class WatchTest {
 	@Test
 	public void testNonexistentSourceId() throws IOException {
 		try {
-			Watch.yaml(YAML_FILE_PATH).properties("i-dont-exist");
+			Watch.config(YAML_FILE_PATH).properties("i-dont-exist");
 			fail();
 		}
 		catch (IllegalArgumentException e) {
@@ -86,7 +87,7 @@ public class WatchTest {
 	@Test
 	public void testNullFileAttribute() throws IOException {
 		try {
-			Watch.yaml(YAML_FILE_PATH).properties("null-file");
+			Watch.config(YAML_FILE_PATH).properties("null-file");
 			fail();
 		}
 		catch (IllegalArgumentException e) {
@@ -97,7 +98,7 @@ public class WatchTest {
 	@Test
 	public void testEmptyFileAttribute() throws IOException {
 		try {
-			Watch.yaml(YAML_FILE_PATH).properties("empty-file");
+			Watch.config(YAML_FILE_PATH).properties("empty-file");
 			fail();
 		}
 		catch (IllegalArgumentException e) {
@@ -108,7 +109,7 @@ public class WatchTest {
 	@Test
 	public void testNonexistingFileAttribute() throws IOException {
 		try {
-			Watch.yaml(YAML_FILE_PATH).properties("nonexisting-file");
+			Watch.config(YAML_FILE_PATH).properties("nonexisting-file");
 			fail();
 		}
 		catch (IllegalArgumentException e) {
@@ -118,7 +119,7 @@ public class WatchTest {
 
 	@Test
 	public void testUnreadableFileAttribute() throws IOException {
-		Watch watch = Watch.yaml(YAML_FILE_PATH);
+		Watch watch = Watch.config(YAML_FILE_PATH);
 		YamlConfigFile unreadableConfig = watch.getConfig().getConfigFiles().get("unreadable-file");
 		File tempFile = File.createTempFile(getClass().getName(), ".tmp");
 		tempFile.deleteOnExit();
@@ -135,35 +136,59 @@ public class WatchTest {
 
 	@Test
 	public void testProperties() throws IOException {
-		ConfigurationPropertiesImpl properties = Watch.yaml(YAML_FILE_PATH).properties("database");
-		assertEquals(100, properties.getInt("int.property", -1));
-		assertEquals(2.2, properties.getDouble("double.property", -1.0), 0.001);
-		assertTrue(properties.getBoolean("boolean.property", false));
-		assertEquals("freaksandgeeks", properties.getString("string.property", null));
+		ConfigurationPropertiesImpl properties = Watch.config(YAML_FILE_PATH).properties("users-properties");
+		assertEquals("Harry", properties.getString("first.name", null));
+		assertEquals("Potter", properties.getString("last.name", null));
+		assertEquals(11, properties.getInt("age", -1));
+		assertEquals(1.3, properties.getDouble("height", -1.0), 0.001);
+		assertTrue(properties.getBoolean("male", false));
+		assertEquals("The Cupboard Under the Stairs", properties.getString("address.line1", null));
+		assertEquals("4 Privet Drive", properties.getString("address.line2", null));
+		assertEquals("Little Whinging", properties.getString("address.city", null));
+		assertEquals("Surrey", properties.getString("address.county", null));
+	}
+
+	@Test
+	public void testYaml() throws IOException {
+		ConfigurationYamlImpl<User> yaml = Watch.config(YAML_FILE_PATH).yaml("users-yaml", User.class);
+		assertEquals("Harry", yaml.getObject().getFirstName());
+		assertEquals("Potter", yaml.getObject().getLastName());
+		assertEquals(11, yaml.getObject().getAge());
+		assertEquals(1.3, yaml.getObject().getHeight(), 0.001);
+		assertTrue(yaml.getObject().isMale());
+		assertEquals("The Cupboard Under the Stairs", yaml.getObject().getAddress().getLine1());
+		assertEquals("4 Privet Drive", yaml.getObject().getAddress().getLine2());
+		assertEquals("Little Whinging", yaml.getObject().getAddress().getCity());
+		assertEquals("Surrey", yaml.getObject().getAddress().getCounty());
 	}
 
 	private void verifyConfig(YamlConfig source) {
 		assertEquals(60, source.getPollEvery());
 		assertEquals(TimeUnit.SECONDS, source.getPollEveryUnit());
-		assertEquals(9, source.getConfigFiles().size());
+		assertEquals(10, source.getConfigFiles().size());
 
-		YamlConfigFile properties = source.getConfigFiles().get("database");
-		assertEquals("src/test/resources/com/alanbuttars/commons/config/stub/database.properties", properties.getFile());
+		YamlConfigFile properties = source.getConfigFiles().get("users-properties");
+		assertEquals("src/test/resources/com/alanbuttars/commons/config/stub/users.properties", properties.getFile());
 		assertEquals(30, properties.getPollEvery());
 		assertEquals(TimeUnit.SECONDS, properties.getPollEveryUnit());
 
-		YamlConfigFile json = source.getConfigFiles().get("users");
-		assertEquals("/path/to/users.json", json.getFile());
+		YamlConfigFile json = source.getConfigFiles().get("users-json");
+		assertEquals("src/test/resources/com/alanbuttars/commons/config/stub/users.json", json.getFile());
 		assertEquals(5, json.getPollEvery());
 		assertEquals(TimeUnit.MINUTES, json.getPollEveryUnit());
 
-		YamlConfigFile xml = source.getConfigFiles().get("page-permissions");
-		assertEquals("/path/to/page-permissions.xml", xml.getFile());
+		YamlConfigFile xml = source.getConfigFiles().get("users-xml");
+		assertEquals("src/test/resources/com/alanbuttars/commons/config/stub/users.xml", xml.getFile());
 		assertEquals(10, xml.getPollEvery());
 		assertEquals(TimeUnit.MINUTES, xml.getPollEveryUnit());
 
-		YamlConfigFile custom = source.getConfigFiles().get("custom");
-		assertEquals("/path/to/custom.csv", custom.getFile());
+		YamlConfigFile yaml = source.getConfigFiles().get("users-yaml");
+		assertEquals("src/test/resources/com/alanbuttars/commons/config/stub/users.yml", yaml.getFile());
+		assertEquals(10, yaml.getPollEvery());
+		assertEquals(TimeUnit.MINUTES, yaml.getPollEveryUnit());
+
+		YamlConfigFile custom = source.getConfigFiles().get("users-custom");
+		assertEquals("src/test/resources/com/alanbuttars/commons/config/stub/users.csv", custom.getFile());
 		assertEquals(5, custom.getPollEvery());
 		assertEquals(TimeUnit.MINUTES, custom.getPollEveryUnit());
 
