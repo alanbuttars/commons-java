@@ -15,12 +15,12 @@
  */
 package com.alanbuttars.commons.config;
 
-/**
- * Models a configuration object with the flexibility to return multiple configuration value types.
- * 
- * @author Alan Buttars
- *
- */
-public interface Configuration {
+import java.io.File;
+import java.io.IOException;
+
+public class ConfigurationDirectoryImpl implements Configuration {
+	
+	public ConfigurationDirectoryImpl(File configFile) throws IOException {
+	}
 
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alanbuttars.commons.config.source;
+package com.alanbuttars.commons.config.stub;
 
 import static com.alanbuttars.commons.util.validators.Arguments.verify;
 import static com.alanbuttars.commons.util.validators.Arguments.verifyNonEmpty;

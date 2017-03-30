@@ -13,35 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alanbuttars.commons.config.source;
+package com.alanbuttars.commons.config.stub;
 
 import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ConfigItem {
+class YamlConfigFile {
 
 	private String file;
-	private String type;
 	@JsonProperty("poll-every")
 	private int pollEvery;
 	@JsonProperty("poll-every-unit")
 	private String pollEveryUnit;
 
-	String getFile() {
+	public String getFile() {
 		return file;
 	}
 
 	void setFile(String file) {
 		this.file = file;
-	}
-
-	String getType() {
-		return type;
-	}
-
-	void setType(String type) {
-		this.type = type;
 	}
 
 	int getPollEvery() {

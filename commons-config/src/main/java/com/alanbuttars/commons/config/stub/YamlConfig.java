@@ -13,21 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alanbuttars.commons.config.source;
+package com.alanbuttars.commons.config.stub;
 
-import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Config {
+/**
+ * Object which encompasses the YAML configuration file for this module.
+ * 
+ * @author Alan Buttars
+ *
+ */
+class YamlConfig {
 
 	@JsonProperty("poll-every")
 	private int pollEvery;
 	@JsonProperty("poll-every-unit")
 	private String pollEveryUnit;
-	@JsonProperty("configurations")
-	private List<ConfigItem> configItems;
+	@JsonProperty("files")
+	private Map<String, YamlConfigFile> configFiles;
 
 	int getPollEvery() {
 		return pollEvery;
@@ -45,12 +51,12 @@ public class Config {
 		this.pollEveryUnit = pollEveryUnit;
 	}
 
-	List<ConfigItem> getConfigItems() {
-		return configItems;
+	public Map<String, YamlConfigFile> getConfigFiles() {
+		return configFiles;
 	}
 
-	void setConfigItems(List<ConfigItem> configItems) {
-		this.configItems = configItems;
+	void setConfigFiles(Map<String, YamlConfigFile> configFiles) {
+		this.configFiles = configFiles;
 	}
 
 }

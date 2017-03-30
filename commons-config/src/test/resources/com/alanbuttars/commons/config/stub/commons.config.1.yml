@@ -1,0 +1,47 @@
+poll-every: 60
+poll-every-unit: 'seconds'
+
+files:
+  database:
+    file: 'src/test/resources/com/alanbuttars/commons/config/stub/database.properties'
+    poll-every: 30
+    poll-every-unit: 'seconds'
+
+  users:
+    file: '/path/to/users.json'
+    poll-every: 5
+    poll-every-unit: 'minutes'
+
+  page-permissions:
+    file: '/path/to/page-permissions.xml'
+    poll-every: 10
+    poll-every-unit: 'minutes'
+
+  custom:
+    file: '/path/to/custom.csv'
+    poll-every: 5
+    poll-every-unit: 'minutes'
+
+  client-properties:
+    file: '/path/to/client-properties/'
+    poll-every: 6
+    poll-every-unit: 'hours'
+    
+  null-file:
+    poll-every: 30
+    poll-every-unit: 'seconds'
+    
+  empty-file:
+    file: ''
+    poll-every: 30
+    poll-every-unit: 'seconds'
+
+  nonexisting-file:
+    file: 'i-dont-exist'
+    poll-every: 30
+    poll-every-unit: 'seconds'
+    
+  unreadable-file:
+    file: 'unreadable-file'
+    poll-every: 30
+    poll-every-unit: 'seconds'

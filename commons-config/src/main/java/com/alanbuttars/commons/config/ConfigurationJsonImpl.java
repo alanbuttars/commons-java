@@ -15,11 +15,12 @@
  */
 package com.alanbuttars.commons.config;
 
-public class ConfigurationFileImpl extends ConfigurationStringValuesImpl {
+import java.io.File;
+import java.io.IOException;
 
-	@Override
-	protected String getValue(String key) {
-		return "2";
+public class ConfigurationJsonImpl implements Configuration {
+	
+	public ConfigurationJsonImpl(File configFile) throws IOException {
 	}
 
 }
