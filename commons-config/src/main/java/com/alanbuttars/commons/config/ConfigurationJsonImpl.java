@@ -18,9 +18,30 @@ package com.alanbuttars.commons.config;
 import java.io.File;
 import java.io.IOException;
 
-public class ConfigurationJsonImpl implements Configuration {
-	
-	public ConfigurationJsonImpl(File configFile) throws IOException {
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+public class ConfigurationJsonImpl<T> implements Configuration {
+
+	private T object;
+
+	public ConfigurationJsonImpl(File configFile, Class<T> clazz) throws IOException {
+		this.object = getObjectMapper().readValue(configFile, clazz);
+	}
+
+	public <C> ConfigurationJsonImpl(File configFile, TypeReference<C> typeReference) throws IOException {
+		this.object = getObjectMapper().readValue(configFile, typeReference);
+	}
+
+	public T getValue() {
+		return object;
+	}
+
+	private static ObjectMapper getObjectMapper() {
+		JsonFactory yamlFactory = new JsonFactory();
+		ObjectMapper objectMapper = new ObjectMapper(yamlFactory);
+		return objectMapper;
 	}
 
 }

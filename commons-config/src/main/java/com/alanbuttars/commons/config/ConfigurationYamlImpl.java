@@ -17,7 +17,9 @@ package com.alanbuttars.commons.config;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
@@ -26,12 +28,20 @@ public class ConfigurationYamlImpl<T> implements Configuration {
 	private T object;
 
 	public ConfigurationYamlImpl(File configFile, Class<T> clazz) throws IOException {
-		YAMLFactory yamlFactory = new YAMLFactory();
-		ObjectMapper objectMapper = new ObjectMapper(yamlFactory);
-		this.object = objectMapper.readValue(configFile, clazz);
+		this.object = getObjectMapper().readValue(configFile, clazz);
 	}
 
-	public T getObject() {
+	public <C> ConfigurationYamlImpl(File configFile, TypeReference<C> typeReference) throws IOException {
+		this.object = getObjectMapper().readValue(configFile, typeReference);
+	}
+
+	public T getValue() {
 		return object;
+	}
+
+	private static ObjectMapper getObjectMapper() {
+		YAMLFactory yamlFactory = new YAMLFactory();
+		ObjectMapper objectMapper = new ObjectMapper(yamlFactory);
+		return objectMapper;
 	}
 }

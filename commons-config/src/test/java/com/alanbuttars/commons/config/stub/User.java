@@ -78,11 +78,12 @@ public class User {
 		this.address = address;
 	}
 
-	static class Address {
+	public static class Address {
 		private String line1;
 		private String line2;
 		private String city;
 		private String county;
+		private String country;
 
 		public String getLine1() {
 			return line1;
@@ -114,6 +115,14 @@ public class User {
 
 		public void setCounty(String county) {
 			this.county = county;
+		}
+
+		public String getCountry() {
+			return country;
+		}
+
+		public void setCountry(String country) {
+			this.country = country;
 		}
 
 	}

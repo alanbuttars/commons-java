@@ -1,0 +1,14 @@
+{
+	"firstName": "Harry",
+	"lastName": "Potter",
+	"age": 11,
+	"height": 1.3,
+	"male": true,
+	"address": {
+		"line1": "The Cupboard Under the Stairs",
+		"line2": "4 Privet Drive",
+		"city": "Little Whinging",
+		"county": "Surrey",
+		"country": "England"
+	}
+}

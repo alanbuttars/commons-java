@@ -16,17 +16,21 @@
 package com.alanbuttars.commons.config.stub;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
+import com.alanbuttars.commons.config.ConfigurationJsonImpl;
 import com.alanbuttars.commons.config.ConfigurationPropertiesImpl;
 import com.alanbuttars.commons.config.ConfigurationYamlImpl;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
  * Test class for {@link Watch}.
@@ -36,7 +40,7 @@ import com.alanbuttars.commons.config.ConfigurationYamlImpl;
  */
 public class WatchTest {
 
-	private static final String YAML_FILE_PATH = WatchTest.class.getResource("commons.config.1.yml").getFile();
+	public static final String YAML_FILE_PATH = WatchTestHelper.getYaml();
 
 	@Test
 	public void testConfig() throws IOException {
@@ -135,40 +139,52 @@ public class WatchTest {
 	}
 
 	@Test
-	public void testProperties() throws IOException {
-		ConfigurationPropertiesImpl properties = Watch.config(YAML_FILE_PATH).properties("users-properties");
-		assertEquals("Harry", properties.getString("first.name", null));
-		assertEquals("Potter", properties.getString("last.name", null));
-		assertEquals(11, properties.getInt("age", -1));
-		assertEquals(1.3, properties.getDouble("height", -1.0), 0.001);
-		assertTrue(properties.getBoolean("male", false));
-		assertEquals("The Cupboard Under the Stairs", properties.getString("address.line1", null));
-		assertEquals("4 Privet Drive", properties.getString("address.line2", null));
-		assertEquals("Little Whinging", properties.getString("address.city", null));
-		assertEquals("Surrey", properties.getString("address.county", null));
+	public void testJsonClass() throws IOException {
+		ConfigurationJsonImpl<User> config = Watch.config(YAML_FILE_PATH).json("user-json", User.class);
+		assertNotNull(config);
+		assertNotNull(config.getValue());
+		assertEquals(User.class, config.getValue().getClass());
 	}
 
 	@Test
-	public void testYaml() throws IOException {
-		ConfigurationYamlImpl<User> yaml = Watch.config(YAML_FILE_PATH).yaml("users-yaml", User.class);
-		assertEquals("Harry", yaml.getObject().getFirstName());
-		assertEquals("Potter", yaml.getObject().getLastName());
-		assertEquals(11, yaml.getObject().getAge());
-		assertEquals(1.3, yaml.getObject().getHeight(), 0.001);
-		assertTrue(yaml.getObject().isMale());
-		assertEquals("The Cupboard Under the Stairs", yaml.getObject().getAddress().getLine1());
-		assertEquals("4 Privet Drive", yaml.getObject().getAddress().getLine2());
-		assertEquals("Little Whinging", yaml.getObject().getAddress().getCity());
-		assertEquals("Surrey", yaml.getObject().getAddress().getCounty());
+	public void testJsonTypeReference() throws IOException {
+		ConfigurationJsonImpl<List<User>> config = Watch.config(YAML_FILE_PATH).json("users-json", new TypeReference<List<User>>() {
+		});
+		assertNotNull(config);
+		assertNotNull(config.getValue());
+		assertEquals(ArrayList.class, config.getValue().getClass());
+	}
+
+	@Test
+	public void testProperties() throws IOException {
+		ConfigurationPropertiesImpl config = Watch.config(YAML_FILE_PATH).properties("user-properties");
+		assertNotNull(config);
+	}
+
+	@Test
+	public void testYamlClass() throws IOException {
+		ConfigurationYamlImpl<User> config = Watch.config(YAML_FILE_PATH).yaml("user-yaml", User.class);
+		assertNotNull(config);
+		assertNotNull(config.getValue());
+		assertEquals(User.class, config.getValue().getClass());
+	}
+
+	@Test
+	public void testYamlTypeReference() throws IOException {
+		ConfigurationYamlImpl<List<User>> config = Watch.config(YAML_FILE_PATH).yaml("users-yaml", new TypeReference<List<User>>() {
+		});
+		assertNotNull(config);
+		assertNotNull(config.getValue());
+		assertEquals(ArrayList.class, config.getValue().getClass());
 	}
 
 	private void verifyConfig(YamlConfig source) {
 		assertEquals(60, source.getPollEvery());
 		assertEquals(TimeUnit.SECONDS, source.getPollEveryUnit());
-		assertEquals(10, source.getConfigFiles().size());
+		assertEquals(13, source.getConfigFiles().size());
 
-		YamlConfigFile properties = source.getConfigFiles().get("users-properties");
-		assertEquals("src/test/resources/com/alanbuttars/commons/config/stub/users.properties", properties.getFile());
+		YamlConfigFile properties = source.getConfigFiles().get("user-properties");
+		assertEquals("src/test/resources/com/alanbuttars/commons/config/stub/user.properties", properties.getFile());
 		assertEquals(30, properties.getPollEvery());
 		assertEquals(TimeUnit.SECONDS, properties.getPollEveryUnit());
 

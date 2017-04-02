@@ -2,13 +2,18 @@ poll-every: 60
 poll-every-unit: 'seconds'
 
 files:
-  users-properties:
-    file: 'src/test/resources/com/alanbuttars/commons/config/stub/users.properties'
+  user-properties:
+    file: 'src/test/resources/com/alanbuttars/commons/config/stub/user.properties'
     poll-every: 30
     poll-every-unit: 'seconds'
 
   users-json:
     file: 'src/test/resources/com/alanbuttars/commons/config/stub/users.json'
+    poll-every: 5
+    poll-every-unit: 'minutes'
+    
+  user-json:
+    file: 'src/test/resources/com/alanbuttars/commons/config/stub/user.json'
     poll-every: 5
     poll-every-unit: 'minutes'
 
@@ -17,8 +22,18 @@ files:
     poll-every: 10
     poll-every-unit: 'minutes'
     
+  user-xml:
+    file: 'src/test/resources/com/alanbuttars/commons/config/stub/user.xml'
+    poll-every: 10
+    poll-every-unit: 'minutes'
+    
   users-yaml:
     file: 'src/test/resources/com/alanbuttars/commons/config/stub/users.yml'
+    poll-every: 10
+    poll-every-unit: 'minutes'
+    
+  user-yaml:
+    file: 'src/test/resources/com/alanbuttars/commons/config/stub/user.yml'
     poll-every: 10
     poll-every-unit: 'minutes'
 

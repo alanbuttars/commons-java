@@ -29,6 +29,7 @@ import com.alanbuttars.commons.config.ConfigurationPropertiesImpl;
 import com.alanbuttars.commons.config.ConfigurationXmlImpl;
 import com.alanbuttars.commons.config.ConfigurationYamlImpl;
 import com.alanbuttars.commons.util.annotations.VisibleForTesting;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
@@ -75,8 +76,8 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
  * </ol>
  * 
  * <p>
- * Once you have created your singleton {@link Watch}, you can use it to create {@link Configuration} objects. See
- * <a href=
+ * Once you have created your singleton {@link Watch}, you can use valueTypeit to create {@link Configuration} objects.
+ * See <a href=
  * "https://github.com/alanbuttars/commons-java/wiki/commons-config#configuration">https://github.com/alanbuttars/commons-java/wiki/commons-config#configuration</a>.
  * 
  * @author Alan Buttars
@@ -134,8 +135,12 @@ public class Watch {
 		return new ConfigurationPropertiesImpl(getFile(sourceId));
 	}
 
-	public ConfigurationJsonImpl json(String sourceId) throws IOException {
-		return new ConfigurationJsonImpl(getFile(sourceId));
+	public <T> ConfigurationJsonImpl<T> json(String sourceId, Class<T> clazz) throws IOException {
+		return new ConfigurationJsonImpl<T>(getFile(sourceId), clazz);
+	}
+
+	public <C> ConfigurationJsonImpl<C> json(String sourceId, TypeReference<C> typeReference) throws IOException {
+		return new ConfigurationJsonImpl<>(getFile(sourceId), typeReference);
 	}
 
 	public ConfigurationXmlImpl xml(String sourceId) throws IOException {
@@ -143,7 +148,11 @@ public class Watch {
 	}
 
 	public <T> ConfigurationYamlImpl<T> yaml(String sourceId, Class<T> clazz) throws IOException {
-		return new ConfigurationYamlImpl<T>(getFile(sourceId), clazz);
+		return new ConfigurationYamlImpl<>(getFile(sourceId), clazz);
+	}
+
+	public <C> ConfigurationYamlImpl<C> yaml(String sourceId, TypeReference<C> typeReference) throws IOException {
+		return new ConfigurationYamlImpl<>(getFile(sourceId), typeReference);
 	}
 
 	public ConfigurationDirectoryImpl directory(String sourceId) throws IOException {
