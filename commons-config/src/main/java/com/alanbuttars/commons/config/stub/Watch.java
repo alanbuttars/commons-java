@@ -32,8 +32,6 @@ import com.alanbuttars.commons.config.ConfigurationXmlImpl;
 import com.alanbuttars.commons.config.ConfigurationYamlImpl;
 import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 /**
  * <p>
@@ -87,12 +85,10 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
  */
 public class Watch {
 
-	private final YamlConfig config;
+	private final ConfigurationYamlImpl<YamlConfig> config;
 
 	private Watch(File yamlFile) throws IOException {
-		YAMLFactory yamlFactory = new YAMLFactory();
-		ObjectMapper objectMapper = new ObjectMapper(yamlFactory);
-		this.config = objectMapper.readValue(yamlFile, YamlConfig.class);
+		this.config = new ConfigurationYamlImpl<YamlConfig>(yamlFile, YamlConfig.class);
 	}
 
 	/**
@@ -163,14 +159,14 @@ public class Watch {
 
 	@VisibleForTesting
 	protected YamlConfig getConfig() {
-		return config;
+		return config.getValue();
 	}
 
 	private File getFile(String sourceId) {
 		verifyNonNull(sourceId, "Source ID must be non-null");
 		verifyNonEmpty(sourceId, "Source ID must be non-empty");
 
-		YamlConfigFile configFile = config.getConfigFiles().get(sourceId);
+		YamlConfigFile configFile = getConfig().getConfigFiles().get(sourceId);
 		verifyNonNull(configFile, "Configuration does not exist for source ID '" + sourceId + "'");
 
 		String filePath = configFile.getFile();
