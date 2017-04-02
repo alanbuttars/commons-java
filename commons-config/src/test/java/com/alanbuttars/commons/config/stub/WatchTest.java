@@ -27,12 +27,15 @@ import java.util.concurrent.TimeUnit;
 
 import javax.xml.bind.JAXBException;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.alanbuttars.commons.config.ConfigurationJsonImpl;
 import com.alanbuttars.commons.config.ConfigurationPropertiesImpl;
 import com.alanbuttars.commons.config.ConfigurationXmlImpl;
 import com.alanbuttars.commons.config.ConfigurationYamlImpl;
+import com.alanbuttars.commons.config.eventbus.EventBus;
+import com.alanbuttars.commons.config.eventbus.EventBusSyncImpl;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
@@ -43,25 +46,33 @@ import com.fasterxml.jackson.core.type.TypeReference;
  */
 public class WatchTest {
 
-	public static final String YAML_FILE_PATH = WatchTestHelper.getYaml();
+	private static final String YAML_FILE_PATH = WatchTestHelper.getYaml();
+	private EventBus eventBus;
+	private Watch watch;
+
+	@Before
+	public void setup() throws IOException {
+		this.eventBus = new EventBusSyncImpl();
+		this.watch = Watch.config(YAML_FILE_PATH).withEventBus(eventBus);
+	}
 
 	@Test
 	public void testConfig() throws IOException {
 		System.setProperty("commons.config", YAML_FILE_PATH);
-		YamlConfig config = Watch.config().getConfig();
+		YamlConfig config = Watch.config().withEventBus(eventBus).getConfig();
 		verifyConfig(config);
 	}
 
 	@Test
 	public void testConfigFilePath() throws IOException {
-		YamlConfig config = Watch.config(YAML_FILE_PATH).getConfig();
+		YamlConfig config = watch.getConfig();
 		verifyConfig(config);
 	}
 
 	@Test
 	public void testNullSourceId() throws IOException {
 		try {
-			Watch.config(YAML_FILE_PATH).properties(null);
+			watch.properties(null);
 			fail();
 		}
 		catch (IllegalArgumentException e) {
@@ -72,7 +83,7 @@ public class WatchTest {
 	@Test
 	public void testEmptySourceId() throws IOException {
 		try {
-			Watch.config(YAML_FILE_PATH).properties("");
+			watch.properties("");
 			fail();
 		}
 		catch (IllegalArgumentException e) {
@@ -83,7 +94,7 @@ public class WatchTest {
 	@Test
 	public void testNonexistentSourceId() throws IOException {
 		try {
-			Watch.config(YAML_FILE_PATH).properties("i-dont-exist");
+			watch.properties("i-dont-exist");
 			fail();
 		}
 		catch (IllegalArgumentException e) {
@@ -94,7 +105,7 @@ public class WatchTest {
 	@Test
 	public void testNullFileAttribute() throws IOException {
 		try {
-			Watch.config(YAML_FILE_PATH).properties("null-file");
+			watch.properties("null-file");
 			fail();
 		}
 		catch (IllegalArgumentException e) {
@@ -105,7 +116,7 @@ public class WatchTest {
 	@Test
 	public void testEmptyFileAttribute() throws IOException {
 		try {
-			Watch.config(YAML_FILE_PATH).properties("empty-file");
+			watch.properties("empty-file");
 			fail();
 		}
 		catch (IllegalArgumentException e) {
@@ -116,7 +127,7 @@ public class WatchTest {
 	@Test
 	public void testNonexistingFileAttribute() throws IOException {
 		try {
-			Watch.config(YAML_FILE_PATH).properties("nonexisting-file");
+			watch.properties("nonexisting-file");
 			fail();
 		}
 		catch (IllegalArgumentException e) {
@@ -126,7 +137,6 @@ public class WatchTest {
 
 	@Test
 	public void testUnreadableFileAttribute() throws IOException {
-		Watch watch = Watch.config(YAML_FILE_PATH);
 		YamlConfigFile unreadableConfig = watch.getConfig().getConfigFiles().get("unreadable-file");
 		File tempFile = File.createTempFile(getClass().getName(), ".tmp");
 		tempFile.deleteOnExit();
@@ -143,7 +153,7 @@ public class WatchTest {
 
 	@Test
 	public void testJsonClass() throws IOException {
-		ConfigurationJsonImpl<User> config = Watch.config(YAML_FILE_PATH).json("user-json", User.class);
+		ConfigurationJsonImpl<User> config = watch.json("user-json").mappedTo(User.class).withEventBus(eventBus);
 		assertNotNull(config);
 		assertNotNull(config.getValue());
 		assertEquals(User.class, config.getValue().getClass());
@@ -151,30 +161,30 @@ public class WatchTest {
 
 	@Test
 	public void testJsonTypeReference() throws IOException {
-		ConfigurationJsonImpl<List<User>> config = Watch.config(YAML_FILE_PATH).json("users-json", new TypeReference<List<User>>() {
-		});
+		ConfigurationJsonImpl<List<User>> config = watch.json("users-json").mappedTo(new TypeReference<List<User>>() {
+		}).withEventBus(eventBus);
 		assertNotNull(config);
 		assertNotNull(config.getValue());
 		assertEquals(ArrayList.class, config.getValue().getClass());
 	}
 
 	@Test
-	public void testXmlClass() throws IOException, JAXBException {
-		ConfigurationXmlImpl<User> config = Watch.config(YAML_FILE_PATH).xml("user-xml", User.class);
-		assertNotNull(config);
-		assertNotNull(config.getValue());
-		assertEquals(User.class, config.getValue().getClass());
-	}
-	
-	@Test
 	public void testProperties() throws IOException {
-		ConfigurationPropertiesImpl config = Watch.config(YAML_FILE_PATH).properties("user-properties");
+		ConfigurationPropertiesImpl config = watch.properties("user-properties").withEventBus(eventBus);
 		assertNotNull(config);
 	}
 
 	@Test
+	public void testXmlClass() throws IOException, JAXBException {
+		ConfigurationXmlImpl<User> config = watch.xml("user-xml").mappedTo(User.class).withEventBus(eventBus);
+		assertNotNull(config);
+		assertNotNull(config.getValue());
+		assertEquals(User.class, config.getValue().getClass());
+	}
+
+	@Test
 	public void testYamlClass() throws IOException {
-		ConfigurationYamlImpl<User> config = Watch.config(YAML_FILE_PATH).yaml("user-yaml", User.class);
+		ConfigurationYamlImpl<User> config = watch.yaml("user-yaml").mappedTo(User.class).withEventBus(eventBus);
 		assertNotNull(config);
 		assertNotNull(config.getValue());
 		assertEquals(User.class, config.getValue().getClass());
@@ -182,8 +192,8 @@ public class WatchTest {
 
 	@Test
 	public void testYamlTypeReference() throws IOException {
-		ConfigurationYamlImpl<List<User>> config = Watch.config(YAML_FILE_PATH).yaml("users-yaml", new TypeReference<List<User>>() {
-		});
+		ConfigurationYamlImpl<List<User>> config = watch.yaml("users-yaml").mappedTo(new TypeReference<List<User>>() {
+		}).withEventBus(eventBus);
 		assertNotNull(config);
 		assertNotNull(config.getValue());
 		assertEquals(ArrayList.class, config.getValue().getClass());

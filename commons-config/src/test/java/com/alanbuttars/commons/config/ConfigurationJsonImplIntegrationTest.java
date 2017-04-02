@@ -23,8 +23,6 @@ import java.util.List;
 import org.junit.Test;
 
 import com.alanbuttars.commons.config.stub.User;
-import com.alanbuttars.commons.config.stub.Watch;
-import com.alanbuttars.commons.config.stub.WatchTestHelper;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
@@ -37,22 +35,22 @@ public class ConfigurationJsonImplIntegrationTest extends ConfigurationAbstractI
 
 	@Test
 	public void testObject() throws IOException {
-		ConfigurationJsonImpl<User> config = Watch.config(WatchTestHelper.getYaml()).json("user-json", User.class);
+		ConfigurationJsonImpl<User> config = watch.json("user-json").mappedTo(User.class).withEventBus(eventBus);
 		verifyHarry(config.getValue());
 	}
 
 	@Test
 	public void testList() throws IOException {
-		ConfigurationJsonImpl<List<User>> config = Watch.config(WatchTestHelper.getYaml()).json("users-json", new TypeReference<List<User>>() {
-		});
+		ConfigurationJsonImpl<List<User>> config = watch.json("users-json").mappedTo(new TypeReference<List<User>>() {
+		}).withEventBus(eventBus);
 		verifyHarry(config.getValue().get(0));
 		verifySherman(config.getValue().get(1));
 	}
 
 	@Test
 	public void testSet() throws IOException {
-		ConfigurationJsonImpl<LinkedHashSet<User>> config = Watch.config(WatchTestHelper.getYaml()).json("users-json", new TypeReference<LinkedHashSet<User>>() {
-		});
+		ConfigurationJsonImpl<LinkedHashSet<User>> config = watch.json("users-json").mappedTo(new TypeReference<LinkedHashSet<User>>() {
+		}).withEventBus(eventBus);
 		Iterator<User> iterator = config.getValue().iterator();
 		verifyHarry(iterator.next());
 		verifySherman(iterator.next());

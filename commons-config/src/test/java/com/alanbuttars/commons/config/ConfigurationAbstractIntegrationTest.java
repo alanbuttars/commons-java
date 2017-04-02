@@ -19,7 +19,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+
+import org.junit.Before;
+
+import com.alanbuttars.commons.config.eventbus.EventBus;
+import com.alanbuttars.commons.config.eventbus.EventBusSyncImpl;
 import com.alanbuttars.commons.config.stub.User;
+import com.alanbuttars.commons.config.stub.Watch;
+import com.alanbuttars.commons.config.stub.WatchTestHelper;
 
 /**
  * Abstract integration test.
@@ -28,6 +36,15 @@ import com.alanbuttars.commons.config.stub.User;
  *
  */
 abstract class ConfigurationAbstractIntegrationTest {
+
+	protected EventBus eventBus;
+	protected Watch watch;
+
+	@Before
+	public void setup() throws IOException {
+		this.eventBus = new EventBusSyncImpl();
+		this.watch = Watch.config(WatchTestHelper.getYaml()).withEventBus(eventBus);
+	}
 
 	public void verifyHarry(User harry) {
 		assertEquals("Harry", harry.getFirstName());

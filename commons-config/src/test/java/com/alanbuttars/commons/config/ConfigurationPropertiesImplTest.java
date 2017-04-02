@@ -18,6 +18,7 @@ package com.alanbuttars.commons.config;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.powermock.api.mockito.PowerMockito.mock;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.alanbuttars.commons.config.eventbus.EventBus;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
@@ -44,7 +46,7 @@ public class ConfigurationPropertiesImplTest {
 		File propertiesFile = File.createTempFile(ConfigurationPropertiesImplTest.class.getName(), ".properties");
 		propertiesFile.deleteOnExit();
 
-		config = new ConfigurationPropertiesImpl(propertiesFile) {
+		config = new ConfigurationPropertiesImpl(propertiesFile, mock(EventBus.class)) {
 
 			@Override
 			protected String getValue(String key) {

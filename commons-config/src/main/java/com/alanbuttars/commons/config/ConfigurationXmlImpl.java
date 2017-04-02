@@ -22,14 +22,17 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import com.alanbuttars.commons.config.eventbus.EventBus;
+
 public class ConfigurationXmlImpl<T> implements Configuration {
 
 	private T object;
 
-	public ConfigurationXmlImpl(File configFile, Class<T> clazz) throws IOException, JAXBException {
+	public ConfigurationXmlImpl(File configFile, Class<T> clazz, EventBus eventBus) throws IOException, JAXBException {
 		JAXBContext context = JAXBContext.newInstance(clazz);
 		Unmarshaller unmarshaller = context.createUnmarshaller();
 		this.object = (T) unmarshaller.unmarshal(configFile);
+		eventBus.subscribe(this);
 	}
 
 	public T getValue() {

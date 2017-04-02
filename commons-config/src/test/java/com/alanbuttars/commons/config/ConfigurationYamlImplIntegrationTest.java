@@ -23,8 +23,6 @@ import java.util.List;
 import org.junit.Test;
 
 import com.alanbuttars.commons.config.stub.User;
-import com.alanbuttars.commons.config.stub.Watch;
-import com.alanbuttars.commons.config.stub.WatchTestHelper;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
@@ -37,22 +35,22 @@ public class ConfigurationYamlImplIntegrationTest extends ConfigurationAbstractI
 
 	@Test
 	public void testObject() throws IOException {
-		ConfigurationYamlImpl<User> config = Watch.config(WatchTestHelper.getYaml()).yaml("user-yaml", User.class);
+		ConfigurationYamlImpl<User> config = watch.yaml("user-yaml").mappedTo(User.class).withEventBus(eventBus);
 		verifyHarry(config.getValue());
 	}
 
 	@Test
 	public void testList() throws IOException {
-		ConfigurationYamlImpl<List<User>> config = Watch.config(WatchTestHelper.getYaml()).yaml("users-yaml", new TypeReference<List<User>>() {
-		});
+		ConfigurationYamlImpl<List<User>> config = watch.yaml("users-yaml").mappedTo(new TypeReference<List<User>>() {
+		}).withEventBus(eventBus);
 		verifyHarry(config.getValue().get(0));
 		verifySherman(config.getValue().get(1));
 	}
 
 	@Test
 	public void testSet() throws IOException {
-		ConfigurationYamlImpl<LinkedHashSet<User>> config = Watch.config(WatchTestHelper.getYaml()).yaml("users-yaml", new TypeReference<LinkedHashSet<User>>() {
-		});
+		ConfigurationYamlImpl<LinkedHashSet<User>> config = watch.yaml("users-yaml").mappedTo(new TypeReference<LinkedHashSet<User>>() {
+		}).withEventBus(eventBus);
 		Iterator<User> iterator = config.getValue().iterator();
 		verifyHarry(iterator.next());
 		verifySherman(iterator.next());

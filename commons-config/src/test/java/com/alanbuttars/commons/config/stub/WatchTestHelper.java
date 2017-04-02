@@ -15,6 +15,12 @@
  */
 package com.alanbuttars.commons.config.stub;
 
+import java.io.File;
+import java.io.IOException;
+
+import com.alanbuttars.commons.config.ConfigurationYamlImpl;
+import com.alanbuttars.commons.config.eventbus.EventBusSyncImpl;
+
 /**
  * Helper class for {@link WatchTest}.
  * 
@@ -28,6 +34,14 @@ public class WatchTestHelper {
 	 */
 	public static String getYaml() {
 		return WatchTest.class.getResource("commons.config.1.yml").getFile();
+	}
+
+	public static File getSourceFile(String sourceId) throws IOException {
+		File yamlFile = new File(getYaml());
+		ConfigurationYamlImpl<YamlConfig> config = new ConfigurationYamlImpl<>(yamlFile, YamlConfig.class, new EventBusSyncImpl());
+		YamlConfig yamlConfig = config.getValue();
+		YamlConfigFile yamlConfigFile = yamlConfig.getConfigFiles().get(sourceId);
+		return new File(yamlConfigFile.getFile());
 	}
 
 }

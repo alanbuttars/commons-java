@@ -22,8 +22,6 @@ import javax.xml.bind.JAXBException;
 import org.junit.Test;
 
 import com.alanbuttars.commons.config.stub.User;
-import com.alanbuttars.commons.config.stub.Watch;
-import com.alanbuttars.commons.config.stub.WatchTestHelper;
 
 /**
  * Test class for {@link ConfigurationXmlImpl}.
@@ -35,7 +33,7 @@ public class ConfigurationXmlImplIntegrationTest extends ConfigurationAbstractIn
 
 	@Test
 	public void testObject() throws IOException, JAXBException {
-		ConfigurationXmlImpl<User> config = Watch.config(WatchTestHelper.getYaml()).xml("user-xml", User.class);
+		ConfigurationXmlImpl<User> config = watch.xml("user-xml").mappedTo(User.class).withEventBus(eventBus);
 		verifyHarry(config.getValue());
 	}
 

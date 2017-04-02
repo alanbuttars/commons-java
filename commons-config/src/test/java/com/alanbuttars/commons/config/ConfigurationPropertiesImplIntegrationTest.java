@@ -22,20 +22,17 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import com.alanbuttars.commons.config.stub.Watch;
-import com.alanbuttars.commons.config.stub.WatchTestHelper;
-
 /**
  * Test class for {@link ConfigurationPropertiesImpl}.
  * 
  * @author Alan Buttars
  *
  */
-public class ConfigurationPropertiesImplIntegrationTest {
+public class ConfigurationPropertiesImplIntegrationTest extends ConfigurationAbstractIntegrationTest {
 
 	@Test
 	public void testObject() throws IOException {
-		ConfigurationPropertiesImpl config = Watch.config(WatchTestHelper.getYaml()).properties("user-properties");
+		ConfigurationPropertiesImpl config = watch.properties("user-properties").withEventBus(eventBus);
 		assertEquals("Harry", config.getString("first.name", null));
 		assertEquals("Potter", config.getString("last.name", null));
 		assertEquals(11, config.getInt("age", -1));

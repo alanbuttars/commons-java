@@ -18,6 +18,7 @@ package com.alanbuttars.commons.config;
 import java.io.File;
 import java.io.IOException;
 
+import com.alanbuttars.commons.config.eventbus.EventBus;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,12 +27,14 @@ public class ConfigurationJsonImpl<T> implements Configuration {
 
 	private T object;
 
-	public ConfigurationJsonImpl(File configFile, Class<T> clazz) throws IOException {
+	public ConfigurationJsonImpl(File configFile, Class<T> clazz, EventBus eventBus) throws IOException {
 		this.object = getObjectMapper().readValue(configFile, clazz);
+		eventBus.subscribe(this);
 	}
 
-	public <C> ConfigurationJsonImpl(File configFile, TypeReference<C> typeReference) throws IOException {
+	public <C> ConfigurationJsonImpl(File configFile, TypeReference<C> typeReference, EventBus eventBus) throws IOException {
 		this.object = getObjectMapper().readValue(configFile, typeReference);
+		eventBus.subscribe(this);
 	}
 
 	public T getValue() {

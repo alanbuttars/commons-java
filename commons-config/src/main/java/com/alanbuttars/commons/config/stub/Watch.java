@@ -22,16 +22,10 @@ import static com.alanbuttars.commons.util.validators.Arguments.verifyNonNull;
 import java.io.File;
 import java.io.IOException;
 
-import javax.xml.bind.JAXBException;
-
 import com.alanbuttars.commons.config.Configuration;
-import com.alanbuttars.commons.config.ConfigurationDirectoryImpl;
-import com.alanbuttars.commons.config.ConfigurationJsonImpl;
-import com.alanbuttars.commons.config.ConfigurationPropertiesImpl;
-import com.alanbuttars.commons.config.ConfigurationXmlImpl;
 import com.alanbuttars.commons.config.ConfigurationYamlImpl;
+import com.alanbuttars.commons.config.eventbus.EventBus;
 import com.alanbuttars.commons.util.annotations.VisibleForTesting;
-import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
  * <p>
@@ -55,7 +49,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
  * <pre>
  * public class MyApplication {
  * 	public static void main(String[] args) {
- * 		Watch watch = Watch.config();
+ * 		EventBus eventBus = new EventBusSyncImpl();
+ * 		Watch watch = Watch.config().withEventBus(eventBus);
  * 	}
  * }
  * </pre>
@@ -67,7 +62,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
  * <pre>
  * public class MyApplication {
  * 	public static void main(String[] args) {
- * 		Watch watch = Watch.config("/path/to/commons.config.yml");
+ * 		EventBus eventBus = new EventBusAsyncImpl();
+ * 		Watch watch = Watch.config("/path/to/commons.config.yml").withEventBus(eventBus);
  * 	}
  * }
  * </pre>
@@ -85,21 +81,19 @@ import com.fasterxml.jackson.core.type.TypeReference;
  */
 public class Watch {
 
-	private final ConfigurationYamlImpl<YamlConfig> config;
+	protected final ConfigurationYamlImpl<YamlConfig> config;
 
-	private Watch(File yamlFile) throws IOException {
-		this.config = new ConfigurationYamlImpl<YamlConfig>(yamlFile, YamlConfig.class);
+	Watch(File yamlFile, EventBus eventBus) throws IOException {
+		this.config = new ConfigurationYamlImpl<YamlConfig>(yamlFile, YamlConfig.class, eventBus);
 	}
 
 	/**
 	 * Creates an instance of this class, using the system property <code>commons.config</code>.
 	 * 
-	 * @throws IOException
-	 *             On I/O error while reading the configuration YAML
 	 * @throws IllegalArgumentException
 	 *             If the system property points to an invalid file
 	 */
-	public static Watch config() throws IOException {
+	public static WatchStub config() {
 		String yamlFilePath = System.getProperty("commons.config");
 		return config(yamlFilePath, "System property for commons.config");
 	}
@@ -109,16 +103,14 @@ public class Watch {
 	 * 
 	 * @param yamlFilePath
 	 *            Non-null file path of the configuration YAML
-	 * @throws IOException
-	 *             On I/O error while reading the configuration YAML
 	 * @throws IllegalArgumentException
 	 *             If the file path points to an invalid file
 	 */
-	public static Watch config(String yamlFilePath) throws IOException {
+	public static WatchStub config(String yamlFilePath) {
 		return config(yamlFilePath, "YAML file path");
 	}
 
-	private static Watch config(String yamlFilePath, String paramName) throws IOException {
+	private static WatchStub config(String yamlFilePath, String paramName) {
 		verifyNonNull(yamlFilePath, paramName + " must be non-null");
 		verifyNonEmpty(yamlFilePath, paramName + " must be non-empty");
 		File yamlFile = new File(yamlFilePath);
@@ -126,35 +118,23 @@ public class Watch {
 		verify(!yamlFile.isDirectory(), paramName + " " + yamlFile.getAbsolutePath() + " is a directory; it must be a file");
 		verify(yamlFile.canRead(), paramName + " " + yamlFile.getAbsolutePath() + " is not readable");
 
-		return new Watch(yamlFile);
+		return new WatchStub(yamlFile);
 	}
 
-	public ConfigurationPropertiesImpl properties(String sourceId) throws IOException {
-		return new ConfigurationPropertiesImpl(getFile(sourceId));
+	public WatchFileJsonImplStub json(String sourceId) {
+		return new WatchFileJsonImplStub(getFile(sourceId));
 	}
 
-	public <T> ConfigurationJsonImpl<T> json(String sourceId, Class<T> clazz) throws IOException {
-		return new ConfigurationJsonImpl<T>(getFile(sourceId), clazz);
+	public WatchFilePropertiesImplStub properties(String sourceId) {
+		return new WatchFilePropertiesImplStub(getFile(sourceId));
 	}
 
-	public <C> ConfigurationJsonImpl<C> json(String sourceId, TypeReference<C> typeReference) throws IOException {
-		return new ConfigurationJsonImpl<>(getFile(sourceId), typeReference);
+	public WatchFileXmlImplStub xml(String sourceId) {
+		return new WatchFileXmlImplStub(getFile(sourceId));
 	}
 
-	public <T> ConfigurationXmlImpl<T> xml(String sourceId, Class<T> clazz) throws IOException, JAXBException {
-		return new ConfigurationXmlImpl<>(getFile(sourceId), clazz);
-	}
-
-	public <T> ConfigurationYamlImpl<T> yaml(String sourceId, Class<T> clazz) throws IOException {
-		return new ConfigurationYamlImpl<>(getFile(sourceId), clazz);
-	}
-
-	public <C> ConfigurationYamlImpl<C> yaml(String sourceId, TypeReference<C> typeReference) throws IOException {
-		return new ConfigurationYamlImpl<>(getFile(sourceId), typeReference);
-	}
-
-	public ConfigurationDirectoryImpl directory(String sourceId) throws IOException {
-		return new ConfigurationDirectoryImpl(getFile(sourceId));
+	public WatchFileYamlImplStub yaml(String sourceId) {
+		return new WatchFileYamlImplStub(getFile(sourceId));
 	}
 
 	@VisibleForTesting

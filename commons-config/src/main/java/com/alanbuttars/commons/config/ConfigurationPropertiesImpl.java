@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.Properties;
 
+import com.alanbuttars.commons.config.eventbus.EventBus;
 import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 import com.alanbuttars.commons.util.functions.Function;
 
@@ -37,11 +38,12 @@ public class ConfigurationPropertiesImpl implements Configuration {
 
 	private final Properties properties;
 
-	public ConfigurationPropertiesImpl(File configFile) throws IOException {
+	public ConfigurationPropertiesImpl(File configFile, EventBus eventBus) throws IOException {
 		this.properties = new Properties();
 		try (Reader reader = new FileReader(configFile)) {
 			this.properties.load(reader);
 		}
+		eventBus.subscribe(this);
 	}
 
 	/**
