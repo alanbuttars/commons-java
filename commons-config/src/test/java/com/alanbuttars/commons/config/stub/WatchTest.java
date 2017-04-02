@@ -25,10 +25,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.xml.bind.JAXBException;
+
 import org.junit.Test;
 
 import com.alanbuttars.commons.config.ConfigurationJsonImpl;
 import com.alanbuttars.commons.config.ConfigurationPropertiesImpl;
+import com.alanbuttars.commons.config.ConfigurationXmlImpl;
 import com.alanbuttars.commons.config.ConfigurationYamlImpl;
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -155,6 +158,14 @@ public class WatchTest {
 		assertEquals(ArrayList.class, config.getValue().getClass());
 	}
 
+	@Test
+	public void testXmlClass() throws IOException, JAXBException {
+		ConfigurationXmlImpl<User> config = Watch.config(YAML_FILE_PATH).xml("user-xml", User.class);
+		assertNotNull(config);
+		assertNotNull(config.getValue());
+		assertEquals(User.class, config.getValue().getClass());
+	}
+	
 	@Test
 	public void testProperties() throws IOException {
 		ConfigurationPropertiesImpl config = Watch.config(YAML_FILE_PATH).properties("user-properties");

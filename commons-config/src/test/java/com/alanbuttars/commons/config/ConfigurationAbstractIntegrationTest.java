@@ -27,7 +27,7 @@ import com.alanbuttars.commons.config.stub.User;
  * @author Alan Buttars
  *
  */
-abstract class AbstractIntegrationTest {
+abstract class ConfigurationAbstractIntegrationTest {
 
 	public void verifyHarry(User harry) {
 		assertEquals("Harry", harry.getFirstName());

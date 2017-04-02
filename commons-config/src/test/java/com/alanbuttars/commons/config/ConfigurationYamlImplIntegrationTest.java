@@ -33,7 +33,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
  * @author Alan Buttars
  *
  */
-public class ConfigurationYamlImplIntegrationTest extends AbstractIntegrationTest {
+public class ConfigurationYamlImplIntegrationTest extends ConfigurationAbstractIntegrationTest {
 
 	@Test
 	public void testObject() throws IOException {

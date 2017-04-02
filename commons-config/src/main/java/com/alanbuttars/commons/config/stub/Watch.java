@@ -22,6 +22,8 @@ import static com.alanbuttars.commons.util.validators.Arguments.verifyNonNull;
 import java.io.File;
 import java.io.IOException;
 
+import javax.xml.bind.JAXBException;
+
 import com.alanbuttars.commons.config.Configuration;
 import com.alanbuttars.commons.config.ConfigurationDirectoryImpl;
 import com.alanbuttars.commons.config.ConfigurationJsonImpl;
@@ -143,8 +145,8 @@ public class Watch {
 		return new ConfigurationJsonImpl<>(getFile(sourceId), typeReference);
 	}
 
-	public ConfigurationXmlImpl xml(String sourceId) throws IOException {
-		return new ConfigurationXmlImpl(getFile(sourceId));
+	public <T> ConfigurationXmlImpl<T> xml(String sourceId, Class<T> clazz) throws IOException, JAXBException {
+		return new ConfigurationXmlImpl<>(getFile(sourceId), clazz);
 	}
 
 	public <T> ConfigurationYamlImpl<T> yaml(String sourceId, Class<T> clazz) throws IOException {

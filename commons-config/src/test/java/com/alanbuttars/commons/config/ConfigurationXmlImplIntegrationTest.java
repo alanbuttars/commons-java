@@ -15,25 +15,28 @@
  */
 package com.alanbuttars.commons.config;
 
-import java.io.File;
 import java.io.IOException;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 
-public class ConfigurationXmlImpl<T> implements Configuration {
+import org.junit.Test;
 
-	private T object;
+import com.alanbuttars.commons.config.stub.User;
+import com.alanbuttars.commons.config.stub.Watch;
+import com.alanbuttars.commons.config.stub.WatchTestHelper;
 
-	public ConfigurationXmlImpl(File configFile, Class<T> clazz) throws IOException, JAXBException {
-		JAXBContext context = JAXBContext.newInstance(clazz);
-		Unmarshaller unmarshaller = context.createUnmarshaller();
-		this.object = (T) unmarshaller.unmarshal(configFile);
-	}
+/**
+ * Test class for {@link ConfigurationXmlImpl}.
+ * 
+ * @author Alan Buttars
+ *
+ */
+public class ConfigurationXmlImplIntegrationTest extends ConfigurationAbstractIntegrationTest {
 
-	public T getValue() {
-		return object;
+	@Test
+	public void testObject() throws IOException, JAXBException {
+		ConfigurationXmlImpl<User> config = Watch.config(WatchTestHelper.getYaml()).xml("user-xml", User.class);
+		verifyHarry(config.getValue());
 	}
 
 }

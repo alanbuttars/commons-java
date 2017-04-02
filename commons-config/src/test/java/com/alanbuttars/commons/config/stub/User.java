@@ -15,12 +15,15 @@
  */
 package com.alanbuttars.commons.config.stub;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Test object.
  * 
  * @author Alan Buttars
  *
  */
+@XmlRootElement
 public class User {
 
 	private String firstName;
