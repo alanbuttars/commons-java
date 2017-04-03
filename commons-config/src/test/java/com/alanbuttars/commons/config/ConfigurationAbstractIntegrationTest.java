@@ -37,15 +37,6 @@ import com.alanbuttars.commons.config.stub.WatchTestHelper;
  */
 abstract class ConfigurationAbstractIntegrationTest {
 
-	protected EventBus eventBus;
-	protected Watch watch;
-
-	@Before
-	public void setup() throws IOException {
-		this.eventBus = new EventBusSyncImpl();
-		this.watch = Watch.config(WatchTestHelper.getYaml()).withEventBus(eventBus);
-	}
-
 	public void verifyHarry(User harry) {
 		assertEquals("Harry", harry.getFirstName());
 		assertEquals("Potter", harry.getLastName());

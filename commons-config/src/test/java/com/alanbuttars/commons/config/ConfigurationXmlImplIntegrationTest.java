@@ -19,9 +19,14 @@ import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
 
+import org.junit.Before;
 import org.junit.Test;
 
+import com.alanbuttars.commons.config.eventbus.EventBus;
+import com.alanbuttars.commons.config.eventbus.EventBusSyncImpl;
 import com.alanbuttars.commons.config.stub.User;
+import com.alanbuttars.commons.config.stub.Watch;
+import com.alanbuttars.commons.config.stub.WatchTestHelper;
 
 /**
  * Test class for {@link ConfigurationXmlImpl}.
@@ -30,6 +35,15 @@ import com.alanbuttars.commons.config.stub.User;
  *
  */
 public class ConfigurationXmlImplIntegrationTest extends ConfigurationAbstractIntegrationTest {
+
+	private EventBus eventBus;
+	private Watch watch;
+
+	@Before
+	public void setup() throws IOException {
+		this.eventBus = new EventBusSyncImpl();
+		this.watch = Watch.config(WatchTestHelper.getYaml()).withEventBus(eventBus);
+	}
 
 	@Test
 	public void testObject() throws IOException, JAXBException {

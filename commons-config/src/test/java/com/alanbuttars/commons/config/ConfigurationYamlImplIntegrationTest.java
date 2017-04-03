@@ -20,9 +20,14 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
+import com.alanbuttars.commons.config.eventbus.EventBus;
+import com.alanbuttars.commons.config.eventbus.EventBusSyncImpl;
 import com.alanbuttars.commons.config.stub.User;
+import com.alanbuttars.commons.config.stub.Watch;
+import com.alanbuttars.commons.config.stub.WatchTestHelper;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
@@ -32,6 +37,15 @@ import com.fasterxml.jackson.core.type.TypeReference;
  *
  */
 public class ConfigurationYamlImplIntegrationTest extends ConfigurationAbstractIntegrationTest {
+
+	private EventBus eventBus;
+	private Watch watch;
+
+	@Before
+	public void setup() throws IOException {
+		this.eventBus = new EventBusSyncImpl();
+		this.watch = Watch.config(WatchTestHelper.getYaml()).withEventBus(eventBus);
+	}
 
 	@Test
 	public void testObject() throws IOException {
