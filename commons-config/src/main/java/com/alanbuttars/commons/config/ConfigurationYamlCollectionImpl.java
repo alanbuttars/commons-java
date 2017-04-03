@@ -19,36 +19,37 @@ import java.io.File;
 import java.io.IOException;
 
 import com.alanbuttars.commons.config.eventbus.EventBus;
-import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 /**
- * {@link Configuration} implementation used for JSON files. Instances of this class accept a single JSON file which is
+ * {@link Configuration} implementation used for YAML files. Instances of this class accept a single YAML file which is
  * mapped to a given class type.
  * 
  * @author Alan Buttars
  *
- * @param <T>
- *            Class type to which the given JSON file will be mapped
+ * @param <C>
+ *            Collection class type to which the given YAML file will be mapped
  */
-public class ConfigurationJsonImpl<T> extends ConfigurationAbstractImpl<T> {
+public class ConfigurationYamlCollectionImpl<C> extends ConfigurationAbstractImpl<C> {
 
-	private final Class<T> clazz;
+	private final TypeReference<C> typeReference;
 
-	public ConfigurationJsonImpl(File configFile, EventBus eventBus, Class<T> clazz) throws IOException {
+	public ConfigurationYamlCollectionImpl(File configFile, EventBus eventBus, TypeReference<C> typeReference) throws IOException {
 		super(configFile);
-		this.clazz = clazz;
+		this.typeReference = typeReference;
 		initEventBus(eventBus);
 	}
 
 	@Override
-	public T load(File configFile) throws IOException {
+	public C load(File configFile) throws IOException {
 		try {
-			JsonFactory jsonFactory = new JsonFactory();
-			ObjectMapper objectMapper = new ObjectMapper(jsonFactory);
-			return objectMapper.readValue(configFile, clazz);
+			YAMLFactory yamlFactory = new YAMLFactory();
+			ObjectMapper objectMapper = new ObjectMapper(yamlFactory);
+			return objectMapper.readValue(configFile, typeReference);
 		}
 		catch (JsonMappingException | JsonParseException e) {
 			throw new IOException(e);

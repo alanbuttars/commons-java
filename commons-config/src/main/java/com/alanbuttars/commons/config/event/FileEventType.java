@@ -13,30 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alanbuttars.commons.config;
-
-import java.io.File;
-import java.io.IOException;
+package com.alanbuttars.commons.config.event;
 
 /**
- * Models a configuration object with the flexibility to return multiple configuration value types.
+ * Enumerated types for {@link FileEvent}.
  * 
  * @author Alan Buttars
- * 
- * @param <T>
- *            Configuration object type
  *
  */
-public interface Configuration<T> {
+public enum FileEventType {
 
-	/**
-	 * Loads the configuration object from the configuration file.
-	 * 
-	 * @param configFile
-	 *            Non-null configuration file
-	 * @return Non-null configuration object
-	 * @throws IOException
-	 *             On any I/O error while reading the configuration file
-	 */
-	public T load(File configFile) throws IOException;
+	CREATED, //
+	UPDATED, //
+	DELETED;
+
 }

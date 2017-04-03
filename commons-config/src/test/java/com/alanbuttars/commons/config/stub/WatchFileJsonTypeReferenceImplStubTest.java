@@ -27,7 +27,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.alanbuttars.commons.config.ConfigurationJsonImpl;
+import com.alanbuttars.commons.config.ConfigurationJsonCollectionImpl;
 import com.alanbuttars.commons.config.eventbus.EventBus;
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -50,7 +50,7 @@ public class WatchFileJsonTypeReferenceImplStubTest {
 
 	@Test
 	public void testWithEventBus() throws IOException {
-		ConfigurationJsonImpl<List<User>> config = new WatchFileJsonTypeReferenceImplStub<>(file, new TypeReference<List<User>>() {
+		ConfigurationJsonCollectionImpl<List<User>> config = new WatchFileJsonTypeReferenceImplStub<>(file, new TypeReference<List<User>>() {
 		}).withEventBus(eventBus);
 		verify(eventBus, times(1)).subscribe(config);
 	}

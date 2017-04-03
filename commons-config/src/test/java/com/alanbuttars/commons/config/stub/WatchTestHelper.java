@@ -38,7 +38,7 @@ public class WatchTestHelper {
 
 	public static File getSourceFile(String sourceId) throws IOException {
 		File yamlFile = new File(getYaml());
-		ConfigurationYamlImpl<YamlConfig> config = new ConfigurationYamlImpl<>(yamlFile, YamlConfig.class, new EventBusSyncImpl());
+		ConfigurationYamlImpl<YamlConfig> config = new ConfigurationYamlImpl<>(yamlFile, new EventBusSyncImpl(), YamlConfig.class);
 		YamlConfig yamlConfig = config.getValue();
 		YamlConfigFile yamlConfigFile = yamlConfig.getConfigFiles().get(sourceId);
 		return new File(yamlConfigFile.getFile());

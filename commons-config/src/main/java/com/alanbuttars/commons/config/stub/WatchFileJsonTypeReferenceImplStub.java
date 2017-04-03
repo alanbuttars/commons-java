@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 
 import com.alanbuttars.commons.config.Configuration;
+import com.alanbuttars.commons.config.ConfigurationJsonCollectionImpl;
 import com.alanbuttars.commons.config.ConfigurationJsonImpl;
 import com.alanbuttars.commons.config.eventbus.EventBus;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -52,9 +53,9 @@ public class WatchFileJsonTypeReferenceImplStub<C> {
 	 * @throws IOException
 	 *             On I/O parsing the JSON file
 	 */
-	public ConfigurationJsonImpl<C> withEventBus(EventBus eventBus) throws IOException {
+	public ConfigurationJsonCollectionImpl<C> withEventBus(EventBus eventBus) throws IOException {
 		verifyNonNull(eventBus, "Event bus must be non-null");
-		return new ConfigurationJsonImpl<>(file, typeReference, eventBus);
+		return new ConfigurationJsonCollectionImpl<>(file, eventBus, typeReference);
 	}
 
 }

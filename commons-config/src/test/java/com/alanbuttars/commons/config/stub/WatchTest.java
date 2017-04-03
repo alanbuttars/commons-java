@@ -30,9 +30,11 @@ import javax.xml.bind.JAXBException;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.alanbuttars.commons.config.ConfigurationJsonCollectionImpl;
 import com.alanbuttars.commons.config.ConfigurationJsonImpl;
 import com.alanbuttars.commons.config.ConfigurationPropertiesImpl;
 import com.alanbuttars.commons.config.ConfigurationXmlImpl;
+import com.alanbuttars.commons.config.ConfigurationYamlCollectionImpl;
 import com.alanbuttars.commons.config.ConfigurationYamlImpl;
 import com.alanbuttars.commons.config.eventbus.EventBus;
 import com.alanbuttars.commons.config.eventbus.EventBusSyncImpl;
@@ -161,7 +163,7 @@ public class WatchTest {
 
 	@Test
 	public void testJsonTypeReference() throws IOException {
-		ConfigurationJsonImpl<List<User>> config = watch.json("users-json").mappedTo(new TypeReference<List<User>>() {
+		ConfigurationJsonCollectionImpl<List<User>> config = watch.json("users-json").mappedTo(new TypeReference<List<User>>() {
 		}).withEventBus(eventBus);
 		assertNotNull(config);
 		assertNotNull(config.getValue());
@@ -192,7 +194,7 @@ public class WatchTest {
 
 	@Test
 	public void testYamlTypeReference() throws IOException {
-		ConfigurationYamlImpl<List<User>> config = watch.yaml("users-yaml").mappedTo(new TypeReference<List<User>>() {
+		ConfigurationYamlCollectionImpl<List<User>> config = watch.yaml("users-yaml").mappedTo(new TypeReference<List<User>>() {
 		}).withEventBus(eventBus);
 		assertNotNull(config);
 		assertNotNull(config.getValue());

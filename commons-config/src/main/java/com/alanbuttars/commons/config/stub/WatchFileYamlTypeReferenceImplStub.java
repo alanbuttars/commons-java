@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 
 import com.alanbuttars.commons.config.Configuration;
+import com.alanbuttars.commons.config.ConfigurationYamlCollectionImpl;
 import com.alanbuttars.commons.config.ConfigurationYamlImpl;
 import com.alanbuttars.commons.config.eventbus.EventBus;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -52,9 +53,9 @@ public class WatchFileYamlTypeReferenceImplStub<C> {
 	 * @throws IOException
 	 *             On I/O parsing the YAML file
 	 */
-	public ConfigurationYamlImpl<C> withEventBus(EventBus eventBus) throws IOException {
+	public ConfigurationYamlCollectionImpl<C> withEventBus(EventBus eventBus) throws IOException {
 		verifyNonNull(eventBus, "Event bus must be non-null");
-		return new ConfigurationYamlImpl<>(file, typeReference, eventBus);
+		return new ConfigurationYamlCollectionImpl<>(file, eventBus, typeReference);
 	}
 
 }

@@ -53,7 +53,7 @@ public class WatchFileJsonClassImplStub<T> {
 	 */
 	public ConfigurationJsonImpl<T> withEventBus(EventBus eventBus) throws IOException {
 		verifyNonNull(eventBus, "Event bus must be non-null");
-		return new ConfigurationJsonImpl<>(file, clazz, eventBus);
+		return new ConfigurationJsonImpl<>(file, eventBus, clazz);
 	}
 
 }

@@ -55,7 +55,7 @@ public class ConfigurationJsonImplIntegrationTest extends ConfigurationAbstractI
 
 	@Test
 	public void testList() throws IOException {
-		ConfigurationJsonImpl<List<User>> config = watch.json("users-json").mappedTo(new TypeReference<List<User>>() {
+		ConfigurationJsonCollectionImpl<List<User>> config = watch.json("users-json").mappedTo(new TypeReference<List<User>>() {
 		}).withEventBus(eventBus);
 		verifyHarry(config.getValue().get(0));
 		verifySherman(config.getValue().get(1));
@@ -63,7 +63,7 @@ public class ConfigurationJsonImplIntegrationTest extends ConfigurationAbstractI
 
 	@Test
 	public void testSet() throws IOException {
-		ConfigurationJsonImpl<LinkedHashSet<User>> config = watch.json("users-json").mappedTo(new TypeReference<LinkedHashSet<User>>() {
+		ConfigurationJsonCollectionImpl<LinkedHashSet<User>> config = watch.json("users-json").mappedTo(new TypeReference<LinkedHashSet<User>>() {
 		}).withEventBus(eventBus);
 		Iterator<User> iterator = config.getValue().iterator();
 		verifyHarry(iterator.next());

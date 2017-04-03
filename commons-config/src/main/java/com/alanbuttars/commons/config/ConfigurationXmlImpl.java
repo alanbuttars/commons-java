@@ -24,19 +24,35 @@ import javax.xml.bind.Unmarshaller;
 
 import com.alanbuttars.commons.config.eventbus.EventBus;
 
-public class ConfigurationXmlImpl<T> implements Configuration {
+/**
+ * {@link Configuration} implementation used for XML files. Instances of this class accept a single XML file which is
+ * mapped to a given class type.
+ * 
+ * @author Alan Buttars
+ *
+ * @param <T>
+ *            Class type to which the given XML file will be mapped
+ */
+public class ConfigurationXmlImpl<T> extends ConfigurationAbstractImpl<T> {
 
-	private T object;
+	private final Class<T> clazz;
 
-	public ConfigurationXmlImpl(File configFile, Class<T> clazz, EventBus eventBus) throws IOException, JAXBException {
-		JAXBContext context = JAXBContext.newInstance(clazz);
-		Unmarshaller unmarshaller = context.createUnmarshaller();
-		this.object = (T) unmarshaller.unmarshal(configFile);
-		eventBus.subscribe(this);
+	public ConfigurationXmlImpl(File configFile, EventBus eventBus, Class<T> clazz) throws IOException, JAXBException {
+		super(configFile);
+		this.clazz = clazz;
+		initEventBus(eventBus);
 	}
 
-	public T getValue() {
-		return object;
+	@Override
+	public T load(File configFile) throws IOException {
+		try {
+			JAXBContext context = JAXBContext.newInstance(clazz);
+			Unmarshaller unmarshaller = context.createUnmarshaller();
+			return (T) unmarshaller.unmarshal(configFile);
+		}
+		catch (JAXBException e) {
+			throw new IOException(e);
+		}
 	}
 
 }

@@ -29,21 +29,16 @@ import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
- * An implementation of {@link Configuration} which reads configurations from a Java .properties file.
+ * {@link Configuration} implementation used for Java .properties files
  * 
  * @author Alan Buttars
  *
  */
-public class ConfigurationPropertiesImpl implements Configuration {
-
-	private final Properties properties;
+public class ConfigurationPropertiesImpl extends ConfigurationAbstractImpl<Properties> {
 
 	public ConfigurationPropertiesImpl(File configFile, EventBus eventBus) throws IOException {
-		this.properties = new Properties();
-		try (Reader reader = new FileReader(configFile)) {
-			this.properties.load(reader);
-		}
-		eventBus.subscribe(this);
+		super(configFile);
+		initEventBus(eventBus);
 	}
 
 	/**
@@ -239,7 +234,16 @@ public class ConfigurationPropertiesImpl implements Configuration {
 	 */
 	@VisibleForTesting
 	protected String getValue(String key) {
-		return properties.getProperty(key);
+		return getValue().getProperty(key);
+	}
+
+	@Override
+	public Properties load(File configFile) throws IOException {
+		Properties properties = new Properties();
+		try (Reader reader = new FileReader(configFile)) {
+			properties.load(reader);
+		}
+		return properties;
 	}
 
 }

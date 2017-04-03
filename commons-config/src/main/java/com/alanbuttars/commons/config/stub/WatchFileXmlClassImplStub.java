@@ -55,7 +55,7 @@ public class WatchFileXmlClassImplStub<T> {
 	 */
 	public ConfigurationXmlImpl<T> withEventBus(EventBus eventBus) throws IOException, JAXBException {
 		verifyNonNull(eventBus, "Event bus must be non-null");
-		return new ConfigurationXmlImpl<>(file, clazz, eventBus);
+		return new ConfigurationXmlImpl<>(file, eventBus, clazz);
 	}
 
 }

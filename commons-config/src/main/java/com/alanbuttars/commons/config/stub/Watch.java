@@ -84,7 +84,7 @@ public class Watch {
 	protected final ConfigurationYamlImpl<YamlConfig> config;
 
 	Watch(File yamlFile, EventBus eventBus) throws IOException {
-		this.config = new ConfigurationYamlImpl<YamlConfig>(yamlFile, YamlConfig.class, eventBus);
+		this.config = new ConfigurationYamlImpl<YamlConfig>(yamlFile, eventBus, YamlConfig.class);
 	}
 
 	/**

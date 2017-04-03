@@ -53,7 +53,7 @@ public class WatchFileYamlClassImplStub<T> {
 	 */
 	public ConfigurationYamlImpl<T> withEventBus(EventBus eventBus) throws IOException {
 		verifyNonNull(eventBus, "Event bus must be non-null");
-		return new ConfigurationYamlImpl<>(file, clazz, eventBus);
+		return new ConfigurationYamlImpl<>(file, eventBus, clazz);
 	}
 
 }

@@ -19,31 +19,40 @@ import java.io.File;
 import java.io.IOException;
 
 import com.alanbuttars.commons.config.eventbus.EventBus;
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
-public class ConfigurationYamlImpl<T> implements Configuration {
+/**
+ * {@link Configuration} implementation used for YAML files. Instances of this class accept a single YAML file which is
+ * mapped to a given class type.
+ * 
+ * @author Alan Buttars
+ *
+ * @param <T>
+ *            Class type to which the given YAML file will be mapped
+ */
+public class ConfigurationYamlImpl<T> extends ConfigurationAbstractImpl<T> {
 
-	private T object;
+	private final Class<T> clazz;
 
-	public ConfigurationYamlImpl(File configFile, Class<T> clazz, EventBus eventBus) throws IOException {
-		this.object = getObjectMapper().readValue(configFile, clazz);
-		eventBus.subscribe(this);
+	public ConfigurationYamlImpl(File configFile, EventBus eventBus, Class<T> clazz) throws IOException {
+		super(configFile);
+		this.clazz = clazz;
+		initEventBus(eventBus);
 	}
 
-	public <C> ConfigurationYamlImpl(File configFile, TypeReference<C> typeReference, EventBus eventBus) throws IOException {
-		this.object = getObjectMapper().readValue(configFile, typeReference);
-		eventBus.subscribe(this);
+	@Override
+	public T load(File configFile) throws IOException {
+		try {
+			YAMLFactory yamlFactory = new YAMLFactory();
+			ObjectMapper objectMapper = new ObjectMapper(yamlFactory);
+			return objectMapper.readValue(configFile, clazz);
+		}
+		catch (JsonMappingException | JsonParseException e) {
+			throw new IOException(e);
+		}
 	}
 
-	public T getValue() {
-		return object;
-	}
-
-	private static ObjectMapper getObjectMapper() {
-		YAMLFactory yamlFactory = new YAMLFactory();
-		ObjectMapper objectMapper = new ObjectMapper(yamlFactory);
-		return objectMapper;
-	}
 }

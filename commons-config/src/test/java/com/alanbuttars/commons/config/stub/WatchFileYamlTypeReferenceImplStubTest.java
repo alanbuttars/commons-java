@@ -27,7 +27,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.alanbuttars.commons.config.ConfigurationYamlImpl;
+import com.alanbuttars.commons.config.ConfigurationYamlCollectionImpl;
 import com.alanbuttars.commons.config.eventbus.EventBus;
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -50,7 +50,7 @@ public class WatchFileYamlTypeReferenceImplStubTest {
 
 	@Test
 	public void testWithEventBus() throws IOException {
-		ConfigurationYamlImpl<List<User>> config = new WatchFileYamlTypeReferenceImplStub<>(file, new TypeReference<List<User>>() {
+		ConfigurationYamlCollectionImpl<List<User>> config = new WatchFileYamlTypeReferenceImplStub<>(file, new TypeReference<List<User>>() {
 		}).withEventBus(eventBus);
 		verify(eventBus, times(1)).subscribe(config);
 	}

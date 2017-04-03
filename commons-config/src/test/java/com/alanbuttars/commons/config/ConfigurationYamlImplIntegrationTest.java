@@ -55,7 +55,7 @@ public class ConfigurationYamlImplIntegrationTest extends ConfigurationAbstractI
 
 	@Test
 	public void testList() throws IOException {
-		ConfigurationYamlImpl<List<User>> config = watch.yaml("users-yaml").mappedTo(new TypeReference<List<User>>() {
+		ConfigurationYamlCollectionImpl<List<User>> config = watch.yaml("users-yaml").mappedTo(new TypeReference<List<User>>() {
 		}).withEventBus(eventBus);
 		verifyHarry(config.getValue().get(0));
 		verifySherman(config.getValue().get(1));
@@ -63,7 +63,7 @@ public class ConfigurationYamlImplIntegrationTest extends ConfigurationAbstractI
 
 	@Test
 	public void testSet() throws IOException {
-		ConfigurationYamlImpl<LinkedHashSet<User>> config = watch.yaml("users-yaml").mappedTo(new TypeReference<LinkedHashSet<User>>() {
+		ConfigurationYamlCollectionImpl<LinkedHashSet<User>> config = watch.yaml("users-yaml").mappedTo(new TypeReference<LinkedHashSet<User>>() {
 		}).withEventBus(eventBus);
 		Iterator<User> iterator = config.getValue().iterator();
 		verifyHarry(iterator.next());
