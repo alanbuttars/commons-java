@@ -13,29 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alanbuttars.commons.config.stub;
+package com.alanbuttars.commons.config.master;
 
 import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-class YamlConfigFile {
+public class YamlMasterConfig {
 
-	private String file;
 	@JsonProperty("poll-every")
 	private int pollEvery;
 	@JsonProperty("poll-every-unit")
 	private String pollEveryUnit;
+	@JsonProperty("pool-size")
+	private int poolSize;
 
-	public String getFile() {
-		return file;
-	}
-
-	void setFile(String file) {
-		this.file = file;
-	}
-
-	int getPollEvery() {
+	public int getPollEvery() {
 		return pollEvery;
 	}
 
@@ -43,12 +36,20 @@ class YamlConfigFile {
 		this.pollEvery = pollEvery;
 	}
 
-	TimeUnit getPollEveryUnit() {
+	public TimeUnit getPollEveryUnit() {
 		return TimeUnits.fromPollEveryUnit(pollEveryUnit);
 	}
 
 	void setPollEveryUnit(String pollEveryUnit) {
 		this.pollEveryUnit = pollEveryUnit;
+	}
+
+	public int getPoolSize() {
+		return poolSize;
+	}
+
+	public void setPoolSize(int poolSize) {
+		this.poolSize = poolSize;
 	}
 
 }

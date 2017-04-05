@@ -18,17 +18,26 @@ package com.alanbuttars.commons.config.stub;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.doReturn;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
-import javax.xml.bind.JAXBException;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.alanbuttars.commons.config.ConfigurationJsonCollectionImpl;
 import com.alanbuttars.commons.config.ConfigurationJsonImpl;
@@ -36,9 +45,14 @@ import com.alanbuttars.commons.config.ConfigurationPropertiesImpl;
 import com.alanbuttars.commons.config.ConfigurationXmlImpl;
 import com.alanbuttars.commons.config.ConfigurationYamlCollectionImpl;
 import com.alanbuttars.commons.config.ConfigurationYamlImpl;
+import com.alanbuttars.commons.config.event.FileEvent;
+import com.alanbuttars.commons.config.event.FileEventType;
 import com.alanbuttars.commons.config.eventbus.EventBus;
 import com.alanbuttars.commons.config.eventbus.EventBusSyncImpl;
+import com.alanbuttars.commons.config.master.YamlConfig;
+import com.alanbuttars.commons.config.master.YamlFileConfig;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.common.io.Files;
 
 /**
  * Test class for {@link Watch}.
@@ -46,6 +60,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
  * @author Alan Buttars
  *
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(Watch.class)
 public class WatchTest {
 
 	private static final String YAML_FILE_PATH = WatchTestHelper.getYaml();
@@ -55,20 +71,173 @@ public class WatchTest {
 	@Before
 	public void setup() throws IOException {
 		this.eventBus = new EventBusSyncImpl();
-		this.watch = Watch.config(YAML_FILE_PATH).withEventBus(eventBus);
+		this.watch = spy(Watch.config(YAML_FILE_PATH).withEventBus(eventBus));
 	}
 
 	@Test
-	public void testConfig() throws IOException {
+	public void testConfigSystemProperty() throws IOException {
 		System.setProperty("commons.config", YAML_FILE_PATH);
-		YamlConfig config = Watch.config().withEventBus(eventBus).getConfig();
+		Watch watch = Watch.config().withEventBus(eventBus);
+		assertEquals("master-yaml", watch.getSourceId());
+		YamlConfig config = watch.getValue();
 		verifyConfig(config);
+	}
+
+	@Test
+	public void testConfigNullSystemProperty() throws IOException {
+		try {
+			System.clearProperty("commons.config");
+			Watch.config().withEventBus(eventBus);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("System property for commons.config must be non-null", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testConfigEmptySystemProperty() throws IOException {
+		try {
+			System.setProperty("commons.config", "");
+			Watch.config().withEventBus(eventBus);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("System property for commons.config must be non-empty", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testConfigBlankSystemProperty() throws IOException {
+		try {
+			System.setProperty("commons.config", "  ");
+			Watch.config().withEventBus(eventBus);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("System property for commons.config must be non-empty", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testConfigNonexistingSystemProperty() throws IOException {
+		File yaml = new File("i-dont-exist");
+		try {
+			System.setProperty("commons.config", yaml.getName());
+			Watch.config().withEventBus(eventBus);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("System property for commons.config " + yaml.getAbsolutePath() + " does not exist", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testConfigDirectorySystemProperty() throws IOException {
+		File yaml = Files.createTempDir();
+		yaml.deleteOnExit();
+		try {
+			System.setProperty("commons.config", yaml.getAbsolutePath());
+			Watch.config().withEventBus(eventBus);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("System property for commons.config " + yaml.getAbsolutePath() + " is a directory; it must be a file", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testConfigUnreadableSystemProperty() throws IOException {
+		File yaml = File.createTempFile(getClass().getName(), ".tmp");
+		yaml.deleteOnExit();
+		yaml.setReadable(false);
+		try {
+			System.setProperty("commons.config", yaml.getAbsolutePath());
+			Watch.config().withEventBus(eventBus);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("System property for commons.config " + yaml.getAbsolutePath() + " is not readable", e.getMessage());
+		}
 	}
 
 	@Test
 	public void testConfigFilePath() throws IOException {
-		YamlConfig config = watch.getConfig();
+		assertEquals("master-yaml", watch.getSourceId());
+		YamlConfig config = watch.getValue();
 		verifyConfig(config);
+	}
+
+	@Test
+	public void testConfigNullFilePath() throws IOException {
+		try {
+			Watch.config(null).withEventBus(eventBus);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("YAML file path must be non-null", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testConfigEmptyFilePath() throws IOException {
+		try {
+			Watch.config("").withEventBus(eventBus);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("YAML file path must be non-empty", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testConfigBlankFilePath() throws IOException {
+		try {
+			Watch.config("  ").withEventBus(eventBus);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("YAML file path must be non-empty", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testConfigNonexistingFilePath() throws IOException {
+		File yaml = new File("i-dont-exist");
+		try {
+			Watch.config(yaml.getName()).withEventBus(eventBus);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("YAML file path " + yaml.getAbsolutePath() + " does not exist", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testConfigDirectoryFilePath() throws IOException {
+		File yaml = Files.createTempDir();
+		yaml.deleteOnExit();
+		try {
+			Watch.config(yaml.getAbsolutePath()).withEventBus(eventBus);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("YAML file path " + yaml.getAbsolutePath() + " is a directory; it must be a file", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testConfigUnreadableFilePath() throws IOException {
+		File yaml = File.createTempFile(getClass().getName(), ".tmp");
+		yaml.deleteOnExit();
+		yaml.setReadable(false);
+		try {
+			Watch.config(yaml.getAbsolutePath()).withEventBus(eventBus);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("YAML file path " + yaml.getAbsolutePath() + " is not readable", e.getMessage());
+		}
 	}
 
 	@Test
@@ -105,57 +274,8 @@ public class WatchTest {
 	}
 
 	@Test
-	public void testNullFileAttribute() throws IOException {
-		try {
-			watch.properties("null-file");
-			fail();
-		}
-		catch (IllegalArgumentException e) {
-			assertEquals("Configuration for source ID 'null-file' is missing the file attribute", e.getMessage());
-		}
-	}
-
-	@Test
-	public void testEmptyFileAttribute() throws IOException {
-		try {
-			watch.properties("empty-file");
-			fail();
-		}
-		catch (IllegalArgumentException e) {
-			assertEquals("Configuration for source ID 'empty-file' is missing the file attribute", e.getMessage());
-		}
-	}
-
-	@Test
-	public void testNonexistingFileAttribute() throws IOException {
-		try {
-			watch.properties("nonexisting-file");
-			fail();
-		}
-		catch (IllegalArgumentException e) {
-			assertEquals("Configuration for source ID 'nonexisting-file' has file attribute 'i-dont-exist', which does not exist", e.getMessage());
-		}
-	}
-
-	@Test
-	public void testUnreadableFileAttribute() throws IOException {
-		YamlConfigFile unreadableConfig = watch.getConfig().getConfigFiles().get("unreadable-file");
-		File tempFile = File.createTempFile(getClass().getName(), ".tmp");
-		tempFile.deleteOnExit();
-		tempFile.setReadable(false);
-		unreadableConfig.setFile(tempFile.getAbsolutePath());
-		try {
-			watch.properties("unreadable-file");
-			fail();
-		}
-		catch (IllegalArgumentException e) {
-			assertEquals("Configuration for source ID 'unreadable-file' has file attribute '" + tempFile.getAbsolutePath() + "', which is unreadable", e.getMessage());
-		}
-	}
-
-	@Test
 	public void testJsonClass() throws IOException {
-		ConfigurationJsonImpl<User> config = watch.json("user-json").mappedTo(User.class).withEventBus(eventBus);
+		ConfigurationJsonImpl<User> config = watch.json("user-json").mappedTo(User.class);
 		assertNotNull(config);
 		assertNotNull(config.getValue());
 		assertEquals(User.class, config.getValue().getClass());
@@ -164,7 +284,7 @@ public class WatchTest {
 	@Test
 	public void testJsonTypeReference() throws IOException {
 		ConfigurationJsonCollectionImpl<List<User>> config = watch.json("users-json").mappedTo(new TypeReference<List<User>>() {
-		}).withEventBus(eventBus);
+		});
 		assertNotNull(config);
 		assertNotNull(config.getValue());
 		assertEquals(ArrayList.class, config.getValue().getClass());
@@ -172,13 +292,13 @@ public class WatchTest {
 
 	@Test
 	public void testProperties() throws IOException {
-		ConfigurationPropertiesImpl config = watch.properties("user-properties").withEventBus(eventBus);
+		ConfigurationPropertiesImpl config = watch.properties("user-properties");
 		assertNotNull(config);
 	}
 
 	@Test
-	public void testXmlClass() throws IOException, JAXBException {
-		ConfigurationXmlImpl<User> config = watch.xml("user-xml").mappedTo(User.class).withEventBus(eventBus);
+	public void testXmlClass() throws IOException {
+		ConfigurationXmlImpl<User> config = watch.xml("user-xml").mappedTo(User.class);
 		assertNotNull(config);
 		assertNotNull(config.getValue());
 		assertEquals(User.class, config.getValue().getClass());
@@ -186,7 +306,7 @@ public class WatchTest {
 
 	@Test
 	public void testYamlClass() throws IOException {
-		ConfigurationYamlImpl<User> config = watch.yaml("user-yaml").mappedTo(User.class).withEventBus(eventBus);
+		ConfigurationYamlImpl<User> config = watch.yaml("user-yaml").mappedTo(User.class);
 		assertNotNull(config);
 		assertNotNull(config.getValue());
 		assertEquals(User.class, config.getValue().getClass());
@@ -195,43 +315,66 @@ public class WatchTest {
 	@Test
 	public void testYamlTypeReference() throws IOException {
 		ConfigurationYamlCollectionImpl<List<User>> config = watch.yaml("users-yaml").mappedTo(new TypeReference<List<User>>() {
-		}).withEventBus(eventBus);
+		});
 		assertNotNull(config);
 		assertNotNull(config.getValue());
 		assertEquals(ArrayList.class, config.getValue().getClass());
 	}
 
-	private void verifyConfig(YamlConfig source) {
-		assertEquals(60, source.getPollEvery());
-		assertEquals(TimeUnit.SECONDS, source.getPollEveryUnit());
-		assertEquals(13, source.getConfigFiles().size());
+	@Test
+	public void testReloadSchedulesExecutor() throws IOException {
+		ScheduledThreadPoolExecutor mockExecutor = mock(ScheduledThreadPoolExecutor.class);
+		doReturn(mockExecutor).when(watch).getExecutor();
 
-		YamlConfigFile properties = source.getConfigFiles().get("user-properties");
+		watch.onFileEvent(new FileEvent(Watch.SOURCE_ID, new File(YAML_FILE_PATH), FileEventType.UPDATED));
+
+		verify(mockExecutor, times(1)).shutdownNow();
+		verify(mockExecutor, times(10)).scheduleAtFixedRate(any(Runnable.class), anyLong(), anyLong(), any(TimeUnit.class));
+	}
+
+	@Test
+	public void testReloadReinitializesExecutor() throws IOException {
+		assertEquals(10, watch.getExecutor().getCorePoolSize());
+
+		YamlConfig config = watch.getValue();
+		config.getMaster().setPoolSize(5);
+		doReturn(config).when(watch).load(new File(YAML_FILE_PATH));
+		watch.onFileEvent(new FileEvent(Watch.SOURCE_ID, new File(YAML_FILE_PATH), FileEventType.UPDATED));
+
+		assertEquals(5, watch.getExecutor().getCorePoolSize());
+	}
+
+	private void verifyConfig(YamlConfig source) {
+		assertEquals(60, source.getMaster().getPollEvery());
+		assertEquals(TimeUnit.SECONDS, source.getMaster().getPollEveryUnit());
+		assertEquals(9, source.getConfigFiles().size());
+
+		YamlFileConfig properties = source.getConfigFiles().get("user-properties");
 		assertEquals("src/test/resources/com/alanbuttars/commons/config/stub/user.properties", properties.getFile());
 		assertEquals(30, properties.getPollEvery());
 		assertEquals(TimeUnit.SECONDS, properties.getPollEveryUnit());
 
-		YamlConfigFile json = source.getConfigFiles().get("users-json");
+		YamlFileConfig json = source.getConfigFiles().get("users-json");
 		assertEquals("src/test/resources/com/alanbuttars/commons/config/stub/users.json", json.getFile());
 		assertEquals(5, json.getPollEvery());
 		assertEquals(TimeUnit.MINUTES, json.getPollEveryUnit());
 
-		YamlConfigFile xml = source.getConfigFiles().get("users-xml");
+		YamlFileConfig xml = source.getConfigFiles().get("users-xml");
 		assertEquals("src/test/resources/com/alanbuttars/commons/config/stub/users.xml", xml.getFile());
 		assertEquals(10, xml.getPollEvery());
 		assertEquals(TimeUnit.MINUTES, xml.getPollEveryUnit());
 
-		YamlConfigFile yaml = source.getConfigFiles().get("users-yaml");
+		YamlFileConfig yaml = source.getConfigFiles().get("users-yaml");
 		assertEquals("src/test/resources/com/alanbuttars/commons/config/stub/users.yml", yaml.getFile());
 		assertEquals(10, yaml.getPollEvery());
 		assertEquals(TimeUnit.MINUTES, yaml.getPollEveryUnit());
 
-		YamlConfigFile custom = source.getConfigFiles().get("users-custom");
+		YamlFileConfig custom = source.getConfigFiles().get("users-custom");
 		assertEquals("src/test/resources/com/alanbuttars/commons/config/stub/users.csv", custom.getFile());
 		assertEquals(5, custom.getPollEvery());
 		assertEquals(TimeUnit.MINUTES, custom.getPollEveryUnit());
 
-		YamlConfigFile directory = source.getConfigFiles().get("client-properties");
+		YamlFileConfig directory = source.getConfigFiles().get("client-properties");
 		assertEquals("/path/to/client-properties/", directory.getFile());
 		assertEquals(6, directory.getPollEvery());
 		assertEquals(TimeUnit.HOURS, directory.getPollEveryUnit());

@@ -18,8 +18,10 @@ package com.alanbuttars.commons.config.stub;
 import static com.alanbuttars.commons.util.validators.Arguments.verifyNonNull;
 
 import java.io.File;
+import java.io.IOException;
 
 import com.alanbuttars.commons.config.ConfigurationXmlImpl;
+import com.alanbuttars.commons.config.eventbus.EventBus;
 
 /**
  * Intermediate stub ultimately used to create a {@link ConfigurationXmlImpl}.
@@ -29,10 +31,14 @@ import com.alanbuttars.commons.config.ConfigurationXmlImpl;
  */
 public class WatchFileXmlImplStub {
 
+	protected final String sourceId;
 	protected final File file;
+	protected final EventBus eventBus;
 
-	WatchFileXmlImplStub(File file) {
+	WatchFileXmlImplStub(String sourceId, File file, EventBus eventBus) {
+		this.sourceId = sourceId;
 		this.file = file;
+		this.eventBus = eventBus;
 	}
 
 	/**
@@ -40,16 +46,18 @@ public class WatchFileXmlImplStub {
 	 * example:
 	 * 
 	 * <pre>
-	 * ConfigurationXmlImpl&lt;User&gt; config = Watch.xml("/path/to/user.xml").mappedTo(User.class).withEventBus();
+	 * ConfigurationXmlImpl&lt;User&gt; config = Watch.xml("/path/to/user.xml").mappedTo(User.class);
 	 * User user = config.getValue();
 	 * </pre>
 	 * 
 	 * @param clazz
 	 *            Non-null type
+	 * @throws IOException
+	 *             On I/O parsing the XML file
 	 */
-	public <T> WatchFileXmlClassImplStub<T> mappedTo(Class<T> clazz) {
+	public <T> ConfigurationXmlImpl<T> mappedTo(Class<T> clazz) throws IOException {
 		verifyNonNull(clazz, "Clazz must be non-null");
-		return new WatchFileXmlClassImplStub<>(file, clazz);
+		return new ConfigurationXmlImpl<>(sourceId, file, eventBus, clazz);
 	}
 
 }

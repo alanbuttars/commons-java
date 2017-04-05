@@ -13,50 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alanbuttars.commons.config.stub;
+package com.alanbuttars.commons.config.master;
 
-import java.util.Map;
+import static com.alanbuttars.commons.util.validators.Arguments.verifyPositive;
+
 import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
- * Object which encompasses the YAML configuration file for this module.
- * 
- * @author Alan Buttars
- *
- */
-class YamlConfig {
+public class YamlFileConfig {
 
+	private String file;
 	@JsonProperty("poll-every")
 	private int pollEvery;
 	@JsonProperty("poll-every-unit")
 	private String pollEveryUnit;
-	@JsonProperty("files")
-	private Map<String, YamlConfigFile> configFiles;
 
-	int getPollEvery() {
+	public String getFile() {
+		return file;
+	}
+
+	void setFile(String file) {
+		this.file = file;
+	}
+
+	public int getPollEvery() {
 		return pollEvery;
 	}
 
 	void setPollEvery(int pollEvery) {
+		verifyPositive(pollEvery, "poll-every must be positive but was " + pollEvery);
 		this.pollEvery = pollEvery;
 	}
 
-	TimeUnit getPollEveryUnit() {
+	public TimeUnit getPollEveryUnit() {
 		return TimeUnits.fromPollEveryUnit(pollEveryUnit);
 	}
 
 	void setPollEveryUnit(String pollEveryUnit) {
 		this.pollEveryUnit = pollEveryUnit;
 	}
-
-	public Map<String, YamlConfigFile> getConfigFiles() {
-		return configFiles;
-	}
-
-	void setConfigFiles(Map<String, YamlConfigFile> configFiles) {
-		this.configFiles = configFiles;
-	}
-
+	
 }

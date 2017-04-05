@@ -36,9 +36,9 @@ import com.alanbuttars.commons.util.functions.Function;
  */
 public class ConfigurationPropertiesImpl extends ConfigurationAbstractImpl<Properties> {
 
-	public ConfigurationPropertiesImpl(File configFile, EventBus eventBus) throws IOException {
-		super(configFile);
-		initEventBus(eventBus);
+	public ConfigurationPropertiesImpl(String sourceId, File configFile, EventBus eventBus) throws IOException {
+		super(sourceId, eventBus);
+		init(configFile);
 	}
 
 	/**
@@ -155,7 +155,7 @@ public class ConfigurationPropertiesImpl extends ConfigurationAbstractImpl<Prope
 	 * 
 	 * @param key
 	 *            Non-null configuration key
-	 * @param defaultValue
+	 * @param defaultValueconfig
 	 *            The default value
 	 */
 	public boolean getBoolean(String key, boolean defaultValue) {

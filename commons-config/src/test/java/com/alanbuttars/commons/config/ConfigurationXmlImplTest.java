@@ -13,53 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alanbuttars.commons.config.stub;
+package com.alanbuttars.commons.config;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.File;
 import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import com.alanbuttars.commons.config.eventbus.EventBusSyncImpl;
+import com.alanbuttars.commons.config.stub.User;
+import com.alanbuttars.commons.config.stub.Watch;
+import com.alanbuttars.commons.config.stub.WatchTestHelper;
+
 /**
- * Test class for {@link WatchFileStub}.
+ * Test class for {@link ConfigurationXmlImpl}.
  * 
  * @author Alan Buttars
  *
  */
-public class WatchFileStubTest {
+public class ConfigurationXmlImplTest extends ConfigurationTest {
 
-	private File file;
-	private WatchFileStub stub;
+	private Watch watch;
 
 	@Before
 	public void setup() throws IOException {
-		file = File.createTempFile(getClass().getName(), ".tmp");
-		file.deleteOnExit();
-
-		stub = new WatchFileStub(file);
+		this.watch = Watch.config(WatchTestHelper.getYaml()).withEventBus(new EventBusSyncImpl());
 	}
 
 	@Test
-	public void testAsJson() {
-		assertEquals(file, stub.asJson().file);
-	}
-
-	@Test
-	public void testAsProperties() {
-		assertEquals(file, stub.asProperties().file);
-	}
-
-	@Test
-	public void testAsXml() {
-		assertEquals(file, stub.asXml().file);
-	}
-
-	@Test
-	public void testAsYaml() {
-		assertEquals(file, stub.asYaml().file);
+	public void testObject() throws IOException {
+		ConfigurationXmlImpl<User> config = watch.xml("user-xml").mappedTo(User.class);
+		verifyHarry(config.getValue());
 	}
 
 }

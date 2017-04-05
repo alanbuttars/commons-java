@@ -15,40 +15,133 @@
  */
 package com.alanbuttars.commons.config;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
-import javax.xml.bind.JAXBException;
+import java.io.File;
+import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import com.alanbuttars.commons.config.eventbus.EventBus;
-import com.alanbuttars.commons.config.eventbus.EventBusSyncImpl;
 import com.alanbuttars.commons.config.stub.User;
 import com.alanbuttars.commons.config.stub.Watch;
-import com.alanbuttars.commons.config.stub.WatchTestHelper;
+import com.alanbuttars.commons.config.util.FileTestHelper;
+import com.google.common.base.Joiner;
 
 /**
- * Test class for {@link ConfigurationXmlImpl}.
+ * Integration test for {@link ConfigurationXmlImpl}.
  * 
  * @author Alan Buttars
  *
  */
-public class ConfigurationXmlImplIntegrationTest extends ConfigurationAbstractIntegrationTest {
-
-	private EventBus eventBus;
-	private Watch watch;
+public class ConfigurationXmlImplIntegrationTest extends ConfigurationIntegrationTest<ConfigurationXmlImpl<User>, User> {
 
 	@Before
 	public void setup() throws IOException {
-		this.eventBus = new EventBusSyncImpl();
-		this.watch = Watch.config(WatchTestHelper.getYaml()).withEventBus(eventBus);
+		String content = Joiner.on("\n").join(//
+				"<user>", //
+				"  <firstName>Alan</firstName>", //
+				"  <lastName>Buttars</lastName>", //
+				"  <age>25</age>", //
+				"  <male>true</male>", //
+				"</user>");
+		setup(content);
+	}
+
+	@Override
+	protected ConfigurationXmlImpl<User> config(Watch watch, String sourceId) throws IOException {
+		return watch.xml(sourceId).mappedTo(User.class);
 	}
 
 	@Test
-	public void testObject() throws IOException, JAXBException {
-		ConfigurationXmlImpl<User> config = watch.xml("user-xml").mappedTo(User.class).withEventBus(eventBus);
-		verifyHarry(config.getValue());
+	public void testInitProperties() {
+		assertEquals("Alan", config.getValue().getFirstName());
+		assertEquals("Buttars", config.getValue().getLastName());
+		assertEquals(25, config.getValue().getAge());
+		assertTrue(config.getValue().isMale());
+	}
+
+	@Test
+	public void testFileUpdated() throws IOException {
+		sleep(1);
+		assertEquals("Alan", config.getValue().getFirstName());
+
+		FileTestHelper.write("<user><firstName>Sir Alan</firstName></user>", configFile);
+		sleep(2);
+		assertEquals("Sir Alan", config.getValue().getFirstName());
+	}
+
+	@Test
+	public void testFileDeleted() throws IOException {
+		sleep(1);
+		assertEquals("Alan", config.getValue().getFirstName());
+
+		configFile.delete();
+		sleep(1);
+		assertEquals("Alan", config.getValue().getFirstName());
+	}
+
+	@Test
+	public void testFileCreated() throws IOException {
+		sleep(1);
+		assertEquals("Alan", config.getValue().getFirstName());
+
+		configFile.delete();
+		sleep(2);
+		assertEquals("Alan", config.getValue().getFirstName());
+
+		configFile.createNewFile();
+		FileTestHelper.write("<user><firstName>Sir Alan</firstName></user>", configFile);
+		sleep(2);
+		assertEquals("Sir Alan", config.getValue().getFirstName());
+	}
+
+	@Test
+	public void testFileAttributeChanged() throws IOException {
+		sleep(1);
+		assertEquals("Alan", config.getValue().getFirstName());
+
+		File newConfigFile = FileTestHelper.file();
+		FileTestHelper.write("<user></user>", newConfigFile);
+		updateConfigFile(newConfigFile);
+		sleep(2);
+		assertNull(config.getValue().getFirstName());
+	}
+
+	@Test
+	public void testPollEveryAttributeChanged() throws IOException {
+		sleep(1);
+		assertEquals("Alan", config.getValue().getFirstName());
+
+		updateConfigPollEvery(4);
+		sleep(2);
+
+		FileTestHelper.write("<user><firstName>Sir Alan</firstName></user>", configFile);
+		sleep(2);
+		assertEquals("Alan", config.getValue().getFirstName());
+
+		sleep(2);
+		assertEquals("Sir Alan", config.getValue().getFirstName());
+	}
+
+	@Test
+	public void testMasterPollEveryAttributeChanged() throws IOException {
+		sleep(1);
+		assertEquals("Alan", config.getValue().getFirstName());
+
+		updateMasterPollEvery(4);
+		sleep(2);
+
+		File newConfigFile = FileTestHelper.file();
+		FileTestHelper.write("<user></user>", newConfigFile);
+		updateConfigFile(newConfigFile);
+		sleep(2);
+		assertEquals("Alan", config.getValue().getFirstName());
+
+		sleep(2);
+		assertNull("Alan", config.getValue().getFirstName());
 	}
 
 }

@@ -48,4 +48,20 @@ public class Arguments {
 	public static void verifyNonEmpty(String argument, String message) {
 		verify(argument != null && !argument.trim().isEmpty(), message);
 	}
+
+	public static void verifyPositive(Number number) {
+		verifyPositive(number, null);
+	}
+
+	public static void verifyPositive(Number number, String message) {
+		verify(number.longValue() > 0, message);
+	}
+
+	public static void verifyNonNegativeNumber(Number number) {
+		verifyNonNegativeNumber(number, null);
+	}
+
+	public static void verifyNonNegativeNumber(Number number, String message) {
+		verify(number.longValue() >= 0, message);
+	}
 }

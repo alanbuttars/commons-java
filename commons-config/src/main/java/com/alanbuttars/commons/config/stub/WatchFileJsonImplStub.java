@@ -18,8 +18,11 @@ package com.alanbuttars.commons.config.stub;
 import static com.alanbuttars.commons.util.validators.Arguments.verifyNonNull;
 
 import java.io.File;
+import java.io.IOException;
 
+import com.alanbuttars.commons.config.ConfigurationJsonCollectionImpl;
 import com.alanbuttars.commons.config.ConfigurationJsonImpl;
+import com.alanbuttars.commons.config.eventbus.EventBus;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
@@ -30,10 +33,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
  */
 public class WatchFileJsonImplStub {
 
+	protected final String sourceId;
 	protected final File file;
+	protected final EventBus eventBus;
 
-	WatchFileJsonImplStub(File file) {
+	WatchFileJsonImplStub(String sourceId, File file, EventBus eventBus) {
+		this.sourceId = sourceId;
 		this.file = file;
+		this.eventBus = eventBus;
 	}
 
 	/**
@@ -41,16 +48,18 @@ public class WatchFileJsonImplStub {
 	 * example:
 	 * 
 	 * <pre>
-	 * ConfigurationJsonImpl&lt;User&gt; config = Watch.json("/path/to/user.json").mappedTo(User.class).withEventBus();
+	 * ConfigurationJsonImpl&lt;User&gt; config = Watch.json("/path/to/user.json").mappedTo(User.class);
 	 * User user = config.getValue();
 	 * </pre>
 	 * 
 	 * @param clazz
 	 *            Non-null type
+	 * @throws IOException
+	 *             On I/O parsing the JSON file
 	 */
-	public <T> WatchFileJsonClassImplStub<T> mappedTo(Class<T> clazz) {
+	public <T> ConfigurationJsonImpl<T> mappedTo(Class<T> clazz) throws IOException {
 		verifyNonNull(clazz, "Clazz must be non-null");
-		return new WatchFileJsonClassImplStub<>(file, clazz);
+		return new ConfigurationJsonImpl<>(sourceId, file, eventBus, clazz);
 	}
 
 	/**
@@ -59,15 +68,17 @@ public class WatchFileJsonImplStub {
 	 * 
 	 * <pre>
 	 * ConfigurationJsonImpl&lt;List&lt;User&gt;&gt; config = Watch.json("/path/to/users.json").mappedTo(new TypeReference&lt;List&lt;User&gt;&gt;() {
-	 * }).withEventBus();
+	 * });
 	 * List&lt;User&gt; users = config.getValue();
 	 * </pre>
 	 * 
 	 * @param typeReference
 	 *            Non-null type reference
+	 * @throws IOException
+	 *             On I/O parsing the JSON file
 	 */
-	public <C> WatchFileJsonTypeReferenceImplStub<C> mappedTo(TypeReference<C> typeReference) {
+	public <C> ConfigurationJsonCollectionImpl<C> mappedTo(TypeReference<C> typeReference) throws IOException {
 		verifyNonNull(typeReference, "Type reference must be non-null");
-		return new WatchFileJsonTypeReferenceImplStub<>(file, typeReference);
+		return new ConfigurationJsonCollectionImpl<>(sourceId, file, eventBus, typeReference);
 	}
 }

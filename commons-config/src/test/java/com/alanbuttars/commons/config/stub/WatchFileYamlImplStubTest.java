@@ -16,14 +16,18 @@
 package com.alanbuttars.commons.config.stub;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 
+import com.alanbuttars.commons.config.ConfigurationYamlCollectionImpl;
+import com.alanbuttars.commons.config.ConfigurationYamlImpl;
+import com.alanbuttars.commons.config.eventbus.EventBus;
+import com.alanbuttars.commons.config.eventbus.EventBusSyncImpl;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
@@ -34,29 +38,18 @@ import com.fasterxml.jackson.core.type.TypeReference;
  */
 public class WatchFileYamlImplStubTest {
 
-	private File file;
-	private WatchFileYamlImplStub stub;
-
-	@Before
-	public void setup() throws IOException {
-		file = File.createTempFile(getClass().getName(), ".json");
-		file.deleteOnExit();
-
-		stub = new WatchFileYamlImplStub(file);
+	@Test
+	public void testMappedToClass() throws IOException {
+		ConfigurationYamlImpl<User> config = stub("user-yaml").mappedTo(User.class);
+		assertEquals("user-yaml", config.getSourceId());
+		assertNotNull(config.getValue());
 	}
 
 	@Test
-	public void testMappedToClass() {
-		WatchFileYamlClassImplStub<User> classStub = stub.mappedTo(User.class);
-		assertEquals(file, classStub.file);
-		assertEquals(User.class, classStub.clazz);
-	}
-
-	@Test
-	public void testMappedToNullClass() {
+	public void testMappedToNullClass() throws IOException {
 		Class<User> clazz = null;
 		try {
-			stub.mappedTo(clazz);
+			stub("user-yaml").mappedTo(clazz);
 		}
 		catch (IllegalArgumentException e) {
 			assertEquals("Clazz must be non-null", e.getMessage());
@@ -64,23 +57,29 @@ public class WatchFileYamlImplStubTest {
 	}
 
 	@Test
-	public void testMappedToTypeReference() {
+	public void testMappedToTypeReference() throws IOException {
 		TypeReference<List<User>> typeReference = new TypeReference<List<User>>() {
 		};
-		WatchFileYamlTypeReferenceImplStub<List<User>> typeReferenceStub = stub.mappedTo(typeReference);
-		assertEquals(file, typeReferenceStub.file);
-		assertEquals(typeReference, typeReferenceStub.typeReference);
+		ConfigurationYamlCollectionImpl<List<User>> config = stub("users-yaml").mappedTo(typeReference);
+		assertEquals("users-yaml", config.getSourceId());
+		assertNotNull(config.getValue());
 	}
 
 	@Test
-	public void testMappedToNullTypeReference() {
+	public void testMappedToNullTypeReference() throws IOException {
 		TypeReference<List<User>> typeReference = null;
 		try {
-			stub.mappedTo(typeReference);
+			stub("users-yaml").mappedTo(typeReference);
 		}
 		catch (IllegalArgumentException e) {
 			assertEquals("Type reference must be non-null", e.getMessage());
 		}
+	}
+
+	private WatchFileYamlImplStub stub(String sourceId) throws IOException {
+		File file = WatchTestHelper.getSourceFile(sourceId);
+		EventBus eventBus = new EventBusSyncImpl();
+		return new WatchFileYamlImplStub(sourceId, file, eventBus);
 	}
 
 }

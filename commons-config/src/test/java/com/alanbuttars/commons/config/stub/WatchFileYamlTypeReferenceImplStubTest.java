@@ -50,15 +50,16 @@ public class WatchFileYamlTypeReferenceImplStubTest {
 
 	@Test
 	public void testWithEventBus() throws IOException {
-		ConfigurationYamlCollectionImpl<List<User>> config = new WatchFileYamlTypeReferenceImplStub<>(file, new TypeReference<List<User>>() {
+		ConfigurationYamlCollectionImpl<List<User>> config = new WatchFileYamlTypeReferenceImplStub<>("users-yaml", file, new TypeReference<List<User>>() {
 		}).withEventBus(eventBus);
+		assertEquals("users-yaml", config.getSourceId());
 		verify(eventBus, times(1)).subscribe(config);
 	}
 
 	@Test
 	public void testWithNullEventBus() throws IOException {
 		try {
-			new WatchFileYamlTypeReferenceImplStub<>(file, new TypeReference<List<User>>() {
+			new WatchFileYamlTypeReferenceImplStub<>("users-yaml", file, new TypeReference<List<User>>() {
 			}).withEventBus(null);
 		}
 		catch (IllegalArgumentException e) {

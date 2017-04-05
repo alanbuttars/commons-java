@@ -20,6 +20,8 @@ import java.io.IOException;
 
 import com.alanbuttars.commons.config.ConfigurationYamlImpl;
 import com.alanbuttars.commons.config.eventbus.EventBusSyncImpl;
+import com.alanbuttars.commons.config.master.YamlConfig;
+import com.alanbuttars.commons.config.master.YamlFileConfig;
 
 /**
  * Helper class for {@link WatchTest}.
@@ -33,14 +35,14 @@ public class WatchTestHelper {
 	 * Retrieves the file path to the YAML.
 	 */
 	public static String getYaml() {
-		return WatchTest.class.getResource("commons.config.1.yml").getFile();
+		return WatchTest.class.getResource("valid.yml").getFile();
 	}
 
 	public static File getSourceFile(String sourceId) throws IOException {
 		File yamlFile = new File(getYaml());
-		ConfigurationYamlImpl<YamlConfig> config = new ConfigurationYamlImpl<>(yamlFile, new EventBusSyncImpl(), YamlConfig.class);
+		ConfigurationYamlImpl<YamlConfig> config = new ConfigurationYamlImpl<>(sourceId, yamlFile, new EventBusSyncImpl(), YamlConfig.class);
 		YamlConfig yamlConfig = config.getValue();
-		YamlConfigFile yamlConfigFile = yamlConfig.getConfigFiles().get(sourceId);
+		YamlFileConfig yamlConfigFile = yamlConfig.getConfigFiles().get(sourceId);
 		return new File(yamlConfigFile.getFile());
 	}
 

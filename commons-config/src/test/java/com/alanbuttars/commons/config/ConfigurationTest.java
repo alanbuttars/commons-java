@@ -22,12 +22,12 @@ import static org.junit.Assert.assertTrue;
 import com.alanbuttars.commons.config.stub.User;
 
 /**
- * Abstract integration test.
+ * Abstract test for {@link Configuration} implementations.
  * 
  * @author Alan Buttars
  *
  */
-abstract class ConfigurationAbstractIntegrationTest {
+abstract class ConfigurationTest {
 
 	public void verifyHarry(User harry) {
 		assertEquals("Harry", harry.getFirstName());

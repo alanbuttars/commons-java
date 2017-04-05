@@ -16,48 +16,127 @@
 package com.alanbuttars.commons.config;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.Properties;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import com.alanbuttars.commons.config.eventbus.EventBus;
-import com.alanbuttars.commons.config.eventbus.EventBusSyncImpl;
 import com.alanbuttars.commons.config.stub.Watch;
-import com.alanbuttars.commons.config.stub.WatchTestHelper;
+import com.alanbuttars.commons.config.util.FileTestHelper;
+import com.google.common.base.Joiner;
 
 /**
- * Test class for {@link ConfigurationPropertiesImpl}.
+ * Integration test for {@link ConfigurationPropertiesImpl}.
  * 
  * @author Alan Buttars
  *
  */
-public class ConfigurationPropertiesImplIntegrationTest extends ConfigurationAbstractIntegrationTest {
-
-	private EventBus eventBus;
-	private Watch watch;
+public class ConfigurationPropertiesImplIntegrationTest extends ConfigurationIntegrationTest<ConfigurationPropertiesImpl, Properties> {
 
 	@Before
 	public void setup() throws IOException {
-		this.eventBus = new EventBusSyncImpl();
-		this.watch = Watch.config(WatchTestHelper.getYaml()).withEventBus(eventBus);
+		String content = Joiner.on("\n").join(//
+				"first=Alan", //
+				"last=Buttars", //
+				"age=25", //
+				"male=true");
+		setup(content);
+	}
+
+	@Override
+	protected ConfigurationPropertiesImpl config(Watch watch, String sourceId) throws IOException {
+		return watch.properties(sourceId);
 	}
 
 	@Test
-	public void testObject() throws IOException {
-		ConfigurationPropertiesImpl config = watch.properties("user-properties").withEventBus(eventBus);
-		assertEquals("Harry", config.getString("first.name", null));
-		assertEquals("Potter", config.getString("last.name", null));
-		assertEquals(11, config.getInt("age", -1));
-		assertEquals(1.3, config.getDouble("height", -1.0), 0.001);
+	public void testInitProperties() {
+		assertEquals("Alan", config.getString("first", null));
+		assertEquals("Buttars", config.getString("last", null));
+		assertEquals(25, config.getInt("age", -1));
 		assertTrue(config.getBoolean("male", false));
-		assertEquals("The Cupboard Under the Stairs", config.getString("address.line1", null));
-		assertEquals("4 Privet Drive", config.getString("address.line2", null));
-		assertEquals("Little Whinging", config.getString("address.city", null));
-		assertEquals("Surrey", config.getString("address.county", null));
-		assertEquals("England", config.getString("address.country", null));
+		assertEquals("brown", config.getString("eye.color", "brown"));
+		assertEquals(2, config.getInt("eye.count", 2));
+	}
+
+	@Test
+	public void testFileUpdated() throws IOException {
+		sleep(1);
+		assertEquals("brown", config.getString("eye.color", "brown"));
+
+		FileTestHelper.append("\neye.color=green\n", configFile);
+		sleep(2);
+		assertEquals("green", config.getString("eye.color", "brown"));
+	}
+
+	@Test
+	public void testFileDeleted() throws IOException {
+		sleep(1);
+		assertEquals("brown", config.getString("eye.color", "brown"));
+
+		configFile.delete();
+		sleep(1);
+		assertEquals("brown", config.getString("eye.color", "brown"));
+	}
+
+	@Test
+	public void testFileCreated() throws IOException {
+		sleep(1);
+		assertEquals("brown", config.getString("eye.color", "brown"));
+
+		configFile.delete();
+		sleep(2);
+		assertEquals("brown", config.getString("eye.color", "brown"));
+
+		configFile.createNewFile();
+		FileTestHelper.append("\neye.color=green\n", configFile);
+		sleep(2);
+		assertEquals("green", config.getString("eye.color", "brown"));
+	}
+
+	@Test
+	public void testFileAttributeChanged() throws IOException {
+		sleep(1);
+		assertEquals("Alan", config.getString("first", null));
+
+		updateConfigFile(FileTestHelper.file());
+		sleep(2);
+		assertNull("Alan", config.getString("first", null));
+	}
+
+	@Test
+	public void testPollEveryAttributeChanged() throws IOException {
+		sleep(1);
+		assertEquals("brown", config.getString("eye.color", "brown"));
+
+		updateConfigPollEvery(4);
+		sleep(2);
+
+		FileTestHelper.append("\neye.color=green\n", configFile);
+		sleep(2);
+		assertEquals("brown", config.getString("eye.color", "brown"));
+
+		sleep(2);
+		assertEquals("green", config.getString("eye.color", "brown"));
+	}
+
+	@Test
+	public void testMasterPollEveryAttributeChanged() throws IOException {
+		sleep(1);
+		assertEquals("Alan", config.getString("first", null));
+
+		updateMasterPollEvery(4);
+		sleep(2);
+
+		updateConfigFile(FileTestHelper.file());
+		sleep(2);
+		assertEquals("Alan", config.getString("first", null));
+
+		sleep(2);
+		assertNull("Alan", config.getString("first", null));
 	}
 
 }

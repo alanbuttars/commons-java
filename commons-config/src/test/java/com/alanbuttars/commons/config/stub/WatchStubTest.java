@@ -48,7 +48,7 @@ public class WatchStubTest {
 	@Test
 	public void testWithEventBus() throws IOException {
 		Watch watch = new WatchStub(file).withEventBus(eventBus);
-		verify(eventBus, times(1)).subscribe(watch.config);
+		verify(eventBus, times(1)).subscribe(watch);
 	}
 
 	@Test

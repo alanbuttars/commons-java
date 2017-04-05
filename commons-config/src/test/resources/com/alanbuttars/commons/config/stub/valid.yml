@@ -1,5 +1,7 @@
-poll-every: 60
-poll-every-unit: 'seconds'
+master:
+  poll-every: 60
+  poll-every-unit: 'seconds'
+  pool-size: 10
 
 files:
   user-properties:
@@ -46,22 +48,3 @@ files:
     file: '/path/to/client-properties/'
     poll-every: 6
     poll-every-unit: 'hours'
-    
-  null-file:
-    poll-every: 30
-    poll-every-unit: 'seconds'
-    
-  empty-file:
-    file: ''
-    poll-every: 30
-    poll-every-unit: 'seconds'
-
-  nonexisting-file:
-    file: 'i-dont-exist'
-    poll-every: 30
-    poll-every-unit: 'seconds'
-    
-  unreadable-file:
-    file: 'unreadable-file'
-    poll-every: 30
-    poll-every-unit: 'seconds'

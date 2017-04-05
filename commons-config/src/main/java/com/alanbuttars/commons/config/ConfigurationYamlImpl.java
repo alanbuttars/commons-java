@@ -37,10 +37,10 @@ public class ConfigurationYamlImpl<T> extends ConfigurationAbstractImpl<T> {
 
 	private final Class<T> clazz;
 
-	public ConfigurationYamlImpl(File configFile, EventBus eventBus, Class<T> clazz) throws IOException {
-		super(configFile);
+	public ConfigurationYamlImpl(String sourceId, File configFile, EventBus eventBus, Class<T> clazz) throws IOException {
+		super(sourceId, eventBus);
 		this.clazz = clazz;
-		initEventBus(eventBus);
+		init(configFile);
 	}
 
 	@Override

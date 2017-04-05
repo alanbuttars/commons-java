@@ -18,8 +18,11 @@ package com.alanbuttars.commons.config.stub;
 import static com.alanbuttars.commons.util.validators.Arguments.verifyNonNull;
 
 import java.io.File;
+import java.io.IOException;
 
+import com.alanbuttars.commons.config.ConfigurationYamlCollectionImpl;
 import com.alanbuttars.commons.config.ConfigurationYamlImpl;
+import com.alanbuttars.commons.config.eventbus.EventBus;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
@@ -30,10 +33,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
  */
 public class WatchFileYamlImplStub {
 
+	protected final String sourceId;
 	protected final File file;
+	protected final EventBus eventBus;
 
-	WatchFileYamlImplStub(File file) {
+	WatchFileYamlImplStub(String sourceId, File file, EventBus eventBus) {
+		this.sourceId = sourceId;
 		this.file = file;
+		this.eventBus = eventBus;
 	}
 
 	/**
@@ -41,16 +48,18 @@ public class WatchFileYamlImplStub {
 	 * example:
 	 * 
 	 * <pre>
-	 * ConfigurationYamlImpl&lt;User&gt; config = Watch.yaml("/path/to/user.yml").mappedTo(User.class).withEventBus();
+	 * ConfigurationYamlImpl&lt;User&gt; config = Watch.yaml("/path/to/user.yml").mappedTo(User.class);
 	 * User user = config.getValue();
 	 * </pre>
 	 * 
 	 * @param clazz
 	 *            Non-null type
+	 * @throws IOException
+	 *             On I/O parsing the YAML file
 	 */
-	public <T> WatchFileYamlClassImplStub<T> mappedTo(Class<T> clazz) {
+	public <T> ConfigurationYamlImpl<T> mappedTo(Class<T> clazz) throws IOException {
 		verifyNonNull(clazz, "Clazz must be non-null");
-		return new WatchFileYamlClassImplStub<>(file, clazz);
+		return new ConfigurationYamlImpl<>(sourceId, file, eventBus, clazz);
 	}
 
 	/**
@@ -59,15 +68,17 @@ public class WatchFileYamlImplStub {
 	 * 
 	 * <pre>
 	 * ConfigurationYamlImpl&lt;List&lt;User&gt;&gt; config = Watch.yaml("/path/to/users.yml").mappedTo(new TypeReference&lt;List&lt;User&gt;&gt;() {
-	 * }).withEventBus();
+	 * });
 	 * List&lt;User&gt; users = config.getValue();
 	 * </pre>
 	 * 
 	 * @param typeReference
 	 *            Non-null type reference
+	 * @throws IOException
+	 *             On I/O parsing the YAML file
 	 */
-	public <C> WatchFileYamlTypeReferenceImplStub<C> mappedTo(TypeReference<C> typeReference) {
+	public <C> ConfigurationYamlCollectionImpl<C> mappedTo(TypeReference<C> typeReference) throws IOException {
 		verifyNonNull(typeReference, "Type reference must be non-null");
-		return new WatchFileYamlTypeReferenceImplStub<>(file, typeReference);
+		return new ConfigurationYamlCollectionImpl<>(sourceId, file, eventBus, typeReference);
 	}
 }

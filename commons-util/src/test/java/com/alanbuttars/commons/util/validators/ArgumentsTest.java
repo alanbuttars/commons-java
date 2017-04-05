@@ -17,7 +17,9 @@ package com.alanbuttars.commons.util.validators;
 
 import static com.alanbuttars.commons.util.validators.Arguments.verify;
 import static com.alanbuttars.commons.util.validators.Arguments.verifyNonEmpty;
+import static com.alanbuttars.commons.util.validators.Arguments.verifyNonNegativeNumber;
 import static com.alanbuttars.commons.util.validators.Arguments.verifyNonNull;
+import static com.alanbuttars.commons.util.validators.Arguments.verifyPositive;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
@@ -148,6 +150,69 @@ public class ArgumentsTest {
 		try {
 			verifyNonEmpty(" ", "message");
 			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("message", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testVerifyPositive() {
+		verifyPositive(1);
+		verifyPositive(1, "message");
+		verifyPositive(1L);
+		verifyPositive(1L, "message");
+		verifyPositive(1.0);
+		verifyPositive(1.0, "message");
+	}
+
+	@Test
+	public void testVerifyPositiveFails() {
+		try {
+			verifyPositive(0);
+		}
+		catch (IllegalArgumentException e) {
+			assertNull(e.getMessage());
+		}
+	}
+
+	@Test
+	public void testVerifyPositiveFailsWithMessage() {
+		try {
+			verifyPositive(-1, "message");
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("message", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testVerifyNonNegative() {
+		verifyNonNegativeNumber(0);
+		verifyNonNegativeNumber(1);
+		verifyNonNegativeNumber(1, "message");
+		verifyNonNegativeNumber(0L);
+		verifyNonNegativeNumber(1L);
+		verifyNonNegativeNumber(1L, "message");
+		verifyNonNegativeNumber(0.0);
+		verifyNonNegativeNumber(1.0);
+		verifyNonNegativeNumber(1.0, "message");
+	}
+
+	@Test
+	public void testVerifyNonNegativeFails() {
+		try {
+			verifyNonNegativeNumber(-1);
+		}
+		catch (IllegalArgumentException e) {
+			assertNull(e.getMessage());
+		}
+	}
+
+	@Test
+	public void testVerifyNonNegativeFailsWithMessage() {
+		try {
+			verifyNonNegativeNumber(-1, "message");
 		}
 		catch (IllegalArgumentException e) {
 			assertEquals("message", e.getMessage());

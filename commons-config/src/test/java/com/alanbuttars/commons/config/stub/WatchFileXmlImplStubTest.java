@@ -16,12 +16,17 @@
 package com.alanbuttars.commons.config.stub;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.alanbuttars.commons.config.ConfigurationXmlImpl;
+import com.alanbuttars.commons.config.eventbus.EventBus;
+import com.alanbuttars.commons.config.eventbus.EventBusSyncImpl;
 
 /**
  * Test class for {@link WatchFileXmlImplStub}.
@@ -31,26 +36,24 @@ import org.junit.Test;
  */
 public class WatchFileXmlImplStubTest {
 
-	private File file;
 	private WatchFileXmlImplStub stub;
 
 	@Before
 	public void setup() throws IOException {
-		file = File.createTempFile(getClass().getName(), ".json");
-		file.deleteOnExit();
-
-		stub = new WatchFileXmlImplStub(file);
+		File file = WatchTestHelper.getSourceFile("user-xml");
+		EventBus eventBus = new EventBusSyncImpl();
+		stub = new WatchFileXmlImplStub("user-xml", file, eventBus);
 	}
 
 	@Test
-	public void testMappedToClass() {
-		WatchFileXmlClassImplStub<User> classStub = stub.mappedTo(User.class);
-		assertEquals(file, classStub.file);
-		assertEquals(User.class, classStub.clazz);
+	public void testMappedToClass() throws IOException {
+		ConfigurationXmlImpl<User> classStub = stub.mappedTo(User.class);
+		assertEquals("user-xml", classStub.getSourceId());
+		assertNotNull(classStub.getValue());
 	}
 
 	@Test
-	public void testMappedToNullClass() {
+	public void testMappedToNullClass() throws IOException {
 		Class<User> clazz = null;
 		try {
 			stub.mappedTo(clazz);

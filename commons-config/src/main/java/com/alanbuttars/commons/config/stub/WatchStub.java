@@ -22,7 +22,14 @@ import java.io.IOException;
 
 import com.alanbuttars.commons.config.Configuration;
 import com.alanbuttars.commons.config.eventbus.EventBus;
+import com.alanbuttars.commons.config.master.YamlConfig;
 
+/**
+ * Intermediate stub ultimately used to create a {@link Watch}.
+ * 
+ * @author Alan Buttars
+ *
+ */
 public class WatchStub {
 
 	private final File yamlFile;
@@ -41,6 +48,6 @@ public class WatchStub {
 	 */
 	public Watch withEventBus(EventBus eventBus) throws IOException {
 		verifyNonNull(eventBus, "Event bus must be non-null");
-		return new Watch(yamlFile, eventBus);
+		return new Watch(yamlFile, eventBus, YamlConfig.class);
 	}
 }

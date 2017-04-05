@@ -25,12 +25,18 @@ import java.io.File;
  */
 public class FileEvent implements Event {
 
+	private final String sourceId;
 	private final File file;
 	private final FileEventType fileEventType;
 
-	public FileEvent(File file, FileEventType fileEventType) {
+	public FileEvent(String sourceId, File file, FileEventType fileEventType) {
+		this.sourceId = sourceId;
 		this.file = file;
 		this.fileEventType = fileEventType;
+	}
+
+	public String getSourceId() {
+		return sourceId;
 	}
 
 	public File getFile() {

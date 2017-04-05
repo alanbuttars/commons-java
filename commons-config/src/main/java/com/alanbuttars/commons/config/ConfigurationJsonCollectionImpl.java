@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * {@link Configuration} implementation used for JSON files. Instances of this class accept a single JSON file which is
- * mapped to a given class type.
+ * mapped to a collection of a given class type.
  * 
  * @author Alan Buttars
  *
@@ -38,10 +38,10 @@ public class ConfigurationJsonCollectionImpl<C> extends ConfigurationAbstractImp
 
 	private final TypeReference<C> typeReference;
 
-	public ConfigurationJsonCollectionImpl(File configFile, EventBus eventBus, TypeReference<C> typeReference) throws IOException {
-		super(configFile);
+	public ConfigurationJsonCollectionImpl(String sourceId, File configFile, EventBus eventBus, TypeReference<C> typeReference) throws IOException {
+		super(sourceId, eventBus);
 		this.typeReference = typeReference;
-		initEventBus(eventBus);
+		init(configFile);
 	}
 
 	@Override

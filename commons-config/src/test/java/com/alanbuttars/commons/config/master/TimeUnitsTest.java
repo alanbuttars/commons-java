@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alanbuttars.commons.config.stub;
+package com.alanbuttars.commons.config.master;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
-import com.alanbuttars.commons.config.stub.TimeUnits;
+import com.alanbuttars.commons.config.master.TimeUnits;
 
 /**
  * Test class for {@link TimeUnits}.

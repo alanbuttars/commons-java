@@ -21,10 +21,21 @@ import static com.alanbuttars.commons.util.validators.Arguments.verifyNonNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import com.alanbuttars.commons.config.Configuration;
+import com.alanbuttars.commons.config.ConfigurationPropertiesImpl;
 import com.alanbuttars.commons.config.ConfigurationYamlImpl;
+import com.alanbuttars.commons.config.event.FileEvent;
+import com.alanbuttars.commons.config.event.FileEventType;
 import com.alanbuttars.commons.config.eventbus.EventBus;
+import com.alanbuttars.commons.config.master.YamlConfig;
+import com.alanbuttars.commons.config.master.YamlFileConfig;
+import com.alanbuttars.commons.config.poll.FilePoll;
 import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 
 /**
@@ -72,19 +83,76 @@ import com.alanbuttars.commons.util.annotations.VisibleForTesting;
  * </ol>
  * 
  * <p>
- * Once you have created your singleton {@link Watch}, you can use valueTypeit to create {@link Configuration} objects.
- * See <a href=
+ * Once you have created your singleton {@link Watch}, you can use it to create {@link Configuration} objects. See
+ * <a href=
  * "https://github.com/alanbuttars/commons-java/wiki/commons-config#configuration">https://github.com/alanbuttars/commons-java/wiki/commons-config#configuration</a>.
+ * 
+ * <pre>
+ * public class MyApplication {
+ * 
+ *  private static ConfigurationPropertiesImpl database;
+ *  private static ConfigurationJsonImpl<User> admin;
+ *  
+ * 	public static void main(String[] args) {
+ * 		EventBus eventBus = new EventBusSyncImpl();
+ * 		Watch watch = Watch.config().withEventBus(eventBus);
+ * 
+ * 		database = watch.properties("database");
+ * 		admin = watch.json("admin").mappedTo(User.class);
+ * 	}
+ * }
+ * </pre>
  * 
  * @author Alan Buttars
  *
  */
-public class Watch {
+public class Watch extends ConfigurationYamlImpl<YamlConfig> {
 
-	protected final ConfigurationYamlImpl<YamlConfig> config;
+	protected static final String SOURCE_ID = "master-yaml";
+	private ScheduledThreadPoolExecutor executor;
+	private List<ScheduledFuture<?>> futures;
 
-	Watch(File yamlFile, EventBus eventBus) throws IOException {
-		this.config = new ConfigurationYamlImpl<YamlConfig>(yamlFile, eventBus, YamlConfig.class);
+	Watch(File configFile, EventBus eventBus, Class<YamlConfig> clazz) throws IOException {
+		super(SOURCE_ID, configFile, eventBus, clazz);
+		this.executor = new ScheduledThreadPoolExecutor(getValue().getMaster().getPoolSize());
+		this.futures = new ArrayList<>();
+		scheduleExecutor(configFile);
+	}
+
+	/**
+	 * Prevents repeated tasks from being submitted to the {@link #executor}. If the YAML's
+	 * {@link YamlConfig#getPoolSize()} has been changed, this method will also entirely reinitialize the
+	 * {@link #executor}.
+	 */
+	private void flushExecutor() {
+		getExecutor().shutdownNow();
+		executor = new ScheduledThreadPoolExecutor(getValue().getMaster().getPoolSize());
+	}
+
+	/**
+	 * Using the master YAML configuration, submits a repeating {@link Runnable} file poll for each configuration file
+	 * and the master YAML.
+	 */
+	private void scheduleExecutor(File configFile) {
+		Runnable masterRunnable = new FilePoll(getSourceId(), configFile, getEventBus());
+		ScheduledFuture<?> masterFuture = getExecutor().scheduleAtFixedRate(//
+				masterRunnable, //
+				getValue().getMaster().getPollEvery(), //
+				getValue().getMaster().getPollEvery(), //
+				getValue().getMaster().getPollEveryUnit());
+		futures.add(masterFuture);
+
+		for (Entry<String, YamlFileConfig> fileConfigEntry : getValue().getConfigFiles().entrySet()) {
+			String sourceId = fileConfigEntry.getKey();
+			YamlFileConfig fileConfig = fileConfigEntry.getValue();
+			Runnable runnable = new FilePoll(sourceId, new File(fileConfig.getFile()), getEventBus());
+			ScheduledFuture<?> future = getExecutor().scheduleAtFixedRate(//
+					runnable, //
+					fileConfig.getPollEvery(), //
+					fileConfig.getPollEvery(), //
+					fileConfig.getPollEveryUnit());
+			futures.add(future);
+		}
 	}
 
 	/**
@@ -121,32 +189,83 @@ public class Watch {
 		return new WatchStub(yamlFile);
 	}
 
+	/**
+	 * Creates a configuration object from a JSON file.
+	 * 
+	 * @param sourceId
+	 *            Non-null source ID from a JSON file entry in the master configuration YAML
+	 * @return The configuration stubbing object
+	 * @throws IOException
+	 *             On I/O parsing the JSON file
+	 */
 	public WatchFileJsonImplStub json(String sourceId) {
-		return new WatchFileJsonImplStub(getFile(sourceId));
+		return new WatchFileJsonImplStub(sourceId, getFile(sourceId), getEventBus());
 	}
 
-	public WatchFilePropertiesImplStub properties(String sourceId) {
-		return new WatchFilePropertiesImplStub(getFile(sourceId));
+	/**
+	 * Creates a configuration object from a properties file.
+	 * 
+	 * @param sourceId
+	 *            Non-null source ID from a properties file entry in the master configuration YAML
+	 * @return The configuration object
+	 * @throws IOException
+	 *             On I/O parsing the properties file
+	 */
+	public ConfigurationPropertiesImpl properties(String sourceId) throws IOException {
+		return new ConfigurationPropertiesImpl(sourceId, getFile(sourceId), getEventBus());
 	}
 
+	/**
+	 * Creates a configuration object from a XML file.
+	 * 
+	 * @param sourceId
+	 *            Non-null source ID from a XML file entry in the master configuration YAML
+	 * @return The configuration stubbing object
+	 * @throws IOException
+	 *             On I/O parsing the XML file
+	 */
 	public WatchFileXmlImplStub xml(String sourceId) {
-		return new WatchFileXmlImplStub(getFile(sourceId));
+		return new WatchFileXmlImplStub(sourceId, getFile(sourceId), getEventBus());
 	}
 
+	/**
+	 * Creates a configuration object from a YAML file.
+	 * 
+	 * @param sourceId
+	 *            Non-null source ID from a YAML file entry in the master configuration YAML
+	 * @return The configuration stubbing object
+	 * @throws IOException
+	 *             On I/O parsing the YAML file
+	 */
 	public WatchFileYamlImplStub yaml(String sourceId) {
-		return new WatchFileYamlImplStub(getFile(sourceId));
+		return new WatchFileYamlImplStub(sourceId, getFile(sourceId), getEventBus());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void reload(File configFile) throws IOException {
+		super.reload(configFile);
+		for (Entry<String, YamlFileConfig> fileConfigEntry : getValue().getConfigFiles().entrySet()) {
+			String sourceId = fileConfigEntry.getKey();
+			YamlFileConfig fileConfig = fileConfigEntry.getValue();
+			getEventBus().publish(new FileEvent(sourceId, new File(fileConfig.getFile()), FileEventType.UPDATED));
+		}
+		flushExecutor();
+		scheduleExecutor(configFile);
 	}
 
 	@VisibleForTesting
-	protected YamlConfig getConfig() {
-		return config.getValue();
+	protected ScheduledThreadPoolExecutor getExecutor() {
+		return executor;
 	}
 
 	private File getFile(String sourceId) {
 		verifyNonNull(sourceId, "Source ID must be non-null");
 		verifyNonEmpty(sourceId, "Source ID must be non-empty");
 
-		YamlConfigFile configFile = getConfig().getConfigFiles().get(sourceId);
+		YamlFileConfig configFile = getValue().getConfigFiles().get(sourceId);
 		verifyNonNull(configFile, "Configuration does not exist for source ID '" + sourceId + "'");
 
 		String filePath = configFile.getFile();

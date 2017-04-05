@@ -36,10 +36,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
  */
 public class WatchFileYamlTypeReferenceImplStub<C> {
 
+	protected final String sourceId;
 	protected final File file;
 	protected final TypeReference<C> typeReference;
 
-	WatchFileYamlTypeReferenceImplStub(File file, TypeReference<C> typeReference) {
+	WatchFileYamlTypeReferenceImplStub(String sourceId, File file, TypeReference<C> typeReference) {
+		this.sourceId = sourceId;
 		this.file = file;
 		this.typeReference = typeReference;
 	}
@@ -55,7 +57,7 @@ public class WatchFileYamlTypeReferenceImplStub<C> {
 	 */
 	public ConfigurationYamlCollectionImpl<C> withEventBus(EventBus eventBus) throws IOException {
 		verifyNonNull(eventBus, "Event bus must be non-null");
-		return new ConfigurationYamlCollectionImpl<>(file, eventBus, typeReference);
+		return new ConfigurationYamlCollectionImpl<>(sourceId, file, eventBus, typeReference);
 	}
 
 }

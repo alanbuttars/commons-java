@@ -15,6 +15,9 @@
  */
 package com.alanbuttars.commons.config;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -42,60 +45,91 @@ public class ConfigurationAbstractImplTest {
 
 	private File file;
 	private File otherFile;
+	private EventBus eventBus;
 	private TestConfiguration config;
 
 	@Before
 	public void setup() throws IOException {
 		file = File.createTempFile(getClass().getName(), ".tmp");
+		file.deleteOnExit();
 		otherFile = File.createTempFile(getClass().getName(), ".tmp");
-		EventBus eventBus = new EventBusSyncImpl();
+		otherFile.deleteOnExit();
+		eventBus = spy(new EventBusSyncImpl());
 		config = spy(new TestConfiguration(file, eventBus));
 	}
 
 	@Test
-	public void testCreatedFile() throws IOException {
-		config.onFileEvent(new FileEvent(file, FileEventType.CREATED));
-		verify(config, times(1)).onFileEventMatch(FileEventType.CREATED);
+	public void testConstructor() {
+		assertEquals("test", config.getSourceId());
+		assertEquals(eventBus, config.getEventBus());
+		assertNotNull(config.getValue());
+		verify(eventBus, times(1)).subscribe(any(TestConfiguration.class));
+	}
+
+	@Test
+	public void testCreatedSource() throws IOException {
+		config.onFileEvent(new FileEvent("test", file, FileEventType.CREATED));
+		verify(config, times(1)).onFileEventMatch(file, FileEventType.CREATED);
 		verify(config, times(1)).load(file);
 	}
 
 	@Test
-	public void testUnmatchingCreatedFile() throws IOException {
-		config.onFileEvent(new FileEvent(otherFile, FileEventType.CREATED));
-		verify(config, never()).onFileEventMatch(FileEventType.CREATED);
+	public void testNewFileCreatedSource() throws IOException {
+		config.onFileEvent(new FileEvent("other", otherFile, FileEventType.CREATED));
+		verify(config, never()).onFileEventMatch(otherFile, FileEventType.CREATED);
 	}
 
 	@Test
-	public void testUpdatedFile() throws IOException {
-		config.onFileEvent(new FileEvent(file, FileEventType.UPDATED));
-		verify(config, times(1)).onFileEventMatch(FileEventType.UPDATED);
+	public void testUnmatchingCreatedSource() throws IOException {
+		config.onFileEvent(new FileEvent("other", file, FileEventType.CREATED));
+		verify(config, never()).onFileEventMatch(file, FileEventType.CREATED);
+	}
+
+	@Test
+	public void testUpdatedSource() throws IOException {
+		config.onFileEvent(new FileEvent("test", file, FileEventType.UPDATED));
+		verify(config, times(1)).onFileEventMatch(file, FileEventType.UPDATED);
 		verify(config, times(1)).load(file);
 	}
 
 	@Test
-	public void testUnmatchingUpdatedFile() throws IOException {
-		config.onFileEvent(new FileEvent(otherFile, FileEventType.UPDATED));
-		verify(config, never()).onFileEventMatch(FileEventType.UPDATED);
+	public void testUpdatedNewFileSource() throws IOException {
+		config.onFileEvent(new FileEvent("test", otherFile, FileEventType.UPDATED));
+		verify(config, times(1)).onFileEventMatch(otherFile, FileEventType.UPDATED);
+		verify(config, times(1)).load(otherFile);
 	}
 
 	@Test
-	public void testDeletedFile() throws IOException {
-		config.onFileEvent(new FileEvent(file, FileEventType.DELETED));
-		verify(config, times(1)).onFileEventMatch(FileEventType.DELETED);
+	public void testUnmatchingUpdatedSource() throws IOException {
+		config.onFileEvent(new FileEvent("other", file, FileEventType.UPDATED));
+		verify(config, never()).onFileEventMatch(file, FileEventType.UPDATED);
+	}
+
+	@Test
+	public void testDeletedSource() throws IOException {
+		config.onFileEvent(new FileEvent("test", file, FileEventType.DELETED));
+		verify(config, times(1)).onFileEventMatch(file, FileEventType.DELETED);
 		verify(config, never()).load(file);
 	}
 
 	@Test
-	public void testUnmatchingDeletedFile() throws IOException {
-		config.onFileEvent(new FileEvent(otherFile, FileEventType.DELETED));
-		verify(config, never()).onFileEventMatch(FileEventType.DELETED);
+	public void testDeletedNewFileSource() throws IOException {
+		config.onFileEvent(new FileEvent("test", otherFile, FileEventType.DELETED));
+		verify(config, times(1)).onFileEventMatch(otherFile, FileEventType.DELETED);
+		verify(config, never()).load(otherFile);
+	}
+
+	@Test
+	public void testUnmatchingDeletedSource() throws IOException {
+		config.onFileEvent(new FileEvent("other", file, FileEventType.DELETED));
+		verify(config, never()).onFileEventMatch(file, FileEventType.DELETED);
 	}
 
 	static class TestConfiguration extends ConfigurationAbstractImpl<User> {
 
 		TestConfiguration(File configFile, EventBus eventBus) throws IOException {
-			super(configFile);
-			initEventBus(eventBus);
+			super("test", eventBus);
+			init(configFile);
 		}
 
 		@Override

@@ -18,6 +18,7 @@ package com.alanbuttars.commons.config;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.powermock.api.mockito.PowerMockito.mock;
 
 import java.io.File;
@@ -27,6 +28,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.alanbuttars.commons.config.eventbus.EventBus;
+import com.alanbuttars.commons.config.eventbus.EventBusSyncImpl;
+import com.alanbuttars.commons.config.stub.Watch;
+import com.alanbuttars.commons.config.stub.WatchTestHelper;
 import com.alanbuttars.commons.util.functions.Function;
 
 /**
@@ -46,7 +50,7 @@ public class ConfigurationPropertiesImplTest {
 		File propertiesFile = File.createTempFile(ConfigurationPropertiesImplTest.class.getName(), ".properties");
 		propertiesFile.deleteOnExit();
 
-		config = new ConfigurationPropertiesImpl(propertiesFile, mock(EventBus.class)) {
+		config = new ConfigurationPropertiesImpl("test", propertiesFile, mock(EventBus.class)) {
 
 			@Override
 			protected String getValue(String key) {
@@ -127,6 +131,23 @@ public class ConfigurationPropertiesImplTest {
 		};
 		assertEquals(2, config.getValue(GOOD_KEY, function).intValue());
 		assertNull(config.getValue(BAD_KEY));
+	}
+
+	@Test
+	public void testObject() throws IOException {
+		Watch watch = Watch.config(WatchTestHelper.getYaml()).withEventBus(new EventBusSyncImpl());
+
+		ConfigurationPropertiesImpl config = watch.properties("user-properties");
+		assertEquals("Harry", config.getString("first.name", null));
+		assertEquals("Potter", config.getString("last.name", null));
+		assertEquals(11, config.getInt("age", -1));
+		assertEquals(1.3, config.getDouble("height", -1.0), 0.001);
+		assertTrue(config.getBoolean("male", false));
+		assertEquals("The Cupboard Under the Stairs", config.getString("address.line1", null));
+		assertEquals("4 Privet Drive", config.getString("address.line2", null));
+		assertEquals("Little Whinging", config.getString("address.city", null));
+		assertEquals("Surrey", config.getString("address.county", null));
+		assertEquals("England", config.getString("address.country", null));
 	}
 
 }

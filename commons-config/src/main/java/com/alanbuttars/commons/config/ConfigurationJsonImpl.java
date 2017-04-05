@@ -37,10 +37,10 @@ public class ConfigurationJsonImpl<T> extends ConfigurationAbstractImpl<T> {
 
 	private final Class<T> clazz;
 
-	public ConfigurationJsonImpl(File configFile, EventBus eventBus, Class<T> clazz) throws IOException {
-		super(configFile);
+	public ConfigurationJsonImpl(String sourceId, File configFile, EventBus eventBus, Class<T> clazz) throws IOException {
+		super(sourceId, eventBus);
 		this.clazz = clazz;
-		initEventBus(eventBus);
+		init(configFile);
 	}
 
 	@Override

@@ -37,12 +37,13 @@ public class ConfigurationXmlImpl<T> extends ConfigurationAbstractImpl<T> {
 
 	private final Class<T> clazz;
 
-	public ConfigurationXmlImpl(File configFile, EventBus eventBus, Class<T> clazz) throws IOException, JAXBException {
-		super(configFile);
+	public ConfigurationXmlImpl(String sourceId, File configFile, EventBus eventBus, Class<T> clazz) throws IOException {
+		super(sourceId, eventBus);
 		this.clazz = clazz;
-		initEventBus(eventBus);
+		init(configFile);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public T load(File configFile) throws IOException {
 		try {
