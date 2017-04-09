@@ -35,6 +35,10 @@ public class YamlMasterConfig {
 	void setPollEvery(int pollEvery) {
 		this.pollEvery = pollEvery;
 	}
+	
+	public String getPollEveryUnitString() {
+		return pollEveryUnit;
+	}
 
 	public TimeUnit getPollEveryUnit() {
 		return TimeUnits.fromPollEveryUnit(pollEveryUnit);

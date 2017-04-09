@@ -34,6 +34,7 @@ import com.alanbuttars.commons.config.event.FileEvent;
 import com.alanbuttars.commons.config.event.FileEventType;
 import com.alanbuttars.commons.config.eventbus.EventBus;
 import com.alanbuttars.commons.config.master.YamlConfig;
+import com.alanbuttars.commons.config.master.YamlConfigValidator;
 import com.alanbuttars.commons.config.master.YamlFileConfig;
 import com.alanbuttars.commons.config.poll.FilePoll;
 import com.alanbuttars.commons.util.annotations.VisibleForTesting;
@@ -114,6 +115,7 @@ public class Watch extends ConfigurationYamlImpl<YamlConfig> {
 
 	Watch(File configFile, EventBus eventBus, Class<YamlConfig> clazz) throws IOException {
 		super(SOURCE_ID, configFile, eventBus, clazz);
+		YamlConfigValidator.validate(getValue());
 		this.executor = new ScheduledThreadPoolExecutor(getValue().getMaster().getPoolSize());
 		this.futures = new ArrayList<>();
 		scheduleExecutor(configFile);
@@ -142,7 +144,7 @@ public class Watch extends ConfigurationYamlImpl<YamlConfig> {
 				getValue().getMaster().getPollEveryUnit());
 		futures.add(masterFuture);
 
-		for (Entry<String, YamlFileConfig> fileConfigEntry : getValue().getConfigFiles().entrySet()) {
+		for (Entry<String, YamlFileConfig> fileConfigEntry : getValue().getFileConfigs().entrySet()) {
 			String sourceId = fileConfigEntry.getKey();
 			YamlFileConfig fileConfig = fileConfigEntry.getValue();
 			Runnable runnable = new FilePoll(sourceId, new File(fileConfig.getFile()), getEventBus());
@@ -247,7 +249,7 @@ public class Watch extends ConfigurationYamlImpl<YamlConfig> {
 	@Override
 	protected void reload(File configFile) throws IOException {
 		super.reload(configFile);
-		for (Entry<String, YamlFileConfig> fileConfigEntry : getValue().getConfigFiles().entrySet()) {
+		for (Entry<String, YamlFileConfig> fileConfigEntry : getValue().getFileConfigs().entrySet()) {
 			String sourceId = fileConfigEntry.getKey();
 			YamlFileConfig fileConfig = fileConfigEntry.getValue();
 			getEventBus().publish(new FileEvent(sourceId, new File(fileConfig.getFile()), FileEventType.UPDATED));
@@ -265,7 +267,7 @@ public class Watch extends ConfigurationYamlImpl<YamlConfig> {
 		verifyNonNull(sourceId, "Source ID must be non-null");
 		verifyNonEmpty(sourceId, "Source ID must be non-empty");
 
-		YamlFileConfig configFile = getValue().getConfigFiles().get(sourceId);
+		YamlFileConfig configFile = getValue().getFileConfigs().get(sourceId);
 		verifyNonNull(configFile, "Configuration does not exist for source ID '" + sourceId + "'");
 
 		String filePath = configFile.getFile();

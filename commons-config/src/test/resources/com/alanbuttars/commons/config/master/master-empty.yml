@@ -1,0 +1,12 @@
+master:
+
+files:
+  user-properties:
+    file: 'src/test/resources/com/alanbuttars/commons/config/stub/user.properties'
+    poll-every: 30
+    poll-every-unit: 'seconds'
+  
+  users-json:
+    file: 'src/test/resources/com/alanbuttars/commons/config/stub/users.json'
+    poll-every: 5
+    poll-every-unit: 'minutes'

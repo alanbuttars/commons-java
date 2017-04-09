@@ -1,0 +1,15 @@
+master:
+  poll-every: 60
+  poll-every-unit: 'seconds'
+  pool-size: 10
+
+files:
+  user-properties:
+    file: 'src/test/resources/com/alanbuttars/commons/config/stub/user.properties'
+    poll-every: 30
+    poll-every-unit: ''
+  
+  users-json:
+    file: 'src/test/resources/com/alanbuttars/commons/config/stub/users.json'
+    poll-every: 5
+    poll-every-unit: 'minutes'

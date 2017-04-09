@@ -329,7 +329,7 @@ public class WatchTest {
 		watch.onFileEvent(new FileEvent(Watch.SOURCE_ID, new File(YAML_FILE_PATH), FileEventType.UPDATED));
 
 		verify(mockExecutor, times(1)).shutdownNow();
-		verify(mockExecutor, times(10)).scheduleAtFixedRate(any(Runnable.class), anyLong(), anyLong(), any(TimeUnit.class));
+		verify(mockExecutor, times(7)).scheduleAtFixedRate(any(Runnable.class), anyLong(), anyLong(), any(TimeUnit.class));
 	}
 
 	@Test
@@ -347,37 +347,27 @@ public class WatchTest {
 	private void verifyConfig(YamlConfig source) {
 		assertEquals(60, source.getMaster().getPollEvery());
 		assertEquals(TimeUnit.SECONDS, source.getMaster().getPollEveryUnit());
-		assertEquals(9, source.getConfigFiles().size());
+		assertEquals(6, source.getFileConfigs().size());
 
-		YamlFileConfig properties = source.getConfigFiles().get("user-properties");
+		YamlFileConfig properties = source.getFileConfigs().get("user-properties");
 		assertEquals("src/test/resources/com/alanbuttars/commons/config/stub/user.properties", properties.getFile());
 		assertEquals(30, properties.getPollEvery());
 		assertEquals(TimeUnit.SECONDS, properties.getPollEveryUnit());
 
-		YamlFileConfig json = source.getConfigFiles().get("users-json");
+		YamlFileConfig json = source.getFileConfigs().get("users-json");
 		assertEquals("src/test/resources/com/alanbuttars/commons/config/stub/users.json", json.getFile());
 		assertEquals(5, json.getPollEvery());
 		assertEquals(TimeUnit.MINUTES, json.getPollEveryUnit());
 
-		YamlFileConfig xml = source.getConfigFiles().get("users-xml");
-		assertEquals("src/test/resources/com/alanbuttars/commons/config/stub/users.xml", xml.getFile());
+		YamlFileConfig xml = source.getFileConfigs().get("user-xml");
+		assertEquals("src/test/resources/com/alanbuttars/commons/config/stub/user.xml", xml.getFile());
 		assertEquals(10, xml.getPollEvery());
 		assertEquals(TimeUnit.MINUTES, xml.getPollEveryUnit());
 
-		YamlFileConfig yaml = source.getConfigFiles().get("users-yaml");
+		YamlFileConfig yaml = source.getFileConfigs().get("users-yaml");
 		assertEquals("src/test/resources/com/alanbuttars/commons/config/stub/users.yml", yaml.getFile());
 		assertEquals(10, yaml.getPollEvery());
 		assertEquals(TimeUnit.MINUTES, yaml.getPollEveryUnit());
-
-		YamlFileConfig custom = source.getConfigFiles().get("users-custom");
-		assertEquals("src/test/resources/com/alanbuttars/commons/config/stub/users.csv", custom.getFile());
-		assertEquals(5, custom.getPollEvery());
-		assertEquals(TimeUnit.MINUTES, custom.getPollEveryUnit());
-
-		YamlFileConfig directory = source.getConfigFiles().get("client-properties");
-		assertEquals("/path/to/client-properties/", directory.getFile());
-		assertEquals(6, directory.getPollEvery());
-		assertEquals(TimeUnit.HOURS, directory.getPollEveryUnit());
 	}
 
 }

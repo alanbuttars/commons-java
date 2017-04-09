@@ -1,0 +1,4 @@
+master:
+  poll-every: 60
+  poll-every-unit: 'seconds'
+  pool-size: 10

@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
  */
 class TimeUnits {
 
-	private static final Map<String, TimeUnit> VALID_TIME_UNITS;
+	static final Map<String, TimeUnit> VALID_TIME_UNITS;
 
 	static {
 		VALID_TIME_UNITS = new LinkedHashMap<>();
@@ -54,6 +54,21 @@ class TimeUnits {
 		String sanitized = sanitizePollEveryUnit(pollEveryUnit);
 		verify(VALID_TIME_UNITS.containsKey(sanitized), "poll-every-unit '" + pollEveryUnit + "' is not a valid value: " + VALID_TIME_UNITS.keySet());
 		return VALID_TIME_UNITS.get(sanitized);
+	}
+
+	/**
+	 * Returns whether the given <code>String</code> configuration value represents a valid {@link TimeUnit}.
+	 * 
+	 * @param pollEveryUnit
+	 */
+	public static boolean isValidPollEveryUnit(String pollEveryUnit) {
+		try {
+			fromPollEveryUnit(pollEveryUnit);
+			return true;
+		}
+		catch (IllegalArgumentException e) {
+			return false;
+		}
 	}
 
 	/**

@@ -19,11 +19,6 @@ files:
     poll-every: 5
     poll-every-unit: 'minutes'
 
-  users-xml:
-    file: 'src/test/resources/com/alanbuttars/commons/config/stub/users.xml'
-    poll-every: 10
-    poll-every-unit: 'minutes'
-    
   user-xml:
     file: 'src/test/resources/com/alanbuttars/commons/config/stub/user.xml'
     poll-every: 10
@@ -38,13 +33,3 @@ files:
     file: 'src/test/resources/com/alanbuttars/commons/config/stub/user.yml'
     poll-every: 10
     poll-every-unit: 'minutes'
-
-  users-custom:
-    file: 'src/test/resources/com/alanbuttars/commons/config/stub/users.csv'
-    poll-every: 5
-    poll-every-unit: 'minutes'
-
-  client-properties:
-    file: '/path/to/client-properties/'
-    poll-every: 6
-    poll-every-unit: 'hours'

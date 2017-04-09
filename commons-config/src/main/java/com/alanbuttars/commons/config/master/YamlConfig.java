@@ -15,6 +15,7 @@
  */
 package com.alanbuttars.commons.config.master;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -30,7 +31,7 @@ public class YamlConfig {
 	@JsonProperty("master")
 	private YamlMasterConfig master;
 	@JsonProperty("files")
-	private Map<String, YamlFileConfig> configFiles;
+	private Map<String, YamlFileConfig> fileConfigs;
 
 	public YamlMasterConfig getMaster() {
 		return master;
@@ -40,12 +41,15 @@ public class YamlConfig {
 		this.master = master;
 	}
 
-	public Map<String, YamlFileConfig> getConfigFiles() {
-		return configFiles;
+	public Map<String, YamlFileConfig> getFileConfigs() {
+		if (fileConfigs != null) {
+			return fileConfigs;
+		}
+		return new LinkedHashMap<String, YamlFileConfig>();
 	}
 
-	void setConfigFiles(Map<String, YamlFileConfig> configFiles) {
-		this.configFiles = configFiles;
+	void setFileConfigs(Map<String, YamlFileConfig> fileConfigs) {
+		this.fileConfigs = fileConfigs;
 	}
 
 }

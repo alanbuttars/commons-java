@@ -42,7 +42,7 @@ public class WatchTestHelper {
 		File yamlFile = new File(getYaml());
 		ConfigurationYamlImpl<YamlConfig> config = new ConfigurationYamlImpl<>(sourceId, yamlFile, new EventBusSyncImpl(), YamlConfig.class);
 		YamlConfig yamlConfig = config.getValue();
-		YamlFileConfig yamlConfigFile = yamlConfig.getConfigFiles().get(sourceId);
+		YamlFileConfig yamlConfigFile = yamlConfig.getFileConfigs().get(sourceId);
 		return new File(yamlConfigFile.getFile());
 	}
 

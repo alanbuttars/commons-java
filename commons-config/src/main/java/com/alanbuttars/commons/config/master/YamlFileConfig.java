@@ -45,6 +45,10 @@ public class YamlFileConfig {
 		verifyPositive(pollEvery, "poll-every must be positive but was " + pollEvery);
 		this.pollEvery = pollEvery;
 	}
+	
+	public String getPollEveryUnitString() {
+		return pollEveryUnit;
+	}
 
 	public TimeUnit getPollEveryUnit() {
 		return TimeUnits.fromPollEveryUnit(pollEveryUnit);
