@@ -28,14 +28,17 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import com.alanbuttars.commons.config.Configuration;
+import com.alanbuttars.commons.config.ConfigurationDirectoryImpl;
 import com.alanbuttars.commons.config.ConfigurationPropertiesImpl;
 import com.alanbuttars.commons.config.ConfigurationYamlImpl;
+import com.alanbuttars.commons.config.event.DirectoryFileEvent;
 import com.alanbuttars.commons.config.event.FileEvent;
 import com.alanbuttars.commons.config.event.FileEventType;
 import com.alanbuttars.commons.config.eventbus.EventBus;
 import com.alanbuttars.commons.config.master.YamlConfig;
 import com.alanbuttars.commons.config.master.YamlConfigValidator;
 import com.alanbuttars.commons.config.master.YamlFileConfig;
+import com.alanbuttars.commons.config.poll.DirectoryPoll;
 import com.alanbuttars.commons.config.poll.FilePoll;
 import com.alanbuttars.commons.util.annotations.VisibleForTesting;
 
@@ -91,9 +94,9 @@ import com.alanbuttars.commons.util.annotations.VisibleForTesting;
  * <pre>
  * public class MyApplication {
  * 
- *  private static ConfigurationPropertiesImpl database;
- *  private static ConfigurationJsonImpl<User> admin;
- *  
+ * 	private static ConfigurationPropertiesImpl database;
+ * 	private static ConfigurationJsonImpl<User> admin;
+ * 
  * 	public static void main(String[] args) {
  * 		EventBus eventBus = new EventBusSyncImpl();
  * 		Watch watch = Watch.config().withEventBus(eventBus);
@@ -147,13 +150,26 @@ public class Watch extends ConfigurationYamlImpl<YamlConfig> {
 		for (Entry<String, YamlFileConfig> fileConfigEntry : getValue().getFileConfigs().entrySet()) {
 			String sourceId = fileConfigEntry.getKey();
 			YamlFileConfig fileConfig = fileConfigEntry.getValue();
-			Runnable runnable = new FilePoll(sourceId, new File(fileConfig.getFile()), getEventBus());
+			Runnable runnable = createPoll(sourceId, fileConfig);
 			ScheduledFuture<?> future = getExecutor().scheduleAtFixedRate(//
 					runnable, //
 					fileConfig.getPollEvery(), //
 					fileConfig.getPollEvery(), //
 					fileConfig.getPollEveryUnit());
 			futures.add(future);
+		}
+	}
+
+	/**
+	 * Creates the runnable appropriate for the given file config.
+	 */
+	private Runnable createPoll(String sourceId, YamlFileConfig fileConfig) {
+		File file = new File(fileConfig.getFile());
+		if (file.isFile()) {
+			return new FilePoll(sourceId, file, getEventBus());
+		}
+		else {
+			return new DirectoryPoll(sourceId, file, getEventBus());
 		}
 	}
 
@@ -197,11 +213,9 @@ public class Watch extends ConfigurationYamlImpl<YamlConfig> {
 	 * @param sourceId
 	 *            Non-null source ID from a JSON file entry in the master configuration YAML
 	 * @return The configuration stubbing object
-	 * @throws IOException
-	 *             On I/O parsing the JSON file
 	 */
 	public WatchFileJsonImplStub json(String sourceId) {
-		return new WatchFileJsonImplStub(sourceId, getFile(sourceId), getEventBus());
+		return new WatchFileJsonImplStub(sourceId, getFile(sourceId, false), getEventBus());
 	}
 
 	/**
@@ -214,7 +228,7 @@ public class Watch extends ConfigurationYamlImpl<YamlConfig> {
 	 *             On I/O parsing the properties file
 	 */
 	public ConfigurationPropertiesImpl properties(String sourceId) throws IOException {
-		return new ConfigurationPropertiesImpl(sourceId, getFile(sourceId), getEventBus());
+		return new ConfigurationPropertiesImpl(sourceId, getFile(sourceId, false), getEventBus());
 	}
 
 	/**
@@ -223,11 +237,9 @@ public class Watch extends ConfigurationYamlImpl<YamlConfig> {
 	 * @param sourceId
 	 *            Non-null source ID from a XML file entry in the master configuration YAML
 	 * @return The configuration stubbing object
-	 * @throws IOException
-	 *             On I/O parsing the XML file
 	 */
 	public WatchFileXmlImplStub xml(String sourceId) {
-		return new WatchFileXmlImplStub(sourceId, getFile(sourceId), getEventBus());
+		return new WatchFileXmlImplStub(sourceId, getFile(sourceId, false), getEventBus());
 	}
 
 	/**
@@ -236,11 +248,22 @@ public class Watch extends ConfigurationYamlImpl<YamlConfig> {
 	 * @param sourceId
 	 *            Non-null source ID from a YAML file entry in the master configuration YAML
 	 * @return The configuration stubbing object
-	 * @throws IOException
-	 *             On I/O parsing the YAML file
 	 */
 	public WatchFileYamlImplStub yaml(String sourceId) {
-		return new WatchFileYamlImplStub(sourceId, getFile(sourceId), getEventBus());
+		return new WatchFileYamlImplStub(sourceId, getFile(sourceId, false), getEventBus());
+	}
+
+	/**
+	 * Creates a configuration object from a directory.
+	 * 
+	 * @param sourceId
+	 *            Non-null source ID from a directory file entry in the master configuration YAML
+	 * @return The configuration object
+	 * @throws IOException
+	 *             On I/O parsing the directory
+	 */
+	public ConfigurationDirectoryImpl directory(String sourceId) throws IOException {
+		return new ConfigurationDirectoryImpl(sourceId, getFile(sourceId, true), getEventBus());
 	}
 
 	/**
@@ -252,7 +275,12 @@ public class Watch extends ConfigurationYamlImpl<YamlConfig> {
 		for (Entry<String, YamlFileConfig> fileConfigEntry : getValue().getFileConfigs().entrySet()) {
 			String sourceId = fileConfigEntry.getKey();
 			YamlFileConfig fileConfig = fileConfigEntry.getValue();
-			getEventBus().publish(new FileEvent(sourceId, new File(fileConfig.getFile()), FileEventType.UPDATED));
+			if (new File(fileConfig.getFile()).isDirectory()) {
+				getEventBus().publish(new DirectoryFileEvent(sourceId, new File(fileConfig.getFile()), new File(fileConfig.getFile()), FileEventType.UPDATED));
+			}
+			else {
+				getEventBus().publish(new FileEvent(sourceId, new File(fileConfig.getFile()), FileEventType.UPDATED));
+			}
 		}
 		flushExecutor();
 		scheduleExecutor(configFile);
@@ -263,7 +291,7 @@ public class Watch extends ConfigurationYamlImpl<YamlConfig> {
 		return executor;
 	}
 
-	private File getFile(String sourceId) {
+	private File getFile(String sourceId, boolean isDirectory) {
 		verifyNonNull(sourceId, "Source ID must be non-null");
 		verifyNonEmpty(sourceId, "Source ID must be non-empty");
 
@@ -271,12 +299,13 @@ public class Watch extends ConfigurationYamlImpl<YamlConfig> {
 		verifyNonNull(configFile, "Configuration does not exist for source ID '" + sourceId + "'");
 
 		String filePath = configFile.getFile();
-		verifyNonEmpty(filePath, "Configuration for source ID '" + sourceId + "' is missing the file attribute");
-
 		File file = new File(filePath);
-		verify(file.exists(), "Configuration for source ID '" + sourceId + "' has file attribute '" + filePath + "', which does not exist");
-		verify(file.canRead(), "Configuration for source ID '" + sourceId + "' has file attribute '" + filePath + "', which is unreadable");
-
+		if (isDirectory) {
+			verify(file.isDirectory(), "Configuration with source ID '" + sourceId + "' is associated with the file '" + file.getAbsolutePath() + "'; it must point to a directory");
+		}
+		else {
+			verify(file.isFile(), "Configuration with source ID '" + sourceId + "' is associated with the directory '" + file.getAbsolutePath() + "'; it must point to a file");
+		}
 		return file;
 	}
 

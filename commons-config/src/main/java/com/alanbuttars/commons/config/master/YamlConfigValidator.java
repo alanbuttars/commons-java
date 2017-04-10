@@ -87,11 +87,8 @@ public class YamlConfigValidator {
 				File file = new File(fileConfig.getFile());
 				if (validate(file.exists(), //
 						"files." + sourceId + ".file '" + file.getAbsolutePath() + "' does not exist", errors)) {
-					if (validate(file.isFile(), //
-							"files." + sourceId + ".file '" + file.getAbsolutePath() + "' is a directory; it must be a file", errors)) {
-						validate(file.canRead(), //
-								"files." + sourceId + ".file '" + file.getAbsolutePath() + "' is unreadable", errors);
-					}
+					validate(file.canRead(), //
+							"files." + sourceId + ".file '" + file.getAbsolutePath() + "' is unreadable", errors);
 				}
 			}
 			validate(fileConfig.getPollEvery() > 0, //

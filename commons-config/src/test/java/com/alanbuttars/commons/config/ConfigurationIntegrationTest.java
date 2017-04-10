@@ -38,7 +38,7 @@ abstract class ConfigurationIntegrationTest<C extends ConfigurationAbstractImpl<
 	protected EventBus eventBus;
 	protected C config;
 	protected File configFile;
-	private File yamlConfig;
+	protected File yamlConfig;
 
 	public void setup(String content) throws IOException {
 		this.eventBus = new EventBusSyncImpl();

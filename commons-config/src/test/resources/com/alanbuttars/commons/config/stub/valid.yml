@@ -33,3 +33,8 @@ files:
     file: 'src/test/resources/com/alanbuttars/commons/config/stub/user.yml'
     poll-every: 10
     poll-every-unit: 'minutes'
+    
+  clients:
+    file: 'src/test/resources/com/alanbuttars/commons/config/stub/clients'
+    poll-every: 1
+    poll-every-unit: 'hour'

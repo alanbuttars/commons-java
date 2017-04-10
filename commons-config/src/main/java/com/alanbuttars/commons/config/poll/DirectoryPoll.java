@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import com.alanbuttars.commons.config.event.DirectoryFileEvent;
 import com.alanbuttars.commons.config.event.FileEvent;
 import com.alanbuttars.commons.config.event.FileEventType;
 import com.alanbuttars.commons.config.eventbus.EventBus;
@@ -110,20 +111,20 @@ public class DirectoryPoll implements Runnable {
 			}
 		}
 	}
-	
+
 	@VisibleForTesting
 	protected void postCreatedEvent(File file) {
-		eventBus.publish(new FileEvent(sourceId, file, FileEventType.CREATED));
+		eventBus.publish(new DirectoryFileEvent(sourceId, directory, file, FileEventType.CREATED));
 	}
 
 	@VisibleForTesting
 	protected void postUpdatedEvent(File file) {
-		eventBus.publish(new FileEvent(sourceId, file, FileEventType.UPDATED));
+		eventBus.publish(new DirectoryFileEvent(sourceId, directory, file, FileEventType.UPDATED));
 	}
 
 	@VisibleForTesting
 	protected void postDeletedEvent(File file) {
-		eventBus.publish(new FileEvent(sourceId, file, FileEventType.DELETED));
+		eventBus.publish(new DirectoryFileEvent(sourceId, directory, file, FileEventType.DELETED));
 	}
 
 }

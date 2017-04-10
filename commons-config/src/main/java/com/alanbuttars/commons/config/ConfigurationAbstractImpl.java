@@ -156,8 +156,10 @@ public abstract class ConfigurationAbstractImpl<T> implements Configuration<T> {
 	/**
 	 * Called when the file associated with this object is {@link FileEventType#DELETED}. By default, this method does
 	 * nothing.
+	 * 
+	 * @throws IOException
 	 */
-	protected void whenConfigFileDeleted(File configFile) {
+	protected void whenConfigFileDeleted(File configFile) throws IOException {
 
 	}
 

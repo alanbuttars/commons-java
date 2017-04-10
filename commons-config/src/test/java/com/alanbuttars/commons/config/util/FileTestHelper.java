@@ -41,19 +41,6 @@ public class FileTestHelper {
 	}
 
 	/**
-	 * Creates a new temporary file under the given parent.
-	 * 
-	 * @param parent
-	 *            Existing directory
-	 * @throws IOException
-	 */
-	public static File file(File parent) throws IOException {
-		File file = File.createTempFile(FileTestHelper.class.getName(), ".tmp", parent);
-		file.deleteOnExit();
-		return file;
-	}
-
-	/**
 	 * Creates a new temporary directory.
 	 * 
 	 * @throws IOException

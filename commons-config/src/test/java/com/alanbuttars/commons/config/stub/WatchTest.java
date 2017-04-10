@@ -17,6 +17,7 @@ package com.alanbuttars.commons.config.stub;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
@@ -29,6 +30,7 @@ import static org.powermock.api.mockito.PowerMockito.doReturn;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -39,6 +41,7 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import com.alanbuttars.commons.config.ConfigurationDirectoryImpl;
 import com.alanbuttars.commons.config.ConfigurationJsonCollectionImpl;
 import com.alanbuttars.commons.config.ConfigurationJsonImpl;
 import com.alanbuttars.commons.config.ConfigurationPropertiesImpl;
@@ -274,6 +277,30 @@ public class WatchTest {
 	}
 
 	@Test
+	public void testNotFile() throws IOException {
+		try {
+			watch.properties("clients");
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertTrue(e.getMessage().matches(
+					"Configuration with source ID 'clients' is associated with the directory '.+commons-java/commons-config/src/test/resources/com/alanbuttars/commons/config/stub/clients'; it must point to a file"));
+		}
+	}
+
+	@Test
+	public void testNotDirectory() throws IOException {
+		try {
+			watch.directory("user-json");
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertTrue(e.getMessage().matches(
+					"Configuration with source ID 'user-json' is associated with the file '.+commons-java/commons-config/src/test/resources/com/alanbuttars/commons/config/stub/user.json'; it must point to a directory"));
+		}
+	}
+
+	@Test
 	public void testJsonClass() throws IOException {
 		ConfigurationJsonImpl<User> config = watch.json("user-json").mappedTo(User.class);
 		assertNotNull(config);
@@ -322,6 +349,14 @@ public class WatchTest {
 	}
 
 	@Test
+	public void testDirectory() throws IOException {
+		ConfigurationDirectoryImpl config = watch.directory("clients");
+		assertNotNull(config);
+		assertNotNull(config.getValue());
+		assertEquals(HashMap.class, config.getValue().getClass());
+	}
+
+	@Test
 	public void testReloadSchedulesExecutor() throws IOException {
 		ScheduledThreadPoolExecutor mockExecutor = mock(ScheduledThreadPoolExecutor.class);
 		doReturn(mockExecutor).when(watch).getExecutor();
@@ -329,7 +364,7 @@ public class WatchTest {
 		watch.onFileEvent(new FileEvent(Watch.SOURCE_ID, new File(YAML_FILE_PATH), FileEventType.UPDATED));
 
 		verify(mockExecutor, times(1)).shutdownNow();
-		verify(mockExecutor, times(7)).scheduleAtFixedRate(any(Runnable.class), anyLong(), anyLong(), any(TimeUnit.class));
+		verify(mockExecutor, times(8)).scheduleAtFixedRate(any(Runnable.class), anyLong(), anyLong(), any(TimeUnit.class));
 	}
 
 	@Test
@@ -347,7 +382,7 @@ public class WatchTest {
 	private void verifyConfig(YamlConfig source) {
 		assertEquals(60, source.getMaster().getPollEvery());
 		assertEquals(TimeUnit.SECONDS, source.getMaster().getPollEveryUnit());
-		assertEquals(6, source.getFileConfigs().size());
+		assertEquals(7, source.getFileConfigs().size());
 
 		YamlFileConfig properties = source.getFileConfigs().get("user-properties");
 		assertEquals("src/test/resources/com/alanbuttars/commons/config/stub/user.properties", properties.getFile());

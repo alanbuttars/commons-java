@@ -52,8 +52,7 @@ public class YamlConfigValidatorTest {
 
 	@Test
 	public void testFileDirectory() {
-		validate("files-user-properties-file-directory",
-				"files.user-properties.file '.+commons-java/commons-config/src/test/resources/com/alanbuttars/commons/config/stub' is a directory; it must be a file");
+		validateOk("files-user-properties-file-directory");
 	}
 
 	@Test
@@ -140,8 +139,8 @@ public class YamlConfigValidatorTest {
 	}
 
 	@Test
-	public void testValid() {
-		validateOk("valid");
+	public void testNoErrors() {
+		validateOk("no-errors");
 	}
 
 	@Test

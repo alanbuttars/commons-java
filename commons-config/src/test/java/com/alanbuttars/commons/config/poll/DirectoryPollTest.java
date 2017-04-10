@@ -49,9 +49,12 @@ public class DirectoryPollTest {
 	@Before
 	public void setup() throws IOException {
 		this.directory = FileTestHelper.directory();
-		this.file1 = FileTestHelper.file(directory);
-		this.file2 = FileTestHelper.file(directory);
-		this.file3 = FileTestHelper.file(directory);
+		this.file1 = new File(directory, "file1.txt");
+		this.file1.createNewFile();
+		this.file2 = new File(directory, "file2.txt");
+		this.file2.createNewFile();
+		this.file3 = new File(directory, "file3.txt");
+		this.file3.createNewFile();
 
 		this.mockEventBus = mock(EventBus.class);
 		this.poll = spy(new DirectoryPoll("test", directory, mockEventBus));
