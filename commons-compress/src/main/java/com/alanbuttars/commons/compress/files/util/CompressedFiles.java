@@ -79,6 +79,12 @@ public class CompressedFiles {
 				outputStream.write(content, 0, length);
 			}
 		}
+		catch (RuntimeException e) {
+			if (e.getCause() != null && e.getCause() instanceof IOException) {
+				throw (IOException) e.getCause();
+			}
+			throw e;
+		}
 	}
 
 	/**
@@ -108,6 +114,12 @@ public class CompressedFiles {
 			while ((length = inputStream.read(content)) > 0) {
 				compressorOutputStream.write(content, 0, length);
 			}
+		}
+		catch (RuntimeException e) {
+			if (e.getCause() != null && e.getCause() instanceof IOException) {
+				throw (IOException) e.getCause();
+			}
+			throw e;
 		}
 	}
 }

@@ -23,6 +23,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,7 +53,7 @@ public class DecompressCompressedFileWithStubXzImplTest {
 		destination = File.createTempFile(getClass().getName(), ".tmp");
 		stub = spy(new DecompressCompressedFileWithStubXzImpl(source));
 	}
-	
+
 	@After
 	public void teardown() {
 		source.deleteOnExit();
@@ -65,13 +66,13 @@ public class DecompressCompressedFileWithStubXzImplTest {
 		assertEquals(XZ, stub.fileType);
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test(expected = EOFException.class)
 	public void testCompressionFunction() throws IOException {
 		stub.to(destination);
 		verify(stub, times(1)).createCompressedFileInputStream(any(InputStream.class), eq(false));
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test(expected = EOFException.class)
 	public void testCustomCompressionFunction() throws IOException {
 		stub.andDecompressConcatenated(true).to(destination);
 		verify(stub, times(1)).createCompressedFileInputStream(any(InputStream.class), eq(true));

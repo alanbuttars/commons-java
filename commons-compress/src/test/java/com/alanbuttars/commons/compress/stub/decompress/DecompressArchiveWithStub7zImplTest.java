@@ -23,6 +23,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -69,13 +70,13 @@ public class DecompressArchiveWithStub7zImplTest {
 		assertEquals(SEVENZ, stub.fileType);
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test(expected = EOFException.class)
 	public void testDecompressionFunction() throws IOException {
 		stub.to(destination);
 		verify(stub, times(1)).createArchiveInputStream(eq(source), isNull(byte[].class));
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test(expected = EOFException.class)
 	public void testCustomDecompressionFunction() throws IOException {
 		stub.andDecryptWithPassword("password".getBytes()).to(destination);
 		verify(stub, times(1)).createArchiveInputStream(eq(source), eq("password".getBytes()));

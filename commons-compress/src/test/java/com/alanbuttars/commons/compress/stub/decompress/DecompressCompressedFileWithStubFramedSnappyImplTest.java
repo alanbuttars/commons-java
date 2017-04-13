@@ -66,7 +66,7 @@ public class DecompressCompressedFileWithStubFramedSnappyImplTest {
 		assertEquals(FRAMEDSNAPPY, stub.fileType);
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test(expected = IOException.class)
 	public void testCompressionFunction() throws IOException {
 		stub.to(destination);
 		verify(stub, times(1)).createCompressedFileInputStream(any(InputStream.class), eq(FramedSnappyDialect.STANDARD));

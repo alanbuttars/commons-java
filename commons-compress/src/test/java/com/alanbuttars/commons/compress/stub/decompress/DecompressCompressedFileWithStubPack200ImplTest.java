@@ -56,7 +56,7 @@ public class DecompressCompressedFileWithStubPack200ImplTest {
 		destination = File.createTempFile(getClass().getName(), ".tmp");
 		stub = spy(new DecompressCompressedFileWithStubPack200Impl(source));
 	}
-	
+
 	@After
 	public void teardown() {
 		source.deleteOnExit();
@@ -69,13 +69,13 @@ public class DecompressCompressedFileWithStubPack200ImplTest {
 		assertEquals(PACK200, stub.fileType);
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test(expected = IOException.class)
 	public void testCompressionFunction() throws IOException {
 		stub.to(destination);
 		verify(stub, times(1)).createCompressedFileInputStream(any(InputStream.class), eq(Pack200Strategy.IN_MEMORY), isNull(Map.class));
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test(expected = IOException.class)
 	public void testCustomCompressionFunction() throws IOException {
 		Map<String, String> properties = new HashMap<String, String>();
 		stub.andMode(Pack200Strategy.TEMP_FILE).andProperties(properties).to(destination);

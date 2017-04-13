@@ -108,11 +108,11 @@ public class ConfigurationDirectoryImplIntegrationTest extends ConfigurationInte
 		assertEquals(file1, config.getValue().get("file1.txt"));
 
 		file1.delete();
-		sleep(2);
+		sleep(3);
 		assertNull(config.getValue().get("file1.txt"));
 
 		file1.createNewFile();
-		sleep(2);
+		sleep(3);
 		assertEquals(file1, config.getValue().get("file1.txt"));
 	}
 

@@ -51,7 +51,7 @@ public class DecompressCompressedFileWithStubZImplTest {
 		destination = File.createTempFile(getClass().getName(), ".tmp");
 		stub = spy(new DecompressCompressedFileWithStubZImpl(source));
 	}
-	
+
 	@After
 	public void teardown() {
 		source.deleteOnExit();
@@ -64,7 +64,7 @@ public class DecompressCompressedFileWithStubZImplTest {
 		assertEquals(Z, stub.fileType);
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test(expected = IOException.class)
 	public void testCompressionFunction() throws IOException {
 		stub.to(destination);
 		verify(stub, times(1)).createCompressedFileInputStream(any(InputStream.class));

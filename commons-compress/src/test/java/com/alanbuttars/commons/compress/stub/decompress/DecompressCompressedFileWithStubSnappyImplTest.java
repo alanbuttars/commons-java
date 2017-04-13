@@ -66,13 +66,13 @@ public class DecompressCompressedFileWithStubSnappyImplTest {
 		assertEquals(SNAPPY, stub.fileType);
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test(expected = IOException.class)
 	public void testCompressionFunction() throws IOException {
 		stub.to(destination);
 		verify(stub, times(1)).createCompressedFileInputStream(any(InputStream.class), eq(SnappyCompressorInputStream.DEFAULT_BLOCK_SIZE));
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test(expected = IOException.class)
 	public void testCustomCompressionFunction() throws IOException {
 		stub.andBlockSize(2).to(destination);
 		verify(stub, times(1)).createCompressedFileInputStream(any(InputStream.class), eq(2));

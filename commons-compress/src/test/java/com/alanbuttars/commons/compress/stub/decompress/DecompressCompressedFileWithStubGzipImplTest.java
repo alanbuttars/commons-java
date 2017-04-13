@@ -52,7 +52,7 @@ public class DecompressCompressedFileWithStubGzipImplTest {
 		destination = File.createTempFile(getClass().getName(), ".tmp");
 		stub = spy(new DecompressCompressedFileWithStubGzipImpl(source));
 	}
-	
+
 	@After
 	public void teardown() {
 		source.deleteOnExit();
@@ -65,13 +65,13 @@ public class DecompressCompressedFileWithStubGzipImplTest {
 		assertEquals(GZIP, stub.fileType);
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test(expected = IOException.class)
 	public void testCompressionFunction() throws IOException {
 		stub.to(destination);
 		verify(stub, times(1)).createCompressedFileInputStream(any(InputStream.class), eq(false));
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test(expected = IOException.class)
 	public void testCustomCompressionFunction() throws IOException {
 		stub.andDecompressConcatenated(true).to(destination);
 		verify(stub, times(1)).createCompressedFileInputStream(any(InputStream.class), eq(true));

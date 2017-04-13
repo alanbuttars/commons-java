@@ -74,6 +74,12 @@ public class Archives {
 		try (ArchiveInputStream archiveInputStream = decompressionFunction.apply(source)) {
 			readFromArchive(archiveInputStream, destination);
 		}
+		catch (RuntimeException e) {
+			if (e.getCause() != null && e.getCause() instanceof IOException) {
+				throw (IOException) e.getCause();
+			}
+			throw e;
+		}
 	}
 
 	private static void readFromArchive(ArchiveInputStream archiveInputStream, File destination) throws IOException {
@@ -122,6 +128,12 @@ public class Archives {
 			BiFunction<String, Long, ArchiveEntry> entryFunction) throws IOException {
 		try (ArchiveOutputStream archiveOutputStream = compressionFunction.apply(destination)) {
 			writeToArchive(fileType, source, source, archiveOutputStream, entryFunction);
+		}
+		catch (RuntimeException e) {
+			if (e.getCause() != null && e.getCause() instanceof IOException) {
+				throw (IOException) e.getCause();
+			}
+			throw e;
 		}
 	}
 
