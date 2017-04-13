@@ -17,14 +17,17 @@ package com.alanbuttars.commons.cli.request;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
 
 import com.alanbuttars.commons.cli.evaluator.CommandLineEvaluatorExitStatusImpl;
+import com.alanbuttars.commons.cli.evaluator.CommandLineEvaluatorKeywordImpl;
 import com.alanbuttars.commons.cli.util.Argument;
 
 /**
@@ -47,10 +50,51 @@ public class CommandLineRequestBuilderTest {
 
 	@Test
 	public void testWithEvaluator() {
-		CommandLineRequest response = new CommandLineRequestBuilder()//
-				.withEvaluator(null)//
+		CommandLineEvaluatorKeywordImpl evaluator = new CommandLineEvaluatorKeywordImpl();
+		CommandLineRequest request = new CommandLineRequestBuilder()//
+				.withEvaluator(evaluator)//
 				.build("bash");
-		assertNull(response.getEvaluator());
+		assertEquals(evaluator, request.getEvaluator());
+	}
+
+	@Test
+	public void testWithEvaluatorNull() {
+		try {
+			new CommandLineRequestBuilder().withEvaluator(null);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Evaluator must be non-null", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testInterruptOnFailure() {
+		CommandLineRequest request = new CommandLineRequestBuilder().interruptOnFailure().build("bash");
+		assertTrue(request.interruptOnFailure());
+	}
+
+	@Test
+	public void testInterruptAfterZero() {
+		CommandLineRequest request = new CommandLineRequestBuilder().interruptAfter(0).build("bash");
+		assertEquals(0, request.interruptAfter());
+	}
+
+	@Test
+	public void testInterruptAfterPositive() {
+		CommandLineRequest request = new CommandLineRequestBuilder().interruptAfter(10).build("bash");
+		assertEquals(10, request.interruptAfter());
+	}
+
+	@Test
+	public void testInterruptAfterNegative() {
+		try {
+			new CommandLineRequestBuilder().interruptAfter(-1);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Milliseconds must be non-negative", e.getMessage());
+		}
 	}
 
 	@Test
@@ -64,6 +108,30 @@ public class CommandLineRequestBuilderTest {
 		assertEquals("value1", arguments.get(2).getValue());
 		assertEquals("--key2", arguments.get(3).getValue());
 		assertEquals("value2", arguments.get(4).getValue());
+	}
+
+	@Test
+	public void testBuildStringNull() {
+		String command = null;
+		try {
+			new CommandLineRequestBuilder().build(command);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Command must be non-null", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testBuildStringEmpty() {
+		String command = " ";
+		try {
+			new CommandLineRequestBuilder().build(command);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Command must be non-empty", e.getMessage());
+		}
 	}
 
 	@Test
@@ -83,5 +151,29 @@ public class CommandLineRequestBuilderTest {
 		assertEquals("\"value with spaces\"", arguments.get(2).getValue());
 		assertEquals("--key2", arguments.get(3).getValue());
 		assertEquals("value_without_spaces", arguments.get(4).getValue());
+	}
+
+	@Test
+	public void testBuildArgumentsNull() {
+		List<Argument> arguments = null;
+		try {
+			new CommandLineRequestBuilder().build(arguments);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Arguments must be non-null", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testBuildArgumentsEmpty() {
+		List<Argument> arguments = new ArrayList<>();
+		try {
+			new CommandLineRequestBuilder().build(arguments);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Arguments must be non-empty", e.getMessage());
+		}
 	}
 }

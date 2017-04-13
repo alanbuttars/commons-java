@@ -15,6 +15,11 @@
  */
 package com.alanbuttars.commons.cli.request;
 
+import static com.alanbuttars.commons.util.validators.Arguments.verify;
+import static com.alanbuttars.commons.util.validators.Arguments.verifyNonEmpty;
+import static com.alanbuttars.commons.util.validators.Arguments.verifyNonNegativeNumber;
+import static com.alanbuttars.commons.util.validators.Arguments.verifyNonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,6 +80,7 @@ public class CommandLineRequestBuilder {
 	 *            Non-null evaluation function
 	 */
 	public CommandLineRequestBuilder withEvaluator(CommandLineEvaluator evaluator) {
+		verifyNonNull(evaluator, "Evaluator must be non-null");
 		this.evaluator = evaluator;
 		return this;
 	}
@@ -96,6 +102,7 @@ public class CommandLineRequestBuilder {
 	 * @param milliseconds
 	 */
 	public CommandLineRequestBuilder interruptAfter(int milliseconds) {
+		verifyNonNegativeNumber(milliseconds, "Milliseconds must be non-negative");
 		this.interruptAfter = milliseconds;
 		return this;
 	}
@@ -108,6 +115,9 @@ public class CommandLineRequestBuilder {
 	 * @return the request
 	 */
 	public CommandLineRequest build(String command) {
+		verifyNonNull(command, "Command must be non-null");
+		verifyNonEmpty(command, "Command must be non-empty");
+
 		List<Argument> arguments = new ArrayList<Argument>();
 		for (String commandPart : command.split(" ")) {
 			arguments.add(new Argument(commandPart));
@@ -123,6 +133,9 @@ public class CommandLineRequestBuilder {
 	 * @return the request
 	 */
 	public CommandLineRequest build(List<Argument> arguments) {
+		verifyNonNull(arguments, "Arguments must be non-null");
+		verify(!arguments.isEmpty(), "Arguments must be non-empty");
+
 		CommandLineRequest request = new CommandLineRequest();
 		request.setArguments(arguments);
 		request.setEvaluator(evaluator);

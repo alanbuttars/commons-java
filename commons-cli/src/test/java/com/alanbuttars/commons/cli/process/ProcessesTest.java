@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.powermock.api.mockito.PowerMockito.doReturn;
 import static org.powermock.api.mockito.PowerMockito.doThrow;
 import static org.powermock.api.mockito.PowerMockito.mock;
@@ -54,6 +55,17 @@ public class ProcessesTest {
 		spy(Processes.class);
 		request = new CommandLineRequestBuilder()//
 				.build("blah blah");
+	}
+
+	@Test
+	public void testNullRequest() {
+		try {
+			Processes.execute(null);
+			fail();
+		}
+		catch (IllegalArgumentException e) {
+			assertEquals("Request must be non-null", e.getMessage());
+		}
 	}
 
 	@Test

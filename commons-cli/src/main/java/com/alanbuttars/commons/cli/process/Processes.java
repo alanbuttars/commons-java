@@ -15,6 +15,8 @@
  */
 package com.alanbuttars.commons.cli.process;
 
+import static com.alanbuttars.commons.util.validators.Arguments.verifyNonNull;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +55,7 @@ public class Processes {
 	 *            Non-null request
 	 */
 	public static CommandLineResponse execute(final CommandLineRequest request) {
+		verifyNonNull(request, "Request must be non-null");
 		try {
 			Process process = startProcess(request);
 
