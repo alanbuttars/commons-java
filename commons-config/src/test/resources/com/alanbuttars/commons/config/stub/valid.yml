@@ -38,3 +38,8 @@ files:
     file: 'src/test/resources/com/alanbuttars/commons/config/stub/clients'
     poll-every: 1
     poll-every-unit: 'hour'
+    
+  users-csv:
+    file: 'src/test/resources/com/alanbuttars/commons/config/stub/users.csv'
+    poll-every: 1
+    poll-every-unit: 'minute'

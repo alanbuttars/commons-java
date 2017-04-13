@@ -267,6 +267,17 @@ public class Watch extends ConfigurationYamlImpl<YamlConfig> {
 	}
 
 	/**
+	 * Creates a custom configuration object.
+	 * 
+	 * @param sourceId
+	 *            Non-null source ID from a file entry in the master configuration YAML
+	 * @return The configuration stubbing object
+	 */
+	public WatchFileCustomImplStub custom(String sourceId) {
+		return new WatchFileCustomImplStub(sourceId, getFile(sourceId, false), getEventBus());
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override

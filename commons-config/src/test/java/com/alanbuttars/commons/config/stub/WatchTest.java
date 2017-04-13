@@ -54,6 +54,8 @@ import com.alanbuttars.commons.config.eventbus.EventBus;
 import com.alanbuttars.commons.config.eventbus.EventBusSyncImpl;
 import com.alanbuttars.commons.config.master.YamlConfig;
 import com.alanbuttars.commons.config.master.YamlFileConfig;
+import com.alanbuttars.commons.config.util.ConfigurationUsersImpl;
+import com.alanbuttars.commons.util.functions.Function;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.io.Files;
 
@@ -357,6 +359,26 @@ public class WatchTest {
 	}
 
 	@Test
+	public void testCustom() throws IOException {
+		ConfigurationUsersImpl config = watch.custom("users-csv").mappedWith(new Function<CustomConfigurationParams, ConfigurationUsersImpl>() {
+
+			@Override
+			public ConfigurationUsersImpl apply(CustomConfigurationParams params) {
+				try {
+					return new ConfigurationUsersImpl(params.getSourceId(), params.getFile(), params.getEventBus());
+				}
+				catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+
+		});
+		assertNotNull(config);
+		assertNotNull(config.getValue());
+		assertEquals(ArrayList.class, config.getValue().getClass());
+	}
+
+	@Test
 	public void testReloadSchedulesExecutor() throws IOException {
 		ScheduledThreadPoolExecutor mockExecutor = mock(ScheduledThreadPoolExecutor.class);
 		doReturn(mockExecutor).when(watch).getExecutor();
@@ -364,7 +386,7 @@ public class WatchTest {
 		watch.onFileEvent(new FileEvent(Watch.SOURCE_ID, new File(YAML_FILE_PATH), FileEventType.UPDATED));
 
 		verify(mockExecutor, times(1)).shutdownNow();
-		verify(mockExecutor, times(8)).scheduleAtFixedRate(any(Runnable.class), anyLong(), anyLong(), any(TimeUnit.class));
+		verify(mockExecutor, times(9)).scheduleAtFixedRate(any(Runnable.class), anyLong(), anyLong(), any(TimeUnit.class));
 	}
 
 	@Test
@@ -382,7 +404,7 @@ public class WatchTest {
 	private void verifyConfig(YamlConfig source) {
 		assertEquals(60, source.getMaster().getPollEvery());
 		assertEquals(TimeUnit.SECONDS, source.getMaster().getPollEveryUnit());
-		assertEquals(7, source.getFileConfigs().size());
+		assertEquals(8, source.getFileConfigs().size());
 
 		YamlFileConfig properties = source.getFileConfigs().get("user-properties");
 		assertEquals("src/test/resources/com/alanbuttars/commons/config/stub/user.properties", properties.getFile());

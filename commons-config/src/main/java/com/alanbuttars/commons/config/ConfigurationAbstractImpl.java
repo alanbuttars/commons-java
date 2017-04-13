@@ -60,7 +60,7 @@ public abstract class ConfigurationAbstractImpl<T> implements Configuration<T> {
 	private final EventBus eventBus;
 	private T value;
 
-	ConfigurationAbstractImpl(String sourceId, EventBus eventBus) {
+	public ConfigurationAbstractImpl(String sourceId, EventBus eventBus) {
 		this.sourceId = sourceId;
 		this.eventBus = eventBus;
 	}
