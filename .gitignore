@@ -2,6 +2,7 @@
 target/
 *.ser
 *.ec
+settings.xml
 
 # IntelliJ Idea
 .idea/
