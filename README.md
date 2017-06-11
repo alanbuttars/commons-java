@@ -1,13 +1,12 @@
-Common: Core Libraries for Java
+Commons: Core Libraries for Java
 =======================
 
+![Commons](http://alanbuttars.com/img/commons.png)
 
 [![Build Status](https://travis-ci.org/alanbuttars/commons-java.svg?branch=master)](https://travis-ci.org/alanbuttars/commons-java)
 [![codecov](https://codecov.io/gh/alanbuttars/commons-java/branch/master/graph/badge.svg)](https://codecov.io/gh/alanbuttars/commons-java)
 
 Common is a set of core libraries, encompassing tasks used in most Java applications.
-
-Requires JDK 1.7 or higher. 
 
 Modules
 -------
@@ -19,6 +18,6 @@ Modules
 Links
 -----
 
-- [Wiki](https://github.com/alanbuttars/commons-java/wiki)
+- [Documentation](https://alanbuttars.github.io/commons-java-docs/)
 - [GitHub project](https://github.com/alanbuttars/commons-java)
 - [Issue tracker: Report a defect or feature request](https://github.com/alanbuttars/commons-java/issues/new)
